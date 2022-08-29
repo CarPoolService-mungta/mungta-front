@@ -16,3 +16,10 @@ export const getQuestionById = async params =>
  */
 export const deleteQuestionById = async params =>
     axios.delete('/question/question', {params});
+
+/**
+ * @param {{userId: number, question:{title: text, body:text}}} data
+ */
+export const postQuestionById = async data =>
+  axios.post('/question/question', data);
+

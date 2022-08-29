@@ -1,5 +1,5 @@
 import MainCard from "../../../components/MainCard";
-import {Form, useFormik} from "formik";
+import {Form, useFormik, FormikProvider} from "formik";
 
 import * as Yup from 'yup';
 import {TextField, Button, Grid} from "@mui/material";
@@ -17,20 +17,39 @@ const PostQuestion = ()=>{
             body: Yup.string()
                 .required("문의사항을 입력해주세요.")
         }),
-        onSubmit: (values)=>{
+        onSubmit: async (values, { setSubmitting})=>{
+            // const title = values.title;
+            // const body = values.body;
+            setSubmitting(true);
+            console.log("1111")
+            //api
+
+            setSubmitting(false);
             console.log("values : ", values);
         },
     });
+
+    const {
+        values,
+        errors,
+        touched,
+        handleSubmit,
+        getFieldProps,
+        setFieldValue,
+    } = formik;
+
     return <>
         <MainCard darkTitle={true} title={"문의하기"}>
-            <form onSubmit={formik.handleSubmit}>
+            <FormikProvider value={formik}>
+            {/*<Form onSubmit={formik.handleSubmit}>*/}
                 <Grid
                     container
                     justifyContent="flex-start"
                     spacing={2}
                     style={{marginTop:5, marginBottom:5}}>
                     <Grid item xs={12}>
-                        <TextField name="title" label="제목" fullWidth/>
+                        <TextField name="title" label="제목"
+                                   {...getFieldProps('title')} fullWidth/>
                     </Grid>
                 </Grid>
                 <Grid
@@ -39,7 +58,8 @@ const PostQuestion = ()=>{
                     spacing={2}
                     style={{ marginBottom:5}}>
                     <Grid item xs={12}>
-                        <TextField name="body" label="내용" multiline rows={5} fullWidth/>
+                        <TextField name="body" label="내용"
+                                   {...getFieldProps('body')} multiline rows={5} fullWidth/>
                     </Grid>
                 </Grid>
                 <Grid
@@ -48,12 +68,15 @@ const PostQuestion = ()=>{
                     direction="row"
                     spacing={2}>
                     <Grid item>
-                        <Button variant="contained" type="submit" onSubmit={()=>handleSubmit()}>
+                        <Button variant="contained"
+                                onClick={()=>handleSubmit(values)}
+                                type="submit">
                             제출
                         </Button>
                     </Grid>
                 </Grid>
-            </form>
+            {/*</Form>*/}
+            </FormikProvider>
         </MainCard>
     </>
 }
