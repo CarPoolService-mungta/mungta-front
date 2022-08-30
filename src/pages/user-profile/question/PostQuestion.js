@@ -3,13 +3,14 @@ import {Form, useFormik, FormikProvider} from "formik";
 
 import * as Yup from 'yup';
 import {TextField, Button, Grid} from "@mui/material";
+import {postQuestionById } from 'api/question'
 
 const PostQuestion = ()=>{
 
     const formik = useFormik({
         initialValues: {
             title:"",
-            body:"1223"
+            body:""
         },
         validationSchema:Yup.object().shape({
             title: Yup.string()
@@ -18,14 +19,25 @@ const PostQuestion = ()=>{
                 .required("문의사항을 입력해주세요.")
         }),
         onSubmit: async (values, { setSubmitting})=>{
-            // const title = values.title;
-            // const body = values.body;
-            setSubmitting(true);
-            console.log("1111")
-            //api
 
-            setSubmitting(false);
+            setSubmitting(true);
+
             console.log("values : ", values);
+            // Todo 수정 필요
+            const questionRegisterRequest = {
+                userId: 0,
+                question:{
+                    title: values.title,
+                    body: values.body
+                }
+            };
+
+            console.log("questionRegisterRequest : ", questionRegisterRequest);
+
+            const response = await postQuestionById(questionRegisterRequest);
+
+            //api
+            setSubmitting(false);
         },
     });
 
@@ -41,41 +53,50 @@ const PostQuestion = ()=>{
     return <>
         <MainCard darkTitle={true} title={"문의하기"}>
             <FormikProvider value={formik}>
-            {/*<Form onSubmit={formik.handleSubmit}>*/}
-                <Grid
-                    container
-                    justifyContent="flex-start"
-                    spacing={2}
-                    style={{marginTop:5, marginBottom:5}}>
-                    <Grid item xs={12}>
-                        <TextField name="title" label="제목"
-                                   {...getFieldProps('title')} fullWidth/>
+                <Form onSubmit={handleSubmit}>
+                    <Grid
+                        container
+                        justifyContent="flex-start"
+                        spacing={2}
+                        style={{marginTop:5, marginBottom:5}}>
+                        <Grid item xs={12}>
+                            <TextField name="title"
+                                       label="제목"
+                                       fullWidth
+                                       {...getFieldProps('title')}
+                                        error={Boolean(touched.title && errors.title)}
+                                        helperText={(touched.title && errors.title)}/>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid
-                    container
-                    justifyContent="flex-start"
-                    spacing={2}
-                    style={{ marginBottom:5}}>
-                    <Grid item xs={12}>
-                        <TextField name="body" label="내용"
-                                   {...getFieldProps('body')} multiline rows={5} fullWidth/>
+                    <Grid
+                        container
+                        justifyContent="flex-start"
+                        spacing={2}
+                        style={{ marginBottom:5}}>
+                        <Grid item xs={12}>
+                            <TextField name="body"
+                                       label="내용"
+                                       multiline
+                                       rows={5}
+                                       fullWidth
+                                       {...getFieldProps('body')}
+                                       error={Boolean(touched.body && errors.body)}
+                                       helperText={(touched.body && errors.body)} />
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid
-                    container
-                    justifyContent="flex-end"
-                    direction="row"
-                    spacing={2}>
-                    <Grid item>
-                        <Button variant="contained"
-                                onClick={()=>handleSubmit(values)}
-                                type="submit">
-                            제출
-                        </Button>
+                    <Grid
+                        container
+                        justifyContent="flex-end"
+                        direction="row"
+                        spacing={2}>
+                        <Grid item>
+                            <Button variant="contained"
+                                    type="submit">
+                                제출
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-            {/*</Form>*/}
+                </Form>
             </FormikProvider>
         </MainCard>
     </>

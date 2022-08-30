@@ -18,7 +18,7 @@ const Questions = ()=>{
 
     const searchQuestion = async ()=>{
         await setIsLoading(true);
-
+        // Todo 수정 필요
         const userId=0;
         const response = await getQuestionsByUserId({userId});
 
