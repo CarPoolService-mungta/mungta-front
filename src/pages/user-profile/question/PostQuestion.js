@@ -1,11 +1,17 @@
-import MainCard from "../../../components/MainCard";
+import MainCard from "components/MainCard";
+import {Link, useNavigate} from 'react-router-dom';
 import {Form, useFormik, FormikProvider} from "formik";
 
 import * as Yup from 'yup';
+import {LoadingButton} from '@material-ui/lab';
 import {TextField, Button, Grid} from "@mui/material";
 import {postQuestionById } from 'api/question'
+import CustomError from 'utils/CustomError'
+import { useSnackbar } from 'notistack';
 
 const PostQuestion = ()=>{
+    const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -21,8 +27,6 @@ const PostQuestion = ()=>{
         onSubmit: async (values, { setSubmitting})=>{
 
             setSubmitting(true);
-
-            console.log("values : ", values);
             // Todo 수정 필요
             const questionRegisterRequest = {
                 userId: 0,
@@ -32,12 +36,14 @@ const PostQuestion = ()=>{
                 }
             };
 
-            console.log("questionRegisterRequest : ", questionRegisterRequest);
-
             const response = await postQuestionById(questionRegisterRequest);
-
-            //api
             setSubmitting(false);
+            if(response instanceof CustomError){
+                enqueueSnackbar(response.message, {variant: 'error'});
+            }else{
+                enqueueSnackbar('문의가 등록되었습니다.', {variant: 'success'});
+                navigate(`/questions`);
+            }
         },
     });
 
@@ -47,6 +53,7 @@ const PostQuestion = ()=>{
         touched,
         handleSubmit,
         getFieldProps,
+        isSubmitting,
         setFieldValue,
     } = formik;
 
@@ -90,10 +97,12 @@ const PostQuestion = ()=>{
                         direction="row"
                         spacing={2}>
                         <Grid item>
-                            <Button variant="contained"
-                                    type="submit">
+                            <LoadingButton
+                              variant="contained"
+                              type="submit"
+                              loading={isSubmitting}>
                                 제출
-                            </Button>
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </Form>

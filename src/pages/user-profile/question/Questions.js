@@ -4,10 +4,13 @@ import {useCallback, useEffect, useState} from "react";
 import {getQuestionsByUserId} from 'api/question'
 import {useNavigate} from 'react-router-dom';
 import {Button, Grid} from "@mui/material";
+import CustomError from '../../../utils/CustomError';
+import { useSnackbar } from 'notistack';
 
 
 const Questions = ()=>{
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +24,12 @@ const Questions = ()=>{
         // Todo 수정 필요
         const userId=0;
         const response = await getQuestionsByUserId({userId});
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+            return;
+        }
 
-        await setData(!response.message ? response : []);
+        await setData(response);
         await setIsLoading(false);
     }
 

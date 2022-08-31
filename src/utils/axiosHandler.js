@@ -1,12 +1,13 @@
 import axios from 'axios';
 import qs from 'qs';
+import CustomError from './CustomError'
 
-class CustomError {
-  constructor(message, status) {
-      this.message = message;
-      this.status= status;
-  }
-}
+// class CustomError {
+//   constructor(message, status) {
+//       this.message = message;
+//       this.status= status;
+//   }
+// }
 
 const axiosInstance = axios.create({
   baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
