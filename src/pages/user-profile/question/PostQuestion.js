@@ -12,7 +12,7 @@ import { useSnackbar } from 'notistack';
 const PostQuestion = ()=>{
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
-    //TEST
+
     const formik = useFormik({
         initialValues: {
             title:"",
