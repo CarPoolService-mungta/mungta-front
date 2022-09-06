@@ -38,7 +38,7 @@ import MapModalDestination from '../Utils/MapPopupDest';
 import {Link, useNavigate} from 'react-router-dom';
 import { DesktopTimePicker } from 'formik-mui-lab';
 import DatepickerField from '../Utils/DatepickerField';
-import {postMoveInfo,postMoveInfo2,postMoveInfo3} from 'api/partymanagement';
+import {postMoveInfo,postMoveInfo2,postMoveInfo3,postMoveInfo4,postMoveInfo5} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
 const Subtitle = styled(Paper)(({ theme }) => ({
@@ -115,7 +115,7 @@ const MoveInfoRegister = () => {
             status: "OPEN"
         };
         console.log("작성한거",moveInfoRegisterRequest);
-        const response = postMoveInfo3(moveInfoRegisterRequest);
+        const response =  postMoveInfo(moveInfoRegisterRequest);
         console.log('돌아온거',response);
         setSubmitting(false);
 
