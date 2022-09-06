@@ -13,26 +13,7 @@ import MainCard from '../../../components/MainCard';
 
 import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -62,13 +43,13 @@ const MyCarpoolDetailForCarpooler = () => {
                       {/* <Button component={Link} target="_blank" href="https://mantisdashboard.io" variant="contained" color="success" size="small">
                           Pro */}
                         <Button variant="contained" color="warning" size="small">
-                            Kakao   
+                            Kakao
                         </Button>
                     </Grid>
                     <Grid item xs={6} sm={4} md={3} lg={2} >
                         <Typography>URL~</Typography>
                         <Button>지불하기
-                        
+
                         </Button>
                     </Grid>
                 </Grid>

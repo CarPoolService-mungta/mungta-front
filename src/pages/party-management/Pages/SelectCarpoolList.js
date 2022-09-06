@@ -16,83 +16,100 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AjaxUtils from 'utils/AjaxUtils';
 import { timestamp, ConvertToYYYYMMDDhhmmsstoKor , ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
+import {getPartyInfoAllNow} from 'api/partymanagement';
+import {useCallback, useEffect, useState} from "react";
 
+function isEmptyObj(obj)  {
+  if(obj.constructor === Object
+     && Object.keys(obj).length === 0)  {
+    return true;
+  }
 
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
+  return false;
+}
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-    //color: theme.palette.text.secondary,
-  }));
 const SelectCarpoolList = () => {
   console.log(AjaxUtils.BASE_URL);
 
-  const [query, setQuery] = React.useState({id:0});
-  const [post, setPost] = React.useState({partyInfoes:[]});
+  const [query, setQuery] = React.useState({condition:''});
+//  const [post, setPost] = React.useState({partyInfoes:[]});
+  const [post, setPost] = React.useState({});
+  const [isLoading, setIsLoading] = useState(false);
+    // React.useEffect(() => {
+    //   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
+    //   console.log('query:',query);
+    //   //query를 리턴하는 함수를 result에 할당
+    //   async function get() {
+    //     const result = await AjaxUtils.getPartyList(query);
+    //     // const result = await getPartyInfoAllNow(query);
+    //     console.log('result:',result.data);
+    //     let array = [];
+    //     for(let index in result.data){
+    //       array.push(result.data[index])
+    //     }
+    //     if (!completed) setPost(array);
+    //   }
+    //   get();
+    //   return () => {
+    //     completed = true;
+    //   };
+    //   //query가 변할때 useEffect를 실행해야하는 시점이다
+    // }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
+    // console.log(post, post.length, typeof(post));
+    useEffect(async ()=>{
+        await getPartyInfos();
+    },[query]);
 
-    React.useEffect(() => {
-      let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-      console.log(query);
-      //query를 리턴하는 함수를 result에 할당
-      async function get() {
-        const result = await AjaxUtils.getPartyList(query);
-        if (!completed) setPost(result);
-      }
-      get();
-      return () => {
-        completed = true;
-      };
-      //query가 변할때 useEffect를 실행해야하는 시점이다
-    }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    console.log(post, post.partyInfoes.length);
+    const getPartyInfos = async ()=>{
+        await setIsLoading(true);
 
-    const isEmpty = (post.partyInfoes.length === 0);
-
-    if(isEmpty){
-      return (
-      <>
-        <Grid item xs={12} md={6}>
-          <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
-          카풀 차량 찾기
-          <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
-          </Typography>
-          <EmptyList/>
-        </Grid>
-      </>
-      )
+        const response = await getPartyInfoAllNow(query);
+        console.log("도대체 뭘가져오는거야?",response)
+        let array = [];
+        for(let index in response.data){
+          array.push(response.data[index])
+        }
+        await setPost(!response.message ? array : []);
+        await setIsLoading(false);
     }
-    else
+
+    // console.log('post:',post, post.length);
+
+    // console.log('post.data',post.data,post.data.length);
+    const isEmpty = isEmptyObj(post)||(post.length === 0);
+    // console.log('isEmpty',isEmpty,' isloading',isLoading);
+    if(isEmpty || isLoading){
+      console.log('여기')
+        return (
+        <>
+          <Grid item xs={12} md={6}>
+            <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
+            카풀 차량 찾기
+            <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+            </Typography>
+            <EmptyList/>
+          </Grid>
+        </>
+        )
+      }
+     else
     {
       return (
           <>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} >
               <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
               카풀 차량 찾기
               <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
             </Typography>
+
             <List>
-            <Demo>
+            <Demo >
 
             {
-              post.partyInfoes.map((p, index)=>
-                <ListItem sx={{m:3,bgcolor:'#eee', width:'95%'}} value={index} onClick={(e) => setQuery(e.target.value)}>  {/*key={index}> onClick={(e) => setQuery(e.target.value) console.log('clicked',e.target.value)*/}
+              post.map((p, index)=>
+                <ListItem sx={{m:3,bgcolor:'#eee', width:'95%'}} value={index} onClick={(e) => setQuery(e.target.value)}>
                 <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
                   <Avatar sx ={{ width: 80, height: 80}}>
                     <BeachAccessIcon />
@@ -116,31 +133,9 @@ const SelectCarpoolList = () => {
               </ListItem>
               )
             }
-        {/* <ListItem sx={{m:3,bgcolor:'#eee', width:'95%'}} >  {/*key={index}>
-          <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
-            <Avatar sx ={{ width: 80, height: 80}}>
-              <BeachAccessIcon />
-            </Avatar>
-            <ListItemText primary="Manager" />
-          </ListItemAvatar>
-          <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발지</Subtitle> </Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? post.partyInfoes[0].moveInfo.placeOfDeparture: ''}</Item></Grid>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발시간</Subtitle></Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? ConvertToYYYYMMDDhhmmtoKor(post.partyInfoes[0].moveInfo.startDate): ''}</Item></Grid>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차종</Subtitle></Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? post.partyInfoes[0].driver.carKind: ''}</Item> </Grid>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>도착지</Subtitle></Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? post.partyInfoes[0].moveInfo.destination: ''}</Item></Grid>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>거리</Subtitle></Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? post.partyInfoes[0].moveInfo.distance: ''}</Item></Grid>
-              <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차번호</Subtitle></Grid>
-              <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.partyInfoes.length>0 ? post.partyInfoes[0].driver.carNumber: ''}</Item></Grid>
+          </Demo>
+          </List>
           </Grid>
-        </ListItem> */}
-      </Demo>
-      </List>
-      </Grid>
 
           </>
       );

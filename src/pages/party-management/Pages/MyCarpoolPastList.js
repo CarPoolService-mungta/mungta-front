@@ -7,28 +7,7 @@ import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import { Button, Stack, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
-
-
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -63,9 +42,9 @@ const MyCarpoolPastList = () => {
       };
       //query가 변할때 useEffect를 실행해야하는 시점이다
     }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    console.log(post, post.partyInfoes.length);
+   // console.log(post, post.partyInfoes.length);
 
-    const isEmpty = (post.partyInfoes.length === 0);
+   // const isEmpty = (post.partyInfoes.length === 0);
 
     if(isEmpty){
       return (
@@ -102,7 +81,12 @@ const MyCarpoolPastList = () => {
                 </Avatar>
                 <ListItemText primary="Manager" />
               </ListItemAvatar>
-              <Link to="/my-carpool-detail?type=past" style={{ textDecoration: 'none' }}>
+              <Link to="/my-carpool-detail"
+                    style={{ textDecoration: 'none' }}
+                    state={{
+                      type:'past',
+                      data:p
+                    }}>
               <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
               <Grid item xs={12} sm={12} md={12} >
                   <Paper

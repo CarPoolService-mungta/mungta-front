@@ -15,26 +15,8 @@ import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
 import MyCarpoolDetailForCarpooler from './MyCarpoolDetailForCarpooler';
 import MyCarpoolDetailForDriver from './MyCarpoolDetailForDriver';
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
+import {useLocation} from 'react-router-dom';
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -80,9 +62,13 @@ const MyCarpoolDetail = (props) => {
 
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState({partyInfoes:[]});
-  const { type, isDriver } = queryString.parse(location.search);
-  console.log(location);
-  console.log(type);
+  const location=useLocation();
+  //const { type, isDriver } = queryString.parse(location.search);
+
+  console.log('location',location);
+  console.log('location data :',location.state.data);
+  console.log('location type :',location.state.type);
+
     React.useEffect(() => {
       let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
       console.log(query);
@@ -99,7 +85,9 @@ const MyCarpoolDetail = (props) => {
     }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
     console.log(post, post.partyInfoes.length);
     const isEmpty = (post.partyInfoes.length === 0);
-    console.log("isDriver:",isDriver)
+    const type = location.state.type
+    const isDriver = (location.state.data.driver.userId === '1'); //여기에 나중에 user id랑 비교
+    console.log("isDriver:",isDriver);
       return (
       <>
         <Grid item xs={12} md={6}>

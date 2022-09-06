@@ -18,10 +18,11 @@ const TMapDepart = () => {
 
         initTmap();
    `;
-    script.type = "text/javascript";
-    //script.async = "async";
-    script.async = false;
-    document.head.appendChild(script);
+   script.type = "text/javascript";
+   //script.async = "async";
+   script.async = false;
+   document.head.appendChild(script);
+
   }, []);
 
   return (

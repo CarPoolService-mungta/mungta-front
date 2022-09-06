@@ -13,26 +13,7 @@ import MainCard from '../../../components/MainCard';
 
 import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -51,10 +32,10 @@ const ListStatusDesc = {
 
 
 const MyCarpoolDetailForDriver = () => {
- 
+
       return (
       <>
-        
+
         <Grid item xs={12}>
               <MainCard title="지불요금" codeHighlight>
                   <Grid container spacing={3} wrap="nowrap">
@@ -65,9 +46,9 @@ const MyCarpoolDetailForDriver = () => {
                       </Grid>
                   </Grid>
               </MainCard>
-             
+
           </Grid>
-        
+
         <Grid item xs={12}>
             <MainCard title="정산내역" codeHighlight>
                 <Grid>

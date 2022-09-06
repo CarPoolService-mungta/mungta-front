@@ -9,27 +9,8 @@ import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
-
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
+import { useSearchParams } from '../../../../node_modules/react-router-dom/index';
+import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -51,24 +32,47 @@ const MyCarpoolList = () => {
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState({partyInfoes:[]});
 
-    React.useEffect(() => {
-      let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-      console.log(query);
-      //query를 리턴하는 함수를 result에 할당
-      async function get() {
-        const result = await AjaxUtils.getPartyList(query);
-        if (!completed) setPost(result);
-      }
-      get();
-      return () => {
-        completed = true;
-      };
-      //query가 변할때 useEffect를 실행해야하는 시점이다
-    }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    console.log(post, post.partyInfoes.length);
-    const isEmpty = (post.partyInfoes.length === 0);
+    // React.useEffect(() => {
+    //   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
+    //   console.log(query);
+    //   //query를 리턴하는 함수를 result에 할당
+    //   async function get() {
+    //     const result = await AjaxUtils.getPartyList(query);
+    //     if (!completed) setPost(result);
+    //   }
+    //   get();
+    //   return () => {
+    //     completed = true;
+    //   };
+    //   //query가 변할때 useEffect를 실행해야하는 시점이다
+    // }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
+    // console.log(post, post.partyInfoes.length);
+    // const isEmpty = (post.partyInfoes.length === 0);
 
-    if(isEmpty){
+    // if(isEmpty){
+    useEffect(async ()=>{
+        await getPartyInfos();
+    },[query]);
+
+    const getPartyInfos = async ()=>{
+        await setIsLoading(true);
+
+        const response = await getPartyInfoAllNow(query);
+        console.log("도대체 뭘가져오는거야?",response)
+        let array = [];
+        for(let index in response.data){
+          array.push(response.data[index])
+        }
+        await setPost(!response.message ? array : []);
+        await setIsLoading(false);
+    }
+
+    // console.log('post:',post, post.length);
+
+    // console.log('post.data',post.data,post.data.length);
+    const isEmpty = isEmptyObj(post)||(post.length === 0);
+    // console.log('isEmpty',isEmpty,' isloading',isLoading);
+    if(isEmpty || isLoading){
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -101,7 +105,12 @@ const MyCarpoolList = () => {
                 </Avatar>
                 <ListItemText primary="Manager" />
               </ListItemAvatar>
-              <Link to="/my-carpool-detail?type=now" style={{ textDecoration: 'none' }}>
+              <Link to="/my-carpool-detail"
+                    style={{ textDecoration: 'none' }}
+                    state={{
+                      type:'now',
+                      data:p
+                    }}>
               <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
                   <Grid item xs={12} sm={12} md={12} >
                   <Paper
