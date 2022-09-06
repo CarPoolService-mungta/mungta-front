@@ -10,7 +10,8 @@ import CustomError from './CustomError'
 // }
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
+  // baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
+  baseURL: process.env.REACT_APP_API_SERVER,
   paramsSerializer: (params) => qs.stringify(params),
 });
 
