@@ -58,7 +58,6 @@ const MyCarpoolList = () => {
         await setIsLoading(true);
 
         const response = await getPartyInfoAllNow(query);
-        console.log("도대체 뭘가져오는거야?",response)
         let array = [];
         for(let index in response.data){
           array.push(response.data[index])
