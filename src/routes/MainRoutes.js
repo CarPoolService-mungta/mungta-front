@@ -10,18 +10,6 @@ import MyCarpoolList from 'pages/party-management/Pages/MyCarpoolList';
 import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 
-// render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
-
-// render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
-
-// render - utilities
-const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
-const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
-const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
-const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
-
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
 
 const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
