@@ -28,3 +28,17 @@ export const login =({userEmail, password})=>{
   //parseJwt한 부분은 redux에 저장
   console.log("userInfo:", parseJwt(accessToken));
 }
+export const initialize = () => {
+  const accessToken = localStorageHandler.getItem(ACCESS_TOKEN);
+  if (!accessToken) return logOut();
+
+  // 새로고침 시 default header 초기화 방어 코드
+  setAuthHeader(`Bearer ${accessToken}`);
+};
+
+export const logOut=()=>{
+  setAuthHeader('');
+  localStorageHandler.removeItem(ACCESS_TOKEN);
+  localStorageHandler.removeItem(REFRESH_TOKEN);
+  // location.reload();
+}

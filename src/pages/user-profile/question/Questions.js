@@ -1,11 +1,12 @@
 import MainCard from 'components/MainCard';
-import DataTable from "../../../components/@extended/DataTable";
+import DataTable from "components/@extended/DataTable";
 import {useCallback, useEffect, useState} from "react";
 import {getQuestionsByUserId} from 'api/question'
 import {useNavigate} from 'react-router-dom';
 import {Button, Grid} from "@mui/material";
-import CustomError from '../../../utils/CustomError';
+import CustomError from 'utils/CustomError';
 import { useSnackbar } from 'notistack';
+import { axios } from 'utils';
 
 
 const Questions = ()=>{
@@ -16,6 +17,7 @@ const Questions = ()=>{
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(async ()=>{
+        console.log("axios", axios.defaults.headers);
         await searchQuestion()
     },[]);
 
