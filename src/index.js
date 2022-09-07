@@ -16,13 +16,16 @@ import App from './App';
 import { store } from 'store';
 import reportWebVitals from './reportWebVitals';
 
+import AuthGuard from 'pages/AuthGuard'
 // ==============================|| MAIN - REACT DOM RENDER  ||============================== //
 
 ReactDOM.render(
     <StrictMode>
         <ReduxProvider store={store}>
             <BrowserRouter>
+              <AuthGuard>
                 <App />
+              </AuthGuard>
             </BrowserRouter>
         </ReduxProvider>
     </StrictMode>,

@@ -2,13 +2,6 @@ import axios from 'axios';
 import qs from 'qs';
 import CustomError from './CustomError'
 
-// class CustomError {
-//   constructor(message, status) {
-//       this.message = message;
-//       this.status= status;
-//   }
-// }
-
 const axiosInstance = axios.create({
   // baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
   baseURL: process.env.REACT_APP_API_SERVER,
@@ -16,9 +9,9 @@ const axiosInstance = axios.create({
 });
 
 //Auth 들어오면 로그인하면서 헤더에 추가
-// export const setAuthHeader = str => {
-//   axiosInstance.defaults.headers.common.Authorization = str;
-// };
+export const setAuthHeader = str => {
+  axiosInstance.defaults.headers.common.Authorization = str;
+};
 
 axiosInstance.interceptors.request.use(
   config => {
