@@ -6,4 +6,5 @@ COPY ./ ./
 EXPOSE 3000
 
 ARG ENVIRONMENT
-CMD ["npm","run","start:", "${ENVIRONMENT}"]
+CMD echo env: ${ENVIRONMENT}
+CMD npm run start:${ENVIRONMENT}
