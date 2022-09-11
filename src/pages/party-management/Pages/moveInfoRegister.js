@@ -3,19 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
-    Box,
-    Button,
-    Divider,
-    FormControl,
-    FormHelperText,
-    Grid,
-    Paper,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
-    Stack,
-    Typography
+    Box,    Button,    Divider,    FormControl,    FormHelperText,    Grid,
+    Paper,    IconButton,    InputAdornment,    InputLabel,    OutlinedInput,
+    Stack,    Typography
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -38,9 +28,10 @@ import MapModalDestination from '../Utils/MapPopupDest';
 import {Link, useNavigate} from 'react-router-dom';
 import { DesktopTimePicker } from 'formik-mui-lab';
 import DatepickerField from '../Utils/DatepickerField';
-import {postMoveInfo,postMoveInfo2,postMoveInfo3,postMoveInfo4,postMoveInfo5} from 'api/partymanagement';
+import {postMoveInfo} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
+
 const Subtitle = styled(Paper)(({ theme }) => ({
     backgroundColor: '#1A2027',
     textAlign: 'center',
@@ -61,7 +52,7 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 const MoveInfoRegister = () => {
-
+    const navigate = useNavigate();
     const formik = useFormik({
       initialValues: {
         placeOfDeparture: '출발',
@@ -119,7 +110,7 @@ const MoveInfoRegister = () => {
         console.log('돌아온거',response);
         setSubmitting(false);
 
-        enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
+        //enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
         navigate(`/my-carpool-list`);
         // if(response instanceof CustomError){
         //     enqueueSnackbar(response.message, {variant: 'error'});
@@ -237,7 +228,7 @@ const MoveInfoRegister = () => {
                         variant="contained"
                         color="error"
                         sx={{m:2}}
-                        onClick={()=>alert('취소!')}
+                        onClick={()=>navigate('/party-management')}
                     >취소
                     </Button>
                 </Grid>

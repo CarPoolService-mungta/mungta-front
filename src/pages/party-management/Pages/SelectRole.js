@@ -1,13 +1,9 @@
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardContent from '@mui/material/CardContent';
-import {makeStyles} from '@material-ui/core/styles';
 import * as React from 'react';
-import { Box, ThemeProvider, createTheme } from '@mui/system';
+import { Link, useHistory} from 'react-router-dom';
 import MainCard from 'components/MainCard';
-import { Breadcrumbs, Divider, Grid, Stack, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
+import { Box, ThemeProvider, createTheme } from '@mui/system';
+import { Breadcrumbs, Divider, Grid, Stack, Typography, Button, Card, CardActionArea, CardContent} from '@mui/material';
 
 const theme = createTheme({
   palette: {
@@ -28,13 +24,9 @@ const theme = createTheme({
   },
 });
 
-const clickMe = (event) => {
-    alert(event);
-  }
-//</>onClick={()=> alert('운전자!')}>component={RouterLink} to="/questions"
 const driverCard = (
     <>
-        <CardActionArea component={Link} to="/create-party">
+        <CardActionArea component={Link} to="/create-party" state={{ type:"driver"}}>
         <CardContent>
             <Typography variant="h3" align="center" sx={{color:'white'}}>
                 운전자
@@ -45,7 +37,7 @@ const driverCard = (
 );
 const carpoolerCard = (
     <>
-        <CardActionArea component={Link} to="/select-carpool-list">
+        <CardActionArea component={Link} to="/select-carpool-list" state={{ type:"carpooler"}}>
         <CardContent>
             <Typography variant="h3" align="center" sx={{color:'white'}}>
                 카풀러
@@ -54,6 +46,8 @@ const carpoolerCard = (
         </CardActionArea>
     </>
 );
+
+
 const SelectRole = () => {
     return (
         <div style={{margin: 'auto'}}>
@@ -89,39 +83,4 @@ const SelectRole = () => {
     );
 };
 
-/*
-export default function SelectRole() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          bgcolor: 'background.primary',
-          boxShadow: 1,
-          borderRadius: 2,
-          p: 2,
-          minWidth: 300,
-        }}
-      >
-        <Box sx={{ bgcolor: 'text.secondary' }}>Sessions</Box>
-        <Box sx={{ bgcolor: 'text.primary', fontSize: 34, fontWeight: 'medium' }}>
-          98.3 K
-        </Box>
-        <Box
-          sx={{
-            color: 'success.dark',
-            display: 'inline',
-            fontWeight: 'bold',
-            mx: 0.5,
-            fontSize: 14,
-          }}
-        >
-          +18.77%
-        </Box>
-        <Box sx={{ color: 'text.secondary', display: 'inline', fontSize: 14 }}>
-          vs. last week
-        </Box>
-      </Box>
-    </ThemeProvider>
-  );
-}*/
 export default SelectRole;

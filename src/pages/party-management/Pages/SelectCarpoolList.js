@@ -19,6 +19,7 @@ import EmptyList from './EmptyList';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 import {getPartyInfoAllNow} from 'api/partymanagement';
 import {useCallback, useEffect, useState} from "react";
+import { useLocation } from 'react-router-dom';
 
 function isEmptyObj(obj)  {
   if(obj.constructor === Object
@@ -33,39 +34,17 @@ const SelectCarpoolList = () => {
   console.log(AjaxUtils.BASE_URL);
 
   const [query, setQuery] = React.useState({condition:''});
-//  const [post, setPost] = React.useState({partyInfoes:[]});
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = useState(false);
-    // React.useEffect(() => {
-    //   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-    //   console.log('query:',query);
-    //   //query를 리턴하는 함수를 result에 할당
-    //   async function get() {
-    //     const result = await AjaxUtils.getPartyList(query);
-    //     // const result = await getPartyInfoAllNow(query);
-    //     console.log('result:',result.data);
-    //     let array = [];
-    //     for(let index in result.data){
-    //       array.push(result.data[index])
-    //     }
-    //     if (!completed) setPost(array);
-    //   }
-    //   get();
-    //   return () => {
-    //     completed = true;
-    //   };
-    //   //query가 변할때 useEffect를 실행해야하는 시점이다
-    // }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    // console.log(post, post.length, typeof(post));
-    useEffect(async ()=>{
-        await getPartyInfos();
-    },[query]);
+  const location = useLocation();
 
-    const getPartyInfos = async ()=>{
+    useEffect(async ()=>{
+        await getPartyInfos(query);
+    },[query]);
+    const getPartyInfos = async (query)=>{
         await setIsLoading(true);
 
         const response = await getPartyInfoAllNow(query);
-        console.log("도대체 뭘가져오는거야?",response)
         let array = [];
         for(let index in response.data){
           array.push(response.data[index])
@@ -73,14 +52,11 @@ const SelectCarpoolList = () => {
         await setPost(!response.message ? array : []);
         await setIsLoading(false);
     }
-
-    // console.log('post:',post, post.length);
-
-    // console.log('post.data',post.data,post.data.length);
+    console.log(location.state.type)
     const isEmpty = isEmptyObj(post)||(post.length === 0);
-    // console.log('isEmpty',isEmpty,' isloading',isLoading);
+
     if(isEmpty || isLoading){
-      console.log('여기')
+      console.log('isEmpty or isLoading')
         return (
         <>
           <Grid item xs={12} md={6}>

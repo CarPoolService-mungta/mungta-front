@@ -17,6 +17,8 @@ export const getPartyInfoAllNow = async params =>
 *  개인 별 진행 중인 카풀 내역 검색
 * js : MyCarpoolList.js
 */
+export const getPartyInfoMyNow = async params =>
+       axiosInstance.get('/party-management/partyInfos/my-carpool-now-list',{params});
 
 /**
 *  개인 별 지난 카풀 내역 검색

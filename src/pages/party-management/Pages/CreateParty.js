@@ -13,7 +13,7 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import MoveInfoRegister from './moveInfoRegister';
+import MoveInfoRegister from './MoveInfoRegister';
 const CreateParty = () => {
     return (
         <>

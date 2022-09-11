@@ -8,8 +8,7 @@ import AjaxUtils from 'utils/AjaxUtils';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useSearchParams } from '../../../../node_modules/react-router-dom/index';
+import { Link, useEffect, useState,useSearchParams } from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
@@ -31,25 +30,9 @@ const MyCarpoolList = () => {
 
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState({partyInfoes:[]});
+  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
 
-    // React.useEffect(() => {
-    //   let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-    //   console.log(query);
-    //   //query를 리턴하는 함수를 result에 할당
-    //   async function get() {
-    //     const result = await AjaxUtils.getPartyList(query);
-    //     if (!completed) setPost(result);
-    //   }
-    //   get();
-    //   return () => {
-    //     completed = true;
-    //   };
-    //   //query가 변할때 useEffect를 실행해야하는 시점이다
-    // }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    // console.log(post, post.partyInfoes.length);
-    // const isEmpty = (post.partyInfoes.length === 0);
-
-    // if(isEmpty){
     useEffect(async ()=>{
         await getPartyInfos();
     },[query]);
@@ -57,7 +40,7 @@ const MyCarpoolList = () => {
     const getPartyInfos = async ()=>{
         await setIsLoading(true);
 
-        const response = await getPartyInfoAllNow(query);
+        const response = await getPartyInfoMyNow(query);
         let array = [];
         for(let index in response.data){
           array.push(response.data[index])
