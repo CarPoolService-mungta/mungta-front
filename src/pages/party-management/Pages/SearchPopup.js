@@ -71,7 +71,7 @@ const ButtonItem = {
 const SearchModal = (props) => {
  // useState를 사용하여 open상태를 변경한다. (open일때 true로 만들어 열리는 방식)
     const [modalOpen, setModalOpen] = useState(false);
-    const [startDateValue, setStartDateValue] = React.useState(new Date());
+    const [startDateValue, setStartDateValue] = useState(new Date());
     const openModal = () => {
         setModalOpen(true);
     };

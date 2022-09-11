@@ -18,12 +18,14 @@ export const getPartyInfoAllNow = async params =>
 * js : MyCarpoolList.js
 */
 export const getPartyInfoMyNow = async params =>
-       axiosInstance.get('/party-management/partyInfos/my-carpool-now-list',{params});
+       axiosInstance.get('/party-management/partyInfos/carpool-now-my-list',{params});
 
 /**
 *  개인 별 지난 카풀 내역 검색
 * js : MyCarpoolPastList.js
 */
+export const getPartyInfoPastMyNow = async params =>
+       axiosInstance.get('/party-management/partyInfos/carpool-past-my-list',{params});
 
 /**
  * 이동정보 등록

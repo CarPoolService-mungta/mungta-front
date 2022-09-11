@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import AjaxUtils from 'utils/AjaxUtils';
 import { timestamp, ConvertToYYYYMMDDhhmmsstoKor , ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import { Demo,Item,Subtitle } from '../Utils/ComponentTheme';
@@ -21,17 +20,10 @@ import { getPartyInfoAllNow } from 'api/partymanagement';
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import SearchModal from './SearchPopup';
-function isEmptyObj(obj)  {
-  if(obj.constructor === Object
-     && Object.keys(obj).length === 0)  {
-    return true;
-  }
+import isEmptyObj from '../Utils/BasicUtils';
 
-  return false;
-}
 
 const SelectCarpoolList = () => {
-  console.log(AjaxUtils.BASE_URL);
 
   const [query, setQuery] = React.useState({condition:''});
   const [post, setPost] = React.useState({});

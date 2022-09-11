@@ -4,13 +4,13 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import AjaxUtils from 'utils/AjaxUtils';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-import { Link,useSearchParams } from 'react-router-dom';
+import { Link,useSearchParams,useLocation } from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
-
+import { getPartyInfoMyNow } from 'api/partymanagement';
+import isEmptyObj from '../Utils/BasicUtils';
 const ListBgColor = {
   OPEN : '#B8FEFF',
   FULL : '#FF7B7B',
@@ -26,10 +26,9 @@ const ListStatusDesc = {
 }
 
 const MyCarpoolList = () => {
-  console.log(AjaxUtils.BASE_URL);
 
-  const [query, setQuery] = React.useState({id:0});
-  const [post, setPost] = React.useState({partyInfoes:[]});
+  const [query, setQuery] = React.useState({user_id:'3'});
+  const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
 
@@ -79,7 +78,8 @@ const MyCarpoolList = () => {
           <List>
           <Demo>
           {
-            post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL') ).map((p, index)=>
+            // post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL' || p.status === 'STARTED') ).map((p, index)=>
+            post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
               <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
                 <Avatar sx ={{ width: 80, height: 80}}>
