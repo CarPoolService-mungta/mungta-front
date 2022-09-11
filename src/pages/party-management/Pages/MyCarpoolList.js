@@ -8,7 +8,7 @@ import AjaxUtils from 'utils/AjaxUtils';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-import { Link, useEffect, useState,useSearchParams } from 'react-router-dom';
+import { Link,useSearchParams } from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 
 const ListBgColor = {
@@ -30,10 +30,10 @@ const MyCarpoolList = () => {
 
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState({partyInfoes:[]});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
 
-    useEffect(async ()=>{
+    React.useEffect(async ()=>{
         await getPartyInfos();
     },[query]);
 

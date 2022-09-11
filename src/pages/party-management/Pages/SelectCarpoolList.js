@@ -16,11 +16,11 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AjaxUtils from 'utils/AjaxUtils';
 import { timestamp, ConvertToYYYYMMDDhhmmsstoKor , ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './EmptyList';
-import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
-import {getPartyInfoAllNow} from 'api/partymanagement';
-import {useCallback, useEffect, useState} from "react";
+import { Demo,Item,Subtitle } from '../Utils/ComponentTheme';
+import { getPartyInfoAllNow } from 'api/partymanagement';
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
-
+import SearchModal from './SearchPopup';
 function isEmptyObj(obj)  {
   if(obj.constructor === Object
      && Object.keys(obj).length === 0)  {
@@ -62,8 +62,9 @@ const SelectCarpoolList = () => {
           <Grid item xs={12} md={6}>
             <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
             카풀 차량 찾기
-            <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+            <SearchModal/>
             </Typography>
+
             <EmptyList/>
           </Grid>
         </>
@@ -77,8 +78,15 @@ const SelectCarpoolList = () => {
           <Grid item xs={12} md={6} >
               <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
               카풀 차량 찾기
-              <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+              {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}>
+
+              </ManageSearchIcon> */}
+              <SearchModal/>
             </Typography>
+            <div>
+            <SearchModal/>
+            </div>
+
 
             <List>
             <Demo >
