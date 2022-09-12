@@ -22,6 +22,7 @@ import { useLocation, Link } from 'react-router-dom';
 import SearchModal from './Children/SearchPopup';
 import isEmptyObj from '../Utils/BasicUtils';
 
+import dayjs from "dayjs";
 
 const SelectCarpoolList = () => {
 
@@ -33,8 +34,8 @@ const SelectCarpoolList = () => {
   function handleCloseModal(data) {
     console.log('부모에서 받은',data);
     setQuery({
-      // place : data._place,
-      // date : data._dates,
+      place : data._place,
+      date : dayjs(data._dates).format("YYYY-MM-DD"),
       condition : data._condition
     });
   }

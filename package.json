@@ -27,6 +27,7 @@
         "axios": "^0.27.2",
         "cors": "^2.8.5",
         "date-fns": "^2.29.1",
+        "dayjs": "^1.11.5",
         "formik": "^2.2.9",
         "formik-mui-lab": "^1.0.0",
         "framer-motion": "^4.1.17",

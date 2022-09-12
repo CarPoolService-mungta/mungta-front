@@ -9,14 +9,23 @@ import { Link,useLocation  } from 'react-router-dom';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import { getPartyInfoPastMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
-
+import SearchModal from './Children/SearchPopup';
+import dayjs from "dayjs";
 const MyCarpoolPastList = () => {
 
   const [query, setQuery] = React.useState({user_id:'3'});
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
-
+  function handleCloseModal(data) {
+    console.log('부모에서 받은',data);
+    setQuery({
+      user_id : query.user_id,
+      place : data._place,
+      dates : dayjs(data._dates).format("YYYY-MM-DD"),
+      condition : data._condition
+    });
+  }
   React.useEffect(async ()=>{
       await getPartyInfos();
   },[query]);
@@ -54,7 +63,10 @@ const MyCarpoolPastList = () => {
       <Grid item xs={12} md={6}>
           <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
           지난 카풀 내역
-          <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+          {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
+          <SearchModal
+                onCloseModal={handleCloseModal}
+              />
         </Typography>
         <List>
         <Demo>

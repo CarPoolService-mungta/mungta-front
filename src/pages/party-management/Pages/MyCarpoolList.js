@@ -11,6 +11,8 @@ import { Link,useSearchParams,useLocation } from 'react-router-dom';
 import { getPartyInfoMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
+import SearchModal from './Children/SearchPopup';
+import dayjs from "dayjs";
 
 const MyCarpoolList = () => {
 
@@ -19,6 +21,18 @@ const MyCarpoolList = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
 
+  function handleCloseModal(data) {
+    console.log('부모에서 받은',data);
+    setQuery({
+      user_id : query.user_id,
+      place : data._place,
+      dates : dayjs(data._dates).format("YYYY-MM-DD"),
+      order_condition : data._condition
+      
+    });
+  }
+
+  console.log('QUERY : ',query);
     React.useEffect(async ()=>{
         await getPartyInfos();
     },[query]);
@@ -34,10 +48,6 @@ const MyCarpoolList = () => {
         await setPost(!response.message ? array : []);
         await setIsLoading(false);
     }
-
-    console.log('post:',post, post.length);
-
-    // console.log('post.data',post.data,post.data.length);
     const isEmpty = isEmptyObj(post)||(post.length === 0);
     // console.log('isEmpty',isEmpty,' isloading',isLoading);
     if(isEmpty || isLoading){
@@ -46,7 +56,8 @@ const MyCarpoolList = () => {
         <Grid item xs={12} md={6}>
           <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
           진행 중인 카풀
-          <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+          {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
+          <SearchModal/>
           </Typography>
           <EmptyList/>
         </Grid>
@@ -60,7 +71,10 @@ const MyCarpoolList = () => {
         <Grid item xs={12} md={6}>
             <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
             진행 중인 카풀
-            <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+            {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
+            <SearchModal
+                onCloseModal={handleCloseModal}
+              />
           </Typography>
           <List>
           <Demo>
