@@ -20,3 +20,17 @@ export const Subtitle = styled(Paper)(({ theme }) => ({
     fontSize:'80%',
     color:'#fff'
   }));
+
+export  const ListBgColor = {
+    OPEN : '#B8FEFF',
+    FULL : '#FF7B7B',
+    STARTED : '#FFE67B',
+    CLOSED : '#626262'
+  }
+
+export const ListStatusDesc = {
+    OPEN : '신청 가능',
+    FULL : '신청 마감',
+    STARTED : '카풀 진행 중',
+    CLOSED : '종료'
+  }

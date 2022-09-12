@@ -8,6 +8,7 @@ import BasicDateTimePicker from '../../Utils/BasicDateTimePicker';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 const style = {
     // position: 'relative',
@@ -67,17 +68,62 @@ const ButtonItem = {
     textDecoration:'none',
     color:'#ddd'
   }
-
+  const ButtonClickedItem = {
+    backgroundColor: '#ddd',
+    padding: '2px',
+    margin:'5px',
+    border: '2px solid #ddd',
+    borderRadius:3,
+    boxShadow: 10,
+    textDecoration:'none',
+    color:'#d11'
+  }
 const SearchModal = (props) => {
  // useState를 사용하여 open상태를 변경한다. (open일때 true로 만들어 열리는 방식)
     const [modalOpen, setModalOpen] = useState(false);
+    const [place, setPlace] = useState();
     const [startDateValue, setStartDateValue] = useState(new Date());
+    const [filter, setFilter] = useState({_condition:'',_date:'',_place:''});
+
     const openModal = () => {
         setModalOpen(true);
+        setFilter(()=>({_condition:'',_date:startDateValue,_place:''}));
     };
     const closeModal = () => {
         setModalOpen(false);
     };
+    const onSelectDistance = () => {
+        setFilter(()=>({
+            _dates: startDateValue,
+            _place: place,
+            _condition: 'distance'
+        }));
+    }
+    const onSelectReview = () => {
+        setFilter(()=>({
+            _dates: startDateValue,
+            _place: place,
+            _condition: 'review_average_score'
+        }));
+    }
+    const onSelectTime = () => {
+        setFilter(()=>({
+            _dates: startDateValue,
+            _place: place,
+            _condition: 'start_date'
+        }));
+    }
+
+    const dataToParent = () => {
+
+        setFilter(()=>({
+            _dates: startDateValue,
+            _place: place,
+        }))
+        console.log('search popup의 filter',filter);
+        props.onCloseModal(filter);
+        setModalOpen(false);
+    }
     return (
         <>
             <ManageSearchIcon onClick={openModal} fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
@@ -94,7 +140,9 @@ const SearchModal = (props) => {
                 <Grid item xs={1} sm={1} md={1} ></Grid>
                 <Grid item xs={2} sm={2} md={2} sx={InputTitle}>
                     <div style={{marginTop:"10px"}}>지역</div></Grid>
-                <Grid item xs={8} sm={8} md={8} sx={InputItem}></Grid>
+                <Grid item xs={8} sm={8} md={8} sx={InputItem}>
+                    <input name="place" onChange={(e)=>{setPlace(e.target.value)}}></input>
+                </Grid>
 
                 <Grid item xs={1} sm={1} md={1} ></Grid>
                 <Grid item xs={2} sm={2} md={2} sx={InputTitle}>
@@ -102,13 +150,11 @@ const SearchModal = (props) => {
                 </Grid>
                 <Grid item xs={8} sm={8} md={8} sx={InputItem}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
+                <DatePicker
                     renderInput={(props) => <TextField {...props} sx={{border:'none'}} />}
                     value={startDateValue}
-                    onChange={(newValue) => {
-                    setStartDateValue(newValue);
-                    }}
-
+                    inputFormat={"yyyy-MM-dd"}
+                    onChange={(newValue) => {setStartDateValue(newValue);}}
                 />
                 </LocalizationProvider>
 
@@ -121,16 +167,18 @@ const SearchModal = (props) => {
                 <Grid item xs={12} sm={12} md={12} ><br/></Grid>
 
                 <Grid item xs={12} sm={12} md={12} align="center">
-                        <Button sx={ButtonItem}>거리 순</Button>
-                        <Button sx={ButtonItem}>리뷰점수 순</Button>
-                        <Button sx={ButtonItem}>시간 순</Button>
+                    <Button sx={filter._condition=='distance'?ButtonClickedItem:ButtonItem} onClick={onSelectDistance}>거리 순</Button>
+                    <Button sx={filter._condition=='review_average_score'?ButtonClickedItem:ButtonItem} onClick={onSelectReview}>리뷰점수 순</Button>
+                    <Button sx={filter._condition=='start_date'?ButtonClickedItem:ButtonItem} onClick={onSelectTime}>시간 순</Button>
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
-                        sx={{m:2}}>선택</Button>
+                        sx={{m:2}}
+                        onClick={dataToParent}
+                        >적용</Button>
                     <Button
                         variant="contained"
                         color="error"

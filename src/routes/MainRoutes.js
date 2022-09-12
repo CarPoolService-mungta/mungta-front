@@ -85,6 +85,9 @@ const MainRoutes = {
             path: 'question/post',
             element: <PostQuestion/>
         },
+        /*
+            Party Management Page Start
+        */
         {
             path: 'party-management',
             element: <SelectRole />,
@@ -118,6 +121,9 @@ const MainRoutes = {
             path: 'modify-carpool-detail',
             element: <UpdateParty />
         }
+        /*
+            Party Management Page End
+        */
     ]
 };
 

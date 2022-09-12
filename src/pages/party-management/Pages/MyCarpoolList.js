@@ -8,22 +8,9 @@ import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './Children/EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link,useSearchParams,useLocation } from 'react-router-dom';
-import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
 import { getPartyInfoMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
-const ListBgColor = {
-  OPEN : '#B8FEFF',
-  FULL : '#FF7B7B',
-  STARTED : '#FFE67B',
-  CLOSED : '#626262'
-}
-
-const ListStatusDesc = {
-  OPEN : '신청 가능',
-  FULL : '신청 마감',
-  STARTED : '카풀 진행 중',
-  CLOSED : '종료'
-}
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 
 const MyCarpoolList = () => {
 

@@ -6,21 +6,9 @@ import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './Children/EmptyList';
 import { Button, Stack, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link,useLocation  } from 'react-router-dom';
-import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import { getPartyInfoPastMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
-const ListBgColor = {
-  OPEN : '#B8FEFF',
-  FULL : '#FF7B7B',
-  STARTED : '#FFE67B',
-  CLOSED : '#626262'
-}
-const ListStatusDesc = {
-  OPEN : '신청 가능',
-  FULL : '신청 마감',
-  STARTED : '카풀 진행 중',
-  CLOSED : '종료'
-}
 
 const MyCarpoolPastList = () => {
 
@@ -71,9 +59,8 @@ const MyCarpoolPastList = () => {
         <List>
         <Demo>
         {
-          //post.partyInfoes.filter(p => (p.status ==='CLOSED') ).map((p, index)=>
           post.map((p, index)=>
-            <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >{/*(e) => setQuery(e.target.value)}>*/}
+            <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
 
             <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
               <Avatar sx ={{ width: 80, height: 80}}>
@@ -123,14 +110,14 @@ const MyCarpoolPastList = () => {
                 <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.distance}</Item></Grid>
                 <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차번호</Subtitle></Grid>
                 <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.driver.carNumber}</Item></Grid>
-                <Grid item xs={12} sm={12} md ={12} sx={{border:0, boxShadow:0}}>
-                  <Item spacing={2} sx={{border:0, boxShadow:0, bgcolor:ListBgColor[p.status]}}>
-                    <Button variant="contained" color="primary" sx={{m:1}}>리뷰하기</Button>
-                    <Button variant="contained" color="error" sx={{m:1}}>신고하기</Button></Item>
-                </Grid>
-
             </Grid>
             </Link>
+            <Grid item xs={12} sm={12} md ={12} sx={{border:0, boxShadow:0}}>
+              <Item spacing={2} sx={{border:0, boxShadow:0, bgcolor:ListBgColor[p.status]}}>
+                <Button variant="contained" color="primary" sx={{m:1}} onClick={()=>alert('리뷰페이지로 이동')}>리뷰하기</Button>
+                <Button variant="contained" color="error" sx={{m:1}} onClick={()=>alert('신고페이지로 이동')}>신고하기</Button>
+              </Item>
+            </Grid>
           </ListItem>
           )
         }

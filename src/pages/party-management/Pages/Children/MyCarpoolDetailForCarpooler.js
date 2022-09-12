@@ -9,21 +9,7 @@ import ComponentSkeleton from '../../../components-overview/ComponentSkeleton';
 import MainCard from '../../../../components/MainCard';
 import PropTypes from 'prop-types';
 import AnimateButton from '../../../../components/@extended/AnimateButton';
-import {Demo,Item,Subtitle} from '../../Utils/ComponentTheme';
-
-const ListBgColor = {
-  OPEN : '#B8FEFF',
-  FULL : '#FF7B7B',
-  STARTED : '#FFE67B',
-  CLOSED : '#626262'
-}
-
-const ListStatusDesc = {
-  OPEN : '신청 가능',
-  FULL : '신청 마감',
-  STARTED : '카풀 진행 중',
-  CLOSED : '종료'
-}
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 
 const MyCarpoolDetailForCarpooler = (props) => {
     console.log('MY Sub post',props.posts)

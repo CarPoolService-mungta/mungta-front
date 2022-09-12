@@ -24,7 +24,7 @@ import DatepickerField from '../../Utils/DatepickerField';
 import {postMoveInfo} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
-import { Demo,Item,Subtitle } from '../../Utils/ComponentTheme';
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 import isEmptyObj from '../../Utils/BasicUtils';
 
 const MoveInfo = () => {

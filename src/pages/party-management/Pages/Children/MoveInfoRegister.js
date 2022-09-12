@@ -31,25 +31,7 @@ import DatepickerField from '../../Utils/DatepickerField';
 import {postMoveInfo} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
-
-const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    textAlign: 'center',
-    display:'flex',
-    justifyContent:'center',
-    fontSize:'105%',
-    color:'#fff',
-    height:"50px"
-  }));
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 
 const MoveInfoRegister = () => {
     const navigate = useNavigate();
