@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
-import EmptyList from './EmptyList';
+import EmptyList from './Children/EmptyList';
 import { Button, Stack, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link,useLocation  } from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';

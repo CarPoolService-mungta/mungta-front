@@ -9,6 +9,8 @@ import SelectCarpoolList from 'pages/party-management/Pages/SelectCarpoolList';
 import MyCarpoolList from 'pages/party-management/Pages/MyCarpoolList';
 import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
+import MoveInfo from 'pages/party-management/Pages/Children/MoveInfo';
+import UpdateParty from 'pages/party-management/Pages/UpdateParty';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -110,6 +112,11 @@ const MainRoutes = {
         {
             path: 'my-carpool-detail',
             element: <MyCarpoolDetail />
+        }
+        ,
+        {
+            path: 'modify-carpool-detail',
+            element: <UpdateParty />
         }
     ]
 };

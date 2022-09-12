@@ -5,7 +5,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
-import EmptyList from './EmptyList';
+import EmptyList from './Children/EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Link,useSearchParams,useLocation } from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
@@ -48,7 +48,7 @@ const MyCarpoolList = () => {
         await setIsLoading(false);
     }
 
-    // console.log('post:',post, post.length);
+    console.log('post:',post, post.length);
 
     // console.log('post.data',post.data,post.data.length);
     const isEmpty = isEmptyObj(post)||(post.length === 0);
@@ -87,7 +87,7 @@ const MyCarpoolList = () => {
                 </Avatar>
                 <ListItemText primary="Manager" />
               </ListItemAvatar>
-              <Link to="/my-carpool-detail"
+              <Link to={"/my-carpool-detail"}
                     style={{ textDecoration: 'none' }}
                     state={{
                       type:'now',

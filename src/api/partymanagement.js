@@ -2,6 +2,13 @@ import {axios} from 'utils';
 import axiosInstance from 'utils/axiosHandler';
 import stringify from 'json-stringify';
 
+/**
+ * 카풀 이동정보 검색
+ * @param {{id:Long}} params
+ * @returns
+ */
+ export const getPartyInfo = async params =>
+ axiosInstance.get('/party-management/partyInfos/carpool-info',{params});
 
 /**
  * 현재 참여 가능한 카풀리스트 전체 검색

@@ -1,19 +1,15 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import ImageIcon from '@mui/icons-material/Image';
-import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import {ImageIcon, WorkIcon, BeachAccessIcon, ManageSearchIcon} from '@mui/icons-material/Work';
 import AjaxUtils from 'utils/AjaxUtils';
-import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
+import { ConvertToYYYYMMDDhhmmtoKor} from '../../Utils/DateUtils';
 import EmptyList from './EmptyList';
 import { Button, Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-import ComponentSkeleton from '../../components-overview/ComponentSkeleton';
-import MainCard from '../../../components/MainCard';
-
+import ComponentSkeleton from '../../../components-overview/ComponentSkeleton';
+import MainCard from '../../../../components/MainCard';
 import PropTypes from 'prop-types';
-import AnimateButton from '../../../components/@extended/AnimateButton';
-import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
+import AnimateButton from '../../../../components/@extended/AnimateButton';
+import {Demo,Item,Subtitle} from '../../Utils/ComponentTheme';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -29,27 +25,17 @@ const ListStatusDesc = {
   CLOSED : '종료'
 }
 
-
-
-
-const MyCarpoolDetailForCarpooler = () => {
-
+const MyCarpoolDetailForCarpooler = (props) => {
+    console.log('MY Sub post',props.posts)
+    const post = props.posts;
       return (
       <>
        <Grid item xs={12}>
             <MainCard title="운전자 Pay URL" codeHighlight>
                 <Grid container spacing={3} wrap="nowrap">
                     <Grid item xs={6} sm={4} md={3} lg={2} >
-                      {/* <Button component={Link} target="_blank" href="https://mantisdashboard.io" variant="contained" color="success" size="small">
-                          Pro */}
-                        <Button variant="contained" color="warning" size="small">
-                            Kakao
-                        </Button>
-                    </Grid>
-                    <Grid item xs={6} sm={4} md={3} lg={2} >
-                        <Typography>URL~</Typography>
-                        <Button>지불하기
-
+                        <Button variant="contained" color="warning" size="small" onClick={()=>alert(post.driver.settlementUrl)}>
+                            Kakao Pay Url
                         </Button>
                     </Grid>
                 </Grid>

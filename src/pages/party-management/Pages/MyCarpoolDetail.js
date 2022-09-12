@@ -5,18 +5,19 @@ import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AjaxUtils from 'utils/AjaxUtils';
-import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
-import EmptyList from './EmptyList';
+import { ConvertToYYYYMMDDhhmmsstoKor, ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
+import EmptyList from './Children/EmptyList';
 import { Button, Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import ComponentSkeleton from '../../components-overview/ComponentSkeleton';
 import MainCard from '../../../components/MainCard';
 import queryString from'query-string';
 import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
-import MyCarpoolDetailForCarpooler from './MyCarpoolDetailForCarpooler';
-import MyCarpoolDetailForDriver from './MyCarpoolDetailForDriver';
-import {useLocation} from 'react-router-dom';
+import MyCarpoolDetailForCarpooler from './Children/MyCarpoolDetailForCarpooler';
+import MyCarpoolDetailForDriver from './Children/MyCarpoolDetailForDriver';
+import {Link, useLocation} from 'react-router-dom';
 import {Demo,Item,Subtitle} from '../Utils/ComponentTheme';
+import { getPartyInfo } from 'api/partymanagement';
 
 const ListBgColor = {
   OPEN : '#B8FEFF',
@@ -50,42 +51,55 @@ ShadowBox.propTypes = {
 
 function DetailSubInfo(props) {
     const isDriver = props.isDriver;
+    const status = props.posts.status;
     console.log('isDriver:',isDriver);
     if (isDriver) {
-      return <MyCarpoolDetailForDriver />;
+      if(status==='STARTED'){
+        return <MyCarpoolDetailForDriver posts={props.posts}/>;
+      }else{
+        return <></>
+      }
     }
-    return <MyCarpoolDetailForCarpooler />;
+    return <MyCarpoolDetailForCarpooler posts={props.posts}/>;
   }
 
 const MyCarpoolDetail = (props) => {
-  console.log(AjaxUtils.BASE_URL);
 
-  const [query, setQuery] = React.useState({id:0});
-  const [post, setPost] = React.useState({partyInfoes:[]});
+
   const location=useLocation();
+  const [query, setQuery] = React.useState({id:0});
+  const [post, setPost] = React.useState(location.state.data);
   //const { type, isDriver } = queryString.parse(location.search);
 
   console.log('location',location);
   console.log('location data :',location.state.data);
   console.log('location type :',location.state.type);
 
-    React.useEffect(() => {
-      let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-      console.log(query);
-      //query를 리턴하는 함수를 result에 할당
-      async function get() {
-        const result = await AjaxUtils.getPartyList(query);
-        if (!completed) setPost(result);
-      }
-      get();
-      return () => {
-        completed = true;
-      };
-      //query가 변할때 useEffect를 실행해야하는 시점이다
-    }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    console.log(post, post.partyInfoes.length);
-    const isEmpty = (post.partyInfoes.length === 0);
-    const type = location.state.type
+  const [isLoading, setIsLoading] = React.useState(false);
+  const partyId = location.state.data.id;
+  console.log('post:',post);
+
+    // React.useEffect(async ()=>{
+    //     await getPartyInfos();
+    // },[partyId]);
+
+    // const getPartyInfos = async ()=>{
+    //     await setIsLoading(true);
+
+    //     const response = await getPartyInfo(partyId);
+    //     let array = [];
+    //     for(let index in response.data){
+    //       array.push(response.data[index])
+    //     }
+    //     await setPost(!response.message ? array : []);
+    //     await setIsLoading(false);
+    // }
+
+    //console.log(post, post.partyInfoes.length);
+    //const isEmpty = (post.partyInfoes.length === 0);
+    // console.log(post);
+    // console.log(moveInfo);
+    const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
     const isDriver = (location.state.data.driver.userId === '1'); //여기에 나중에 user id랑 비교
     console.log("isDriver:",isDriver);
       return (
@@ -117,50 +131,61 @@ const MyCarpoolDetail = (props) => {
                                 <Subtitle sx={{width:'12%'}}>파티상태</Subtitle>
                                 <Item sx={{boxShadow:0}}>
                                 <Typography variant="h6" noWrap sx={{boxShadow:0}}>
-                                    -- 명
+                                  {post.curNumberOfParty} / {post.maxNumberOfParty} 명
                                 </Typography>
                                 </Item>
                                 <Item sx={{fontSize:'1em', color:'#d11', fontWeight:'bold', boxShadow:0}}>
-                                    --
+                                  {ListStatusDesc[post.status]}
                                 </Item>
                                 </Stack>
                             </Paper>
                             </Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발지</Subtitle> </Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item></Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.moveInfo.placeOfDeparture}</Item></Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발시간</Subtitle></Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item></Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{ConvertToYYYYMMDDhhmmsstoKor(post.moveInfo.startDate)}</Item></Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차종</Subtitle></Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item> </Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.driver.carKind}</Item> </Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>도착지</Subtitle></Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item></Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.moveInfo.destination}</Item></Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>거리</Subtitle></Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item></Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.moveInfo.distance}</Item></Grid>
                             <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차번호</Subtitle></Grid>
-                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>--</Item></Grid>
+                            <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{post.driver.carNumber}</Item></Grid>
 
                         </Grid>
                         </ListItem>
 
                     <Box sx={{m:3,p:3,bgcolor:'#eee'}}>
                         <Stack direction="row" spacing={2} justifyContent="center">
-                        <Avatar sx ={{ width: 60, height: 60}}>
-                        <BeachAccessIcon />
-                        </Avatar>
-                        <Avatar sx ={{ width: 60, height: 60}}>
-                        <BeachAccessIcon />
-                        </Avatar>
-                        <Avatar sx ={{ width: 60, height: 60}}>
-                        <BeachAccessIcon />
-                        </Avatar>
-                        <Avatar sx ={{ width: 60, height: 60}}>
-                        <BeachAccessIcon />
-                        </Avatar>
+                        {
+                          post.carPooler.map((p,index)=>
+
+                          <ListItemAvatar key={index} sx={{textAlign:'center',justifyContent: "center"}}>
+                            <Avatar alt={p.name} sx ={{ width: 60, height: 60}} src={p.profileImage}>
+
+                            </Avatar>
+                          <ListItemText primary={p.name}/>
+                          </ListItemAvatar>
+                          )
+                        }
                         </Stack>
                     </Box>
+                    {(isDriver)?
+                    <Grid item xs={12} sx={{textAlign:"center"}}>
+                      <Link to="/modify-carpool-detail"
+                        style={{ textDecoration: 'none' }}
+                        state={{ data:post}}>
+                        <Button size="small" variant="contained" color="primary" align="center">수정하기</Button>
+                      </Link>
+                     </Grid>
+                    :<br/>
+                    }
                     </MainCard>
+
                 </Grid>
-                <DetailSubInfo isDriver={isDriver} />
+                <DetailSubInfo isDriver={isDriver} posts={post}/>
+
             </Grid>
         </ComponentSkeleton>
       </>

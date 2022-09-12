@@ -20,14 +20,14 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import BasicDateTimePicker from '../Utils/BasicDateTimePicker';
+import BasicDateTimePicker from '../../Utils/BasicDateTimePicker';
 // ============================|| FIREBASE - REGISTER ||============================ //
 import { DesktopDateTimePicker } from '@mui/x-date-pickers-pro';
-import MapModal from '../Utils/MapPopup';
-import MapModalDestination from '../Utils/MapPopupDest';
+import MapModal from '../../Utils/MapPopup';
+import MapModalDestination from '../../Utils/MapPopupDest';
 import {Link, useNavigate} from 'react-router-dom';
 import { DesktopTimePicker } from 'formik-mui-lab';
-import DatepickerField from '../Utils/DatepickerField';
+import DatepickerField from '../../Utils/DatepickerField';
 import {postMoveInfo} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
