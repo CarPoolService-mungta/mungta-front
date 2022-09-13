@@ -43,7 +43,7 @@ const Question = ()=>{
         setDeleteLoading(true);
         const result = await deleteQuestionById({id});
         if(result instanceof CustomError){
-            enqueueSnackbar(response.message, {variant: 'error'});
+            enqueueSnackbar(result.message, {variant: 'error'});
             return;
         }
         enqueueSnackbar('문의가 삭제되었습니다.', {variant: 'success'});

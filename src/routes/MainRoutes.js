@@ -16,6 +16,10 @@ const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questi
 const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
 const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
 
+//admin
+const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
+const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -70,6 +74,14 @@ const MainRoutes = {
         {
             path: 'my-carpool-detail',
             element: <MyCarpoolDetail />
+        },
+        {
+            path: 'admin/question-management',
+            element: <QuestionsManagement />
+        },
+        {
+            path: 'admin/question-management/response/:id',
+            element: <PostResponseToQuestion />
         }
     ]
 };

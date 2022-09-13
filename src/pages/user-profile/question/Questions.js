@@ -17,7 +17,6 @@ const Questions = ()=>{
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(async ()=>{
-        console.log("axios", axios.defaults.headers);
         await searchQuestion()
     },[]);
 

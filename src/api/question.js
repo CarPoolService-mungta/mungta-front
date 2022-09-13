@@ -23,3 +23,15 @@ export const deleteQuestionById = async params =>
 export const postQuestionById = async data =>
   axios.post('/api/question/question', data);
 
+//ADMIN
+/**
+ * @param {{userId: number}} params
+ */
+export const getAllQuestions = async () =>
+  axios.get('/api/question/admin/question-show-all');
+
+/**
+ * @param {{adminId: number, responseContents: {title: text, body:text}, questionId: number}} data
+ */
+export const postResponse = async data =>
+  axios.post('/api/response/admin/response',data);
