@@ -10,6 +10,7 @@ export default function AuthProtect({children}) {
   const accessToken = localStorageHandler.getItem(ACCESS_TOKEN);
   const isAuthPage = pathname.includes('auth');
 
+  //Todo 리프레시 로직 추가
   useEffect(()=>{
     initialize();
   },[])
