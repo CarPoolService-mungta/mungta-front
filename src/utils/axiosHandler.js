@@ -1,22 +1,18 @@
 import axios from 'axios';
 import qs from 'qs';
-
-class CustomError {
-  constructor(message, status) {
-      this.message = message;
-      this.status= status;
-  }
-}
+import CustomError from './CustomError'
+import { logOut } from './authProvider';
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
+  // baseURL: `http://localhost:8080/api`,//나중에 ENV에 공통으로 만들기
+  baseURL: process.env.REACT_APP_API_SERVER,
   paramsSerializer: (params) => qs.stringify(params),
 });
 
 //Auth 들어오면 로그인하면서 헤더에 추가
-// export const setAuthHeader = str => {
-//   axiosInstance.defaults.headers.common.Authorization = str;
-// };
+export const setAuthHeader = str => {
+  axiosInstance.defaults.headers.common.Authorization = str;
+};
 
 axiosInstance.interceptors.request.use(
   config => {
@@ -33,8 +29,14 @@ axiosInstance.interceptors.response.use(
       console.log('resposne1:',response)
       return response;
     },
-    ({response}) => {
-      console.log('resposne2:',response)
+    ({httpStatus, response}) => {
+        if(response.status == 401){
+          if(response.data==-10){
+            console.log("토큰이 만료되었습니다.")
+          }
+          logOut();
+          return;
+        }
         if(response.data){
             return new CustomError(response.data.message, response.data.status)
         }

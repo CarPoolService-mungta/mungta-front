@@ -28,13 +28,20 @@ import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import {LoadingButton} from '@material-ui/lab';
+import { login } from 'utils/authProvider';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
-    const [checked, setChecked] = React.useState(false);
-
+    // const [checked, setChecked] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
+
+    const navigate = useNavigate();
+    const {search} = useLocation();
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -47,23 +54,28 @@ const AuthLogin = () => {
         <>
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    email: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        setStatus({ success: false });
-                        setSubmitting(false);
-                    } catch (err) {
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
+                onSubmit={async (values) => {
+                    //왜인지 setSubmit이 먹지를 않는다..
+                    setLoading(true);
+                    const userInfo = {
+                        userEmail : values.email,
+                        password : values.password
                     }
+                    login(userInfo);
+                    setLoading(false);
+                    if (!search) return navigate('/party-management');
+
+                    const params = new URLSearchParams(search);
+                    const redirectUrl = params.get('redirectUrl');
+                    navigate(redirectUrl);
                 }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
@@ -127,20 +139,20 @@ const AuthLogin = () => {
 
                             <Grid item xs={12} sx={{ mt: -1 }}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={checked}
-                                                onChange={(event) => setChecked(event.target.checked)}
-                                                name="checked"
-                                                color="primary"
-                                                size="small"
-                                            />
-                                        }
-                                        label={<Typography variant="h6">Keep me sign in</Typography>}
-                                    />
+                                    {/*<FormControlLabel*/}
+                                    {/*    control={*/}
+                                    {/*        <Checkbox*/}
+                                    {/*            checked={checked}*/}
+                                    {/*            onChange={(event) => setChecked(event.target.checked)}*/}
+                                    {/*            name="checked"*/}
+                                    {/*            color="primary"*/}
+                                    {/*            size="small"*/}
+                                    {/*        />*/}
+                                    {/*    }*/}
+                                    {/*    label={<Typography variant="h6">Keep me sign in</Typography>}*/}
+                                    {/*/>*/}
                                     <Link variant="h6" component={RouterLink} to="" color="text.primary">
-                                        Forgot Password?
+                                        비밀번호 찾기
                                     </Link>
                                 </Stack>
                             </Grid>
@@ -151,9 +163,8 @@ const AuthLogin = () => {
                             )}
                             <Grid item xs={12}>
                                 <AnimateButton>
-                                    <Button
-                                        disableElevation
-                                        disabled={isSubmitting}
+                                    <LoadingButton
+                                        loading={loading}
                                         fullWidth
                                         size="large"
                                         type="submit"
@@ -161,17 +172,17 @@ const AuthLogin = () => {
                                         color="primary"
                                     >
                                         Login
-                                    </Button>
+                                    </LoadingButton>
                                 </AnimateButton>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Divider>
-                                    <Typography variant="caption"> Login with</Typography>
-                                </Divider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FirebaseSocial />
-                            </Grid>
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <Divider>*/}
+                            {/*        <Typography variant="caption"> Login with</Typography>*/}
+                            {/*    </Divider>*/}
+                            {/*</Grid>*/}
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <FirebaseSocial />*/}
+                            {/*</Grid>*/}
                         </Grid>
                     </form>
                 )}

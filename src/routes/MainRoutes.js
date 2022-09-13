@@ -12,23 +12,15 @@ import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 import MoveInfo from 'pages/party-management/Pages/Children/MoveInfo';
 import UpdateParty from 'pages/party-management/Pages/UpdateParty';
 
-// render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
-
-// render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
-
-// render - utilities
-const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
-const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
-const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
-const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
-
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
 
 const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
 const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
 const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
+
+//admin
+const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
+const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -38,36 +30,8 @@ const MainRoutes = {
     children: [
         {
             path: '/',
-            element: <DashboardDefault />
-        },
-        {
-            path: 'color',
-            element: <Color />
-        },
-        {
-            path: 'dashboard',
-            children: [
-                {
-                    path: 'default',
-                    element: <DashboardDefault />
-                }
-            ]
-        },
-        {
-            path: 'sample-page',
-            element: <SamplePage />
-        },
-        {
-            path: 'shadow',
-            element: <Shadow />
-        },
-        {
-            path: 'typography',
-            element: <Typography />
-        },
-        {
-            path: 'icons/ant',
-            element: <AntIcons />
+            element:
+              <SelectRole />
         },
         {
             path: 'party-matching',
@@ -115,6 +79,14 @@ const MainRoutes = {
         {
             path: 'my-carpool-detail',
             element: <MyCarpoolDetail />
+        },
+        {
+            path: 'admin/question-management',
+            element: <QuestionsManagement />
+        },
+        {
+            path: 'admin/question-management/response/:id',
+            element: <PostResponseToQuestion />
         }
         ,
         {
