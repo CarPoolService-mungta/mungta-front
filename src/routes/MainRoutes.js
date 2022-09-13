@@ -11,6 +11,7 @@ import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
+const PartyMemberList = Loadable(lazy(() => import('pages/party-matching/PartyMemberList')));
 
 const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
 const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
@@ -34,6 +35,10 @@ const MainRoutes = {
         {
             path: 'party-matching',
             element: <PartyMatching />
+        },
+        {
+            path: 'party-member',
+            element: <PartyMemberList />
         },
         {
             path: 'questions',
