@@ -1,81 +1,94 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
-// material-ui
-import {
-    Button,
-    Checkbox,
-    Divider,
-    FormControlLabel,
-    FormHelperText,
-    Grid,
-    Link,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
-    Stack,
-    Typography
-} from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project import
-import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
-
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import {LoadingButton} from '@material-ui/lab';
-import { login } from 'utils/authProvider';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {Button,FormHelperText,Grid,Link,IconButton,InputAdornment,InputLabel,OutlinedInput,Stack} from '@mui/material';
+//Checkbox,Divider,FormControlLabel,Typography
+//import FirebaseSocial from './FirebaseSocial';
+
+import {signinById} from 'api/user'
+import {useNavigate} from 'react-router-dom';
+import { values } from 'lodash';
+import { useSnackbar } from 'notistack';
+import CustomError from 'utils/CustomError';
+
+import { parseJwt, setAuthHeader, localStorageHandler} from 'utils';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from 'utils/constants';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserInfo } from 'store/reducers/userInfo';
+
+
 
 // ============================|| FIREBASE - LOGIN ||============================ //
-
 const AuthLogin = () => {
-    // const [checked, setChecked] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
-    const [showPassword, setShowPassword] = React.useState(false);
-
+    let dispatch = useDispatch();
     const navigate = useNavigate();
-    const {search} = useLocation();
+    const { enqueueSnackbar } = useSnackbar();
+    //const [checked, setChecked] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    const signinConfirm = async ()=>{
+        await signinById({userId: "test02" ,userPassword: "12341234"})
+        .then((response) => {
+            console.log("response",response instanceof CustomError);
+            if(response instanceof CustomError){
+                enqueueSnackbar(response.message, {variant: 'error'});
+            }else{
+                setAuthHeader(`Bearer ${response.accessToken}`);
+                localStorageHandler.setItem(ACCESS_TOKEN, response.accessToken);
+                localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
+
+                const userInfo = parseJwt(response.accessToken);
+                console.log("userInfo:",userInfo );
+
+                dispatch(
+                setUserInfo({ userId     : response.key,
+                              userName   : userInfo.name,
+                              userTeam   : userInfo.team,
+                              email      : userInfo.email,
+                              driverYn   :userInfo.driverYn,
+                              userType   :userInfo.userType
+                }));
+                enqueueSnackbar('로그인 완료되었습니다.', {variant: 'success'});
+                navigate('/mypage');
+            }
+        });
+
+
+    }
 
     return (
         <>
             <Formik
                 initialValues={{
-                    email: '',
-                    password: '',
-                    submit: null
+                    email   : '', //info@codedthemes.com
+                    password: '', //123456
+                    submit  : null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    email   : Yup.string().max(255).required('ID or Email is required'), //email('Must be a valid email').
                     password: Yup.string().max(255).required('Password is required')
                 })}
-                onSubmit={async (values) => {
-                    //왜인지 setSubmit이 먹지를 않는다..
-                    setLoading(true);
-                    const userInfo = {
-                        userEmail : values.email,
-                        password : values.password
+                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    try {
+                        setStatus({ success: false });
+                        setSubmitting(false);
+                        signinConfirm();
+                    } catch (err) {
+                        setStatus({ success: false });
+                        setErrors({ submit: err.message });
+                        setSubmitting(false);
                     }
-                    login(userInfo);
-                    setLoading(false);
-                    if (!search) return navigate('/party-management');
-
-                    const params = new URLSearchParams(search);
-                    const redirectUrl = params.get('redirectUrl');
-                    navigate(redirectUrl);
                 }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
@@ -83,15 +96,15 @@ const AuthLogin = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                                    <InputLabel htmlFor="email-login">ID or Email address</InputLabel>
                                     <OutlinedInput
-                                        id="email-login"
-                                        type="email"
+                                        id="email"
+                                        // type="email"
                                         value={values.email}
                                         name="email"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="Enter email address"
+                                        placeholder="Enter id or email address"
                                         fullWidth
                                         error={Boolean(touched.email && errors.email)}
                                     />
@@ -108,7 +121,7 @@ const AuthLogin = () => {
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
-                                        id="-password-login"
+                                        id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         value={values.password}
                                         name="password"
@@ -139,20 +152,20 @@ const AuthLogin = () => {
 
                             <Grid item xs={12} sx={{ mt: -1 }}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                                    {/*<FormControlLabel*/}
-                                    {/*    control={*/}
-                                    {/*        <Checkbox*/}
-                                    {/*            checked={checked}*/}
-                                    {/*            onChange={(event) => setChecked(event.target.checked)}*/}
-                                    {/*            name="checked"*/}
-                                    {/*            color="primary"*/}
-                                    {/*            size="small"*/}
-                                    {/*        />*/}
-                                    {/*    }*/}
-                                    {/*    label={<Typography variant="h6">Keep me sign in</Typography>}*/}
-                                    {/*/>*/}
+                                    {/* <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={checked}
+                                                onChange={(event) => setChecked(event.target.checked)}
+                                                name="checked"
+                                                color="primary"
+                                                size="small"
+                                            />
+                                        }
+                                        label={<Typography variant="h6">Keep me sign in</Typography>}
+                                    /> */}
                                     <Link variant="h6" component={RouterLink} to="" color="text.primary">
-                                        비밀번호 찾기
+                                        Forgot Password?
                                     </Link>
                                 </Stack>
                             </Grid>
@@ -163,8 +176,9 @@ const AuthLogin = () => {
                             )}
                             <Grid item xs={12}>
                                 <AnimateButton>
-                                    <LoadingButton
-                                        loading={loading}
+                                    <Button
+                                        disableElevation
+                                        disabled={isSubmitting}
                                         fullWidth
                                         size="large"
                                         type="submit"
@@ -172,17 +186,17 @@ const AuthLogin = () => {
                                         color="primary"
                                     >
                                         Login
-                                    </LoadingButton>
+                                    </Button>
                                 </AnimateButton>
                             </Grid>
-                            {/*<Grid item xs={12}>*/}
-                            {/*    <Divider>*/}
-                            {/*        <Typography variant="caption"> Login with</Typography>*/}
-                            {/*    </Divider>*/}
-                            {/*</Grid>*/}
-                            {/*<Grid item xs={12}>*/}
-                            {/*    <FirebaseSocial />*/}
-                            {/*</Grid>*/}
+                            {/* <Grid item xs={12}>
+                                <Divider>
+                                    <Typography variant="caption"> Login with</Typography>
+                                </Divider>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FirebaseSocial />
+                            </Grid> */}
                         </Grid>
                     </form>
                 )}

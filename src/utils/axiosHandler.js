@@ -11,11 +11,13 @@ const axiosInstance = axios.create({
 
 //Auth 들어오면 로그인하면서 헤더에 추가
 export const setAuthHeader = str => {
+  console.log("setAuthHeader",str);
   axiosInstance.defaults.headers.common.Authorization = str;
 };
 
 axiosInstance.interceptors.request.use(
   config => {
+    console.log("config",config);
     return config;
   },
   err => {
