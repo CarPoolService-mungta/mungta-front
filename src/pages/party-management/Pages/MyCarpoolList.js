@@ -20,15 +20,16 @@ const MyCarpoolList = () => {
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
-
+//search 조건을 바꿔야함.
   function handleCloseModal(data) {
     console.log('부모에서 받은',data);
+
     setQuery({
       user_id : query.user_id,
       place : data._place,
       dates : dayjs(data._dates).format("YYYY-MM-DD"),
       order_condition : data._condition
-      
+
     });
   }
 

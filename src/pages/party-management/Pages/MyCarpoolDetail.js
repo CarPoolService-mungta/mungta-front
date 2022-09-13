@@ -86,7 +86,7 @@ const MyCarpoolDetail = (props) => {
     // console.log(post);
     // console.log(moveInfo);
     const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
-    const isDriver = (location.state.data.driver.userId === '1'); //여기에 나중에 user id랑 비교
+    const isDriver = (location.state.data.driver.userId === '4'); //여기에 나중에 user id랑 비교
     console.log("isDriver:",isDriver);
       return (
       <>
