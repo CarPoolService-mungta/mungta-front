@@ -28,6 +28,11 @@ const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questi
 const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
 const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
 
+const Accusations = Loadable(lazy(() => import('pages/user-profile/accusation/Accusations')));
+const PartyMembers = Loadable(lazy(() => import('pages/user-profile/accusation/PartyMembers')));
+const RegisterAccusation = Loadable(lazy(() => import('pages/user-profile/accusation/RegisterAccusation')));
+const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -110,6 +115,22 @@ const MainRoutes = {
         {
             path: 'my-carpool-detail',
             element: <MyCarpoolDetail />
+        },
+        {
+            path: 'accusations',
+            element: <Accusations/>
+        },
+        {
+            path: 'register-accusation/parties/:partyId',
+            element: <PartyMembers/>
+        },
+        {
+            path: 'register-accusation',
+            element: <RegisterAccusation/>
+        },
+        {
+            path: 'admin-accusations',
+            element: <AdminAccusations/>
         }
     ]
 };

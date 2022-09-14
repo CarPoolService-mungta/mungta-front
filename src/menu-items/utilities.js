@@ -85,6 +85,43 @@ const utilities = {
                     breadcrumbs: false
                 }
             ]
+        },
+        {
+            id: 'my-accusation',
+            title: '신고 [회원]',
+            type: 'collapse',
+            icon: HistoryIcon,
+            children: [
+                {
+                    id: 'accusations',
+                    title: '신고 내역',
+                    type: 'item',
+                    url: '/accusations',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'register-accusation',
+                    title: '신고하기',
+                    type: 'item',
+                    url: '/register-accusation/parties/1',  // 지난 카풀 내역 페이지의 신고 버튼이랑 이어 붙여야 함.
+                    breadcrumbs: false
+                }
+            ]
+        },
+        {
+            id: 'admin-accusation',
+            title: '신고 [관리자]',
+            type: 'collapse',
+            icon: HistoryIcon,
+            children: [
+                {
+                    id: 'admin-accusation-list',
+                    title: '회원 신고 리스트',
+                    type: 'item',
+                    url: '/admin-accusations',
+                    breadcrumbs: false
+                }
+            ]
         }
     ]
 };
