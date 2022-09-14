@@ -26,7 +26,7 @@ const Mypage = () => {
   console.log("reduxInfo:",userInfo );
 
   const goReview = () => {
-    alert("리뷰화면이동");
+    alert("리뷰화면이동!");
     //navigate('/party-management')
   };
   const goAccuse = () => {

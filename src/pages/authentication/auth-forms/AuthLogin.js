@@ -56,7 +56,7 @@ const AuthLogin = () => {
                               driverYn   : userInfo.driverYn,
                               userType   : userInfo.userType
                 }));
-                enqueueSnackbar('로그인 완료되었습니다.', {variant: 'success'});
+                enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
                 navigate('/mypage');
             }
         });
