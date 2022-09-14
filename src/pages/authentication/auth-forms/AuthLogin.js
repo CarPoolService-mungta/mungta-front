@@ -10,7 +10,7 @@ import {Button,FormHelperText,Grid,Link,IconButton,InputAdornment,InputLabel,Out
 
 import {signinById} from 'api/user'
 import {useNavigate} from 'react-router-dom';
-import { values } from 'lodash';
+// import { values } from 'lodash';
 import { useSnackbar } from 'notistack';
 import CustomError from 'utils/CustomError';
 
@@ -19,8 +19,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from 'utils/constants';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserInfo } from 'store/reducers/userInfo';
-
-
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 const AuthLogin = () => {
@@ -38,14 +36,13 @@ const AuthLogin = () => {
     };
 
     const signinConfirm = async ()=>{
-        await signinById({userId: "test02" ,userPassword: "12341234"})
+        await signinById({userId: email.value ,userPassword: password.value})
         .then((response) => {
-            console.log("response",response instanceof CustomError);
             if(response instanceof CustomError){
                 enqueueSnackbar(response.message, {variant: 'error'});
             }else{
                 setAuthHeader(`Bearer ${response.accessToken}`);
-                localStorageHandler.setItem(ACCESS_TOKEN, response.accessToken);
+                localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
                 localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
 
                 const userInfo = parseJwt(response.accessToken);
@@ -56,17 +53,14 @@ const AuthLogin = () => {
                               userName   : userInfo.name,
                               userTeam   : userInfo.team,
                               email      : userInfo.email,
-                              driverYn   :userInfo.driverYn,
-                              userType   :userInfo.userType
+                              driverYn   : userInfo.driverYn,
+                              userType   : userInfo.userType
                 }));
                 enqueueSnackbar('로그인 완료되었습니다.', {variant: 'success'});
                 navigate('/mypage');
             }
         });
-
-
     }
-
     return (
         <>
             <Formik
