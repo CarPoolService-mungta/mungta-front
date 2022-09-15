@@ -123,7 +123,7 @@ const AdminAccusationDetail = () => {
                 variant='h4'
                 id='tableTitle'
                 component='div'>
-                    {data.accusationContents.title}
+                    {data.accusationContents?.title ? data.accusationContents.title : ''}
                 </Typography>
                 <AccusationStatus status={data.accusationStatus}/>
             </Toolbar>
@@ -131,12 +131,13 @@ const AdminAccusationDetail = () => {
             {!isLoading ?
                 <Formik
                 initialValues={{
-                    placeOfDeparture: data.partyInfo.placeOfDeparture,
-                    destination: data.partyInfo.destination,
-                    startedDateTime: data.partyInfo.startedDateTime,
-                    memberFormat: data.accusedMember.name + '(' + data.accusedMember.id + ')',
-                    title: data.accusationContents.title,
-                    desc: data.accusationContents.desc,
+                    placeOfDeparture: data.partyInfo?.placeOfDeparture ? data.partyInfo.placeOfDeparture : '',
+                    destination: data.partyInfo?.destination ? data.partyInfo.destination : '',
+                    startedDateTime: data.partyInfo?.startedDateTime ? data.partyInfo.startedDateTime : '',
+                    memberFormat: data.accusedMember?.name && data.accusedMember?.id ?
+                        data.accusedMember.name + '(' + data.accusedMember.id + ')' : '',
+                    title: data.accusationContents?.title ? data.accusationContents.title : '',
+                    desc: data.accusationContents?.desc ? data.accusationContents.desc : '',
                     submit: null
                 }}
                 enableReinitialize={true}
