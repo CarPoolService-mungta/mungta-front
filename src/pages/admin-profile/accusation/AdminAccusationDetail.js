@@ -213,9 +213,8 @@ const AdminAccusationDetail = () => {
                                 minRows={5}
                                 aria-label='maximum height'
                                 placeholder='내용'
-                                defaultValue={values.desc}
+                                value={values.desc}
                                 style={customStyle}
-                                onChange={e => values.desc = e.target.value}
                                 />
                             </Stack>
                         </Grid>

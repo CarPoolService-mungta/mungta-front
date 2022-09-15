@@ -114,8 +114,8 @@ const columns = [
         }
     },
     {
-        id : 'createdDateTime',
-        label: '등록일',
+        id : 'modifiedDateTime',
+        label: '최종 수정일',
         width: 80,
         align: 'left',
     }
