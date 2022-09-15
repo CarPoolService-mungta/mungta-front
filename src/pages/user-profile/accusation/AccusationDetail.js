@@ -309,7 +309,7 @@ const ButtonsByStatus = ({ status, isSubmitting, isRemoving, handleClickOpen }) 
     } else {
         return (
             <>
-            <Grid item xs={12} textAlign='center'>
+            <Grid item xs={12} textAlign='right'>
                 <LoadingButton
                 loading={isRemoving}
                 size='medium'
