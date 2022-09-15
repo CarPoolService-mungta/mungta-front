@@ -29,6 +29,7 @@ const Question = Loadable(lazy(() => import('pages/user-profile/question/Questio
 const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
 
 const Accusations = Loadable(lazy(() => import('pages/user-profile/accusation/Accusations')));
+const AccusationDetail = Loadable(lazy(() => import('pages/user-profile/accusation/AccusationDetail')));
 const PartyMembers = Loadable(lazy(() => import('pages/user-profile/accusation/PartyMembers')));
 const RegisterAccusation = Loadable(lazy(() => import('pages/user-profile/accusation/RegisterAccusation')));
 const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
@@ -119,6 +120,10 @@ const MainRoutes = {
         {
             path: 'accusations',
             element: <Accusations/>
+        },
+        {
+            path: 'accusations/:accusationId',
+            element: <AccusationDetail/>
         },
         {
             path: 'register-accusation/parties/:partyId',

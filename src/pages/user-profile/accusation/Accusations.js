@@ -2,7 +2,7 @@ import MainCard from 'components/MainCard';
 import DataTable from 'components/@extended/DataTable';
 import Dot from 'components/@extended/Dot';
 import { Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { getAccusationsByMemberId } from 'api/accusation';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -28,18 +28,18 @@ const Accusations = () => {
 
         setData(!response.message ? response.accusations : []);
         setIsLoading(false);
-    }
+    };
 
-    const rowClick = (row) => {
+    const rowClick = useCallback((e, row) => {
         const accusationId = row.id;
         navigate(`/accusations/${accusationId}`);
-    };
+    }, []);
 
     return (
     <MainCard title='신고내역'>
         <DataTable columns={columns} rows={data} rowsPerPageOptions={[10,20,30]} isLoading={isLoading} rowClick={rowClick}/>
     </MainCard>
-    )
+    );
 }
 
 export default Accusations;
@@ -75,7 +75,7 @@ const AccusationStatus = ({ status }) => {
 };
 
 AccusationStatus.propTypes = {
-    status: PropTypes.bool.isRequired
+    status: PropTypes.string.isRequired
 };
 
 const columns = [

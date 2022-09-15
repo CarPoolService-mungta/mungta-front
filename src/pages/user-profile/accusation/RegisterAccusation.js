@@ -71,6 +71,7 @@ const RegisterAccusation = () => {
 
                         const response = await registerAccusation({ memberId, partyInfo, accusedMember, accusationContents });
 
+                        setSubmitting(false);
                         if (response instanceof CustomError) {
                             enqueueSnackbar(response.message, {variant: 'error'});
                         } else {
@@ -79,9 +80,9 @@ const RegisterAccusation = () => {
                         }
                     } catch (err) {
                         setErrors({ submit: err.message });
+                        setSubmitting(false);
                         enqueueSnackbar('등록할 수 없습니다.', {variant: 'error'});
                     }
-                    setSubmitting(false);
                 }}
                 >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
@@ -157,6 +158,7 @@ const RegisterAccusation = () => {
                                 aria-label='maximum height'
                                 placeholder='내용'
                                 defaultValue=''
+                                onChange={e => values.desc = e.target.value}
                                 style={customStyle}
                                 />
                             </Stack>
@@ -168,7 +170,7 @@ const RegisterAccusation = () => {
                             size='medium'
                             type='submit'
                             variant='contained'
-                            color='success'
+                            color='primary'
                             >
                                 등록
                             </LoadingButton>

@@ -1,22 +1,22 @@
 import {axios} from 'utils';
 
- export const getPartyMembers = async params =>
+export const getPartyMembers = async params =>
     axios.get('/accusation/party-members', {params});
 
 export const getAccusationsByMemberId = async params =>
     axios.get('/accusation', {params});
 
-export const getAccusationByMemberId = async params =>
-    axios.get('/accusation/list/:id', {params});
+export const getAccusationByMemberId = async (id, params) =>
+    axios.get('/accusation/list/' + id, {params});
 
 export const registerAccusation = async params =>
     axios.post('/accusation', params);
 
-export const modifyAccusation = async params =>
-    axios.put('/accusation/list/:id', {params});
+export const modifyAccusation = async (id, params) =>
+    axios.put('/accusation/list/' + id, params);
 
-export const deleteAccusation = async params =>
-    axios.delete('/accusation/list/:id', {params});
+export const deleteAccusation = async (id, params) =>
+    axios.delete('/accusation/list/' + id, {params});
 
 export const getAdminAccusations = async params =>
     axios.get('/accusation/admin/accusations', {params});

@@ -103,7 +103,7 @@ export default MemberInfoTable;
 
 MemberInfoTable.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    data: PropTypes.node.isRequired
+    data: PropTypes.any.isRequired
 };
 
 const AccusationStatus = ({ status, member, data, registerBtnClick }) => {
@@ -135,7 +135,7 @@ const AccusationStatus = ({ status, member, data, registerBtnClick }) => {
 
 AccusationStatus.propTypes = {
     status: PropTypes.bool.isRequired,
-    member: PropTypes.node.isRequired,
-    data: PropTypes.node.isRequired,
+    member: PropTypes.object.isRequired,
+    data: PropTypes.any.isRequired,
     registerBtnClick: PropTypes.func.isRequired
 };
