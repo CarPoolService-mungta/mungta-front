@@ -21,8 +21,8 @@ export const deleteAccusation = async (id, params) =>
 export const getAdminAccusations = async params =>
     axios.get('/accusation/admin/accusations', {params});
 
-export const getAdminAccusation = async params =>
-    axios.get('/accusation/admin/accusations/:id', {params});
+export const getAdminAccusation = async (id, params) =>
+    axios.get('/accusation/admin/accusations/' + id, {params});
 
-export const processAccusationByAdmin = async params =>
-    axios.put('/accusation/admin/accusations/:id', {params});
+export const processAccusationByAdmin = async (id, params) =>
+    axios.put('/accusation/admin/accusations/' + id, params);

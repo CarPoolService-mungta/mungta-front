@@ -31,7 +31,7 @@ const AdminAccusations = () => {
 
     const rowClick = useCallback((e, row) => {
         const accusationId = row.id;
-        navigate(`/accusations/${accusationId}`);
+        navigate(`/admin-accusations/${accusationId}`);
     }, []);
 
     return (

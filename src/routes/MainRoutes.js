@@ -33,6 +33,7 @@ const AccusationDetail = Loadable(lazy(() => import('pages/user-profile/accusati
 const PartyMembers = Loadable(lazy(() => import('pages/user-profile/accusation/PartyMembers')));
 const RegisterAccusation = Loadable(lazy(() => import('pages/user-profile/accusation/RegisterAccusation')));
 const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
+const AdminAccusationDetail = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusationDetail')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -136,6 +137,10 @@ const MainRoutes = {
         {
             path: 'admin-accusations',
             element: <AdminAccusations/>
+        },
+        {
+            path: 'admin-accusations/:accusationId',
+            element: <AdminAccusationDetail/>
         }
     ]
 };

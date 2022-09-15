@@ -55,31 +55,11 @@ const AccusationDetail = () => {
 
     const handleClickOpen = () => {
         setOpen(true);
-        //openAlert();
     };
 
     const handleClose = () => {
         setOpen(false);
     };
-
-    const openAlert = () => {
-        return(
-            <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"삭제하시겠습니까?"}
-                </DialogTitle>
-                <DialogActions>
-                    <Button onClick={handleClose}>취소</Button>
-                    <Button onClick={deleteBtnClick}>삭제</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
 
     const deleteBtnClick = async () => {
         setOpen(false);
@@ -158,7 +138,6 @@ const AccusationDetail = () => {
                             enqueueSnackbar(response.message, {variant: 'error'});
                         } else {
                             enqueueSnackbar('수정되었습니다.', {variant: 'success'});
-                            //navigate(`/accusations`);
                         }
                     } catch (err) {
                         setErrors({ submit: err.message });
