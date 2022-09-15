@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
 import WbTwilightOutlinedIcon from '@mui/icons-material/WbTwilightOutlined';
+import PropTypes from 'prop-types';
 import {
     Avatar,
     Box,
@@ -21,7 +21,7 @@ const MemberInfoTable = ({ data, isLoading }) => {
 
     const navigate = useNavigate();
 
-    const registerBtnClick = useCallback((e, member, data) => {
+    const registerBtnClick = (member, data) => {
         navigate('/register-accusation', {
             state: {
                 accusedMember: {
@@ -37,7 +37,7 @@ const MemberInfoTable = ({ data, isLoading }) => {
                 }
             }
         });
-    },[])
+    };
 
     return (
     <>
@@ -101,6 +101,11 @@ const MemberInfoTable = ({ data, isLoading }) => {
 
 export default MemberInfoTable;
 
+MemberInfoTable.propTypes = {
+    isLoading: PropTypes.bool.isRequired,
+    data: PropTypes.node.isRequired
+};
+
 const AccusationStatus = ({ status, member, data, registerBtnClick }) => {
     if (status) {
         return (
@@ -120,10 +125,17 @@ const AccusationStatus = ({ status, member, data, registerBtnClick }) => {
         variant='outlined'
         color='error'
         size='small'
-        onClick={(e) => registerBtnClick(e, member, data)}
+        onClick={() => registerBtnClick(member, data)}
         >
             <WbTwilightOutlinedIcon />
             신고하기
         </Button>
     );
+};
+
+AccusationStatus.propTypes = {
+    status: PropTypes.bool.isRequired,
+    member: PropTypes.node.isRequired,
+    data: PropTypes.node.isRequired,
+    registerBtnClick: PropTypes.func.isRequired
 };

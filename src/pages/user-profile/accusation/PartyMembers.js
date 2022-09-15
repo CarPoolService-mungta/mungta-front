@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getPartyMembers } from 'api/accusation';
 import { useParams } from 'react-router-dom';
 import MemberInfoTable from './components/MemberInfoTable';
@@ -19,11 +19,7 @@ const PartyMembers = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(async () => {
-        await searchPartyMembers()
-    },[]);
-
-    const searchPartyMembers = async () => {
+    const searchPartyMembers = useCallback(async () => {
         setIsLoading(true);
 
         const memberId = 1;
@@ -31,7 +27,11 @@ const PartyMembers = () => {
 
         setData(!response.message ? response : []);
         setIsLoading(false);
-    }
+    }, [partyId]);
+
+    useEffect(() => {
+        searchPartyMembers();
+    }, [searchPartyMembers]);
 
     return (
         <>

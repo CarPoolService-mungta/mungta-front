@@ -1,5 +1,5 @@
-import {useState} from "react";
 import {Box, Button, Grid, Modal} from "@mui/material";
+import PropTypes from 'prop-types';
 
 const DeleteCheckModal = ({modalOpen=false,
                           onOk,
@@ -46,4 +46,10 @@ const style = {
     pt: 2,
     px: 4,
     pb: 3,
+};
+
+DeleteCheckModal.propTypes = {
+    modalOpen: PropTypes.bool,
+    onOk: PropTypes.func,
+    onCancel: PropTypes.func
 };

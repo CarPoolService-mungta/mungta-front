@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import PropTypes from 'prop-types';
 import {
     TableHead,
     TableBody,
@@ -95,3 +96,11 @@ const DataTable = ({columns,
 }
 
 export default DataTable
+
+DataTable.propTypes = {
+    columns: PropTypes.array,
+    rows: PropTypes.array,
+    rowsPerPageOptions: PropTypes.array,
+    isLoading: PropTypes.bool,
+    rowClick: PropTypes.func
+};

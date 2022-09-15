@@ -2,10 +2,10 @@ import MainCard from 'components/MainCard';
 import DataTable from 'components/@extended/DataTable';
 import Dot from 'components/@extended/Dot';
 import { Stack, Typography } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAccusationsByMemberId } from 'api/accusation';
 import { useNavigate } from 'react-router-dom';
-
+import PropTypes from 'prop-types';
 
 const Accusations = () => {
     const navigate = useNavigate();
@@ -13,8 +13,11 @@ const Accusations = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(async () => {
-        await searchAccusations()
+    useEffect(() => {
+        async function fetchData() {
+            await searchAccusations();
+        }
+        fetchData();
     },[]);
 
     const searchAccusations = async () => {
@@ -27,10 +30,10 @@ const Accusations = () => {
         setIsLoading(false);
     }
 
-    const rowClick=useCallback((e, row) => {
+    const rowClick = (row) => {
         const accusationId = row.id;
         navigate(`/accusations/${accusationId}`);
-    },[])
+    };
 
     return (
     <MainCard title='신고내역'>
@@ -69,6 +72,10 @@ const AccusationStatus = ({ status }) => {
             <Typography>{title}</Typography>
         </Stack>
     );
+};
+
+AccusationStatus.propTypes = {
+    status: PropTypes.bool.isRequired
 };
 
 const columns = [
