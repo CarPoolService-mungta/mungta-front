@@ -1,11 +1,12 @@
 // assets
-import { ChromeOutlined, QuestionOutlined, EyeOutlined } from '@ant-design/icons';
+import { ChromeOutlined, QuestionOutlined, EyeOutlined,NotificationOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
     ChromeOutlined,
     QuestionOutlined,
-    EyeOutlined
+    EyeOutlined,
+    NotificationOutlined
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE & DOCUMENTATION ||============================== //
@@ -21,6 +22,13 @@ const support = {
             type: 'item',
             url: '/questions',
             icon: icons.QuestionOutlined
+        },
+        {
+            id: 'notices',
+            title: '공지사항',
+            type: 'item',
+            url: '/notices',
+            icon: icons.NotificationOutlined
         },
         {
             id: 'admin',

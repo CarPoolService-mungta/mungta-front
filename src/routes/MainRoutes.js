@@ -14,11 +14,15 @@ import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
 const PartyMemberList = Loadable(lazy(() => import('pages/party-matching/PartyMemberList')));
 
-const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
-const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
-const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
+const Questions = Loadable(lazy(() => import('pages/question/Questions')));
+const Question = Loadable(lazy(() => import('pages/question/Question')));
+const PostQuestion = Loadable(lazy(() => import('pages/question/PostQuestion')));
 
 const Mypage = Loadable(lazy(() => import('pages/authentication/Mypage')));
+
+const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
+const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
+const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
@@ -54,6 +58,18 @@ const MainRoutes = {
         {
             path: 'question/post',
             element: <PostQuestion/>
+        },
+        {
+            path: 'notices',
+            element: <Notices />
+        },
+        {
+            path: 'notice/:id',
+            element: <Notice/>
+        },
+        {
+            path: 'notice/post',
+            element: <PostNotice/>
         },
         {
             path: 'party-management',
@@ -94,7 +110,7 @@ const MainRoutes = {
         {
             path: 'admin/question-management/response/:id',
             element: <PostResponseToQuestion />
-        }
+        },
     ]
 };
 

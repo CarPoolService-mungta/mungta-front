@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {useParams} from 'react-router-dom';
 import {getQuestionById, deleteQuestionById} from 'api/question'
-import ContentsCard from "./ContentsCard";
+import ContentsCard from "../../components/ContentsCard";
 import {Box, Button, CircularProgress, Grid} from "@mui/material";
 import {LoadingButton} from '@material-ui/lab';
 import {useNavigate} from 'react-router-dom';

@@ -26,10 +26,6 @@ import {
 // project import
 import MainCard from 'components/MainCard';
 import ComponentSkeleton from 'pages/components-overview/ComponentSkeleton';
-// assets
-import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
-import { isDirectiveLiteral } from '../../../../../Users/ljj56/AppData/Local/Microsoft/TypeScript/4.7/node_modules/@babel/types/lib/index';
-
 // avatar style
 const avatarSX = {
     width: 36,

@@ -1,36 +1,16 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
-import { getQuestionById, postResponse } from 'api/question';
-import CustomError from 'utils/CustomError';
-import { Box, Button, CircularProgress, Grid, TextField } from '@mui/material';
-import { LoadingButton } from '@material-ui/lab';
-import ContentsCard from 'components/ContentsCard';
-import {Form, useFormik, FormikProvider} from "formik";
+import { useNavigate } from 'react-router-dom';
+import { Form, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
+import { postNotice } from 'api/notice';
+import CustomError from 'utils/CustomError';
+import MainCard from 'components/MainCard';
+import { Grid, TextField } from '@mui/material';
+import { LoadingButton } from '@material-ui/lab';
 
-const PostResponseToQuestion=()=>{
-  const navigate = useNavigate();
+const PostNotice = ()=>{
   const { enqueueSnackbar } = useSnackbar();
-
-  const {id} = useParams();
-
-  const [question, setQuestion] = useState(null);
-  const [response, setResponse] = useState(null);
-
-  useEffect(async ()=>{
-    const result = await getQuestionById({id});
-    if(result instanceof CustomError){
-      enqueueSnackbar(result.message, {variant: 'error'});
-      return;
-    }
-    setQuestion(result.question);
-    setResponse(result.response);
-  },[id])
-
-  const goBackList=()=>{
-    navigate(`/admin/question-management`);
-  }
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -41,30 +21,27 @@ const PostResponseToQuestion=()=>{
       title: Yup.string()
         .required("제목을 입력해주세요."),
       body: Yup.string()
-        .required("답변을 입력해주세요.")
+        .required("문의사항을 입력해주세요.")
     }),
     onSubmit: async (values, { setSubmitting})=>{
 
       setSubmitting(true);
-
-      //Todo 수정 필요
-      const responseRegisterRequest = {
+      // Todo 수정 필요
+      const noticeRegisterRequest = {
         adminId: 0,
-        responseContents:{
+        notice:{
           title: values.title,
           body: values.body
-        },
-        questionId: id
+        }
       };
-      console.log("responseRegisterRequest", responseRegisterRequest);
 
-      const response = await postResponse(responseRegisterRequest);
+      const response = await postNotice(noticeRegisterRequest);
       setSubmitting(false);
       if(response instanceof CustomError){
         enqueueSnackbar(response.message, {variant: 'error'});
       }else{
-        enqueueSnackbar('답변이 등록되었습니다.', {variant: 'success'});
-        navigate(`/admin/question-management`);
+        enqueueSnackbar('공지사항이 등록되었습니다.', {variant: 'success'});
+        navigate(`/notices`);
       }
     },
   });
@@ -80,24 +57,8 @@ const PostResponseToQuestion=()=>{
   } = formik;
 
   return <>
-    <Grid
-      container
-      direction="row"
-      justifyContent="flex-end"
-      spacing={2}>
-      <Grid item>
-        <Button variant="outlined" onClick={goBackList}>목록</Button>
-      </Grid>
-    </Grid>
-    {question ?
-      <ContentsCard contents={question}/> :
-      <Box sx={{py: 3, minHeight: 560, alignContent: 'center'}}>
-        <CircularProgress />
-      </Box>
-    }
-    {response
-      ? <ContentsCard contents={response}/>
-      : <FormikProvider value={formik}>
+    <MainCard darkTitle={true} title={"공지사항 등록"}>
+      <FormikProvider value={formik}>
         <Form onSubmit={handleSubmit}>
           <Grid
             container
@@ -139,14 +100,14 @@ const PostResponseToQuestion=()=>{
                 variant="contained"
                 type="submit"
                 loading={isSubmitting}>
-                제출
+                등록
               </LoadingButton>
             </Grid>
           </Grid>
         </Form>
       </FormikProvider>
-    }
-
+    </MainCard>
   </>
 }
-export default PostResponseToQuestion;
+
+export default PostNotice;
