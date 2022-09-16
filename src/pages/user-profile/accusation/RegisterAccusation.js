@@ -64,7 +64,7 @@ const RegisterAccusation = () => {
                     try {
                         setSubmitting(true);
 
-                        const memberId = 1;
+                        const memberId = 1;     // TODO: get userID
                         const accusationContents = {};
                         accusationContents.title = values.title;
                         accusationContents.desc = values.desc;

@@ -46,7 +46,7 @@ const AccusationDetail = () => {
     const searchAccusation = async () => {
         setIsLoading(true);
 
-        const memberId = 1;
+        const memberId = 1;     // TODO: get userID
         const response = await getAccusationByMemberId(accusationId, { memberId });
 
         setData(!response.message ? response : []);

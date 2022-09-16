@@ -68,6 +68,7 @@ const MemberInfoTable = ({ data, isLoading }) => {
                                 alignItems: 'center',
                                 display: 'flex',
                             }}>
+                                {/** TODO: 사진 */}
                                 <Avatar
                                 alt={getInitials(member.name)}
                                 src={member.image}
