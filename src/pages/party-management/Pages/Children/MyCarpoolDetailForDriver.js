@@ -15,7 +15,19 @@ import PropTypes from 'prop-types';
 import AnimateButton from '../../../../components/@extended/AnimateButton';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 
-
+const InputTitle = {
+  backgroundColor: '#1A2027',
+  padding: '2px',
+  textAlign: 'center',
+  color:'#fff',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '35px',
+  border: '2px solid #1A2027',
+  borderRadius:1,
+  boxShadow: 10,
+  fontSize:"120%"
+}
 const MyCarpoolDetailForDriver = (props) => {
   console.log('MY Sub post',props.posts)
   const post = props.posts;
@@ -46,9 +58,13 @@ const MyCarpoolDetailForDriver = (props) => {
                   {
                       post.carPooler.map((p,index)=>
                       <Grid container justifyContent="start" key={index}>
-                          <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Subtitle>{p.name}</Subtitle></Item></Grid>
-                          <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="success">정산확인</Button></Item></Grid>
-                          <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="error">정산미확인</Button></Item></Grid>
+                          <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Subtitle sx={InputTitle}>{p.name}</Subtitle></Item></Grid>
+                          {
+                            (p.driverCheck==='PAID')?
+                            <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="success"onClick={()=>alert('정산확인이 완료되었습니다')}>정산확인완료</Button></Item></Grid>
+                            :
+                            <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="error" onClick={()=>alert('정산확인요청 보내기')}>정산확인요청</Button></Item></Grid>
+                          }
                       </Grid>
                       )
                   }

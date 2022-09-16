@@ -52,10 +52,11 @@ const InputItem = {
     borderRadius:1,
     boxShadow: 10
   }
+
 const LineHr = {
-    width:'90%',
-    height:'1px',
-    backgroundColor:'#000'
+    width:'100%',
+    height:'2px',
+    backgroundColor:'#aaa'
 }
 
 const ButtonItem = {
@@ -78,52 +79,54 @@ const ButtonItem = {
     textDecoration:'none',
     color:'#d11'
   }
-const SearchModal = (props) => {
+const SearchModal = ({onCloseModal}) => {
  // useState를 사용하여 open상태를 변경한다. (open일때 true로 만들어 열리는 방식)
     const [modalOpen, setModalOpen] = useState(false);
-    const [place, setPlace] = useState();
+    const [departure, setDeparture] = useState();
+    const [destination, setDestination] = useState();
     const [startDateValue, setStartDateValue] = useState({});
-    const [filter, setFilter] = useState({_condition:'',_dates:'',_place:''});
+    const [filter, setFilter] = useState({_condition:'',_dates:'',_departure:'',destination:''});
 
     const openModal = () => {
         setModalOpen(true);
-        setFilter({_condition:'',_dates:'',_place:''});
+        setFilter({_condition:'',_dates:'',_departure:'',destination:''});
     };
     const closeModal = () => {
         setModalOpen(false);
     };
-    // const onSelectDistance = () => {
-    //     setFilter(()=>({
-    //         _dates: startDateValue,
-    //         _place: place,
-    //         _condition: 'distance'
-    //     }));
-    // }
 
-    const placeChange = (e) => {
+    const departureChange = (e) => {
         console.log(e.target.value,'!!');
-        setPlace(e.target.value);
+        setDeparture(e.target.value);
       }
+    const destinationChange = (e) => {
+        console.log(e.target.value,'!! dest');
+        setDestination(e.target.value);
+    }
     const onSelectReview = () => {
         setFilter({
             _dates: startDateValue,
-            _place: place,
+            _departure:departure,
+            _destination:destination,
             _condition: 'review_average_score'
         });
     }
     const onSelectTime = () => {
         setFilter({
             _dates: startDateValue,
-            _place: place,
+            _departure:departure,
+            _destination:destination,
             _condition: 'start_date'
         });
     }
 
     const dataToParent = () => {
-        console.log('dataToParent place',place,' dates',startDateValue);
-        props.onCloseModal({
+        //console.log('dataToParent departure',departure,' destination',destination,' dates',startDateValue);
+        console.log(onCloseModal);
+        onCloseModal({
             _dates: startDateValue,
-            _place: place,
+            _departure:departure,
+            _destination:destination,
             _condition : filter._condition
         });
         setModalOpen(false);
@@ -142,9 +145,17 @@ const SearchModal = (props) => {
                 <Grid item xs={12} sm={12} md={12} ><br/></Grid>
                 <Grid item xs={1} sm={1} md={1} ></Grid>
                 <Grid item xs={2} sm={2} md={2} sx={InputTitle}>
-                    <div style={{marginTop:"10px"}}>지역</div></Grid>
+                    <div style={{marginTop:"10px"}}>출발지</div></Grid>
                 <Grid item xs={8} sm={8} md={8} sx={InputItem}>
-                    <input name="place" onChange={placeChange}></input>
+                    <input name="departure" style={{width:"100%", height:"100%", border:"1px solid #ccc", borderRadius:"5px"}} onChange={departureChange}></input>
+                </Grid>
+
+                <Grid item xs={1} sm={1} md={1} ></Grid>
+                <Grid item xs={2} sm={2} md={2} sx={InputTitle}>
+                    <div style={{marginTop:"10px"}}>도착지</div>
+                </Grid>
+                <Grid item xs={8} sm={8} md={8} sx={InputItem}>
+                    <input name="destination" style={{width:"100%", height:"100%", border:"1px solid #ccc", borderRadius:"5px"}}  onChange={destinationChange}></input>
                 </Grid>
 
                 <Grid item xs={1} sm={1} md={1} ></Grid>
@@ -154,7 +165,7 @@ const SearchModal = (props) => {
                 <Grid item xs={8} sm={8} md={8} sx={InputItem}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                    renderInput={(props) => <TextField {...props} sx={{border:'none'}} />}
+                    renderInput={(props) => <TextField {...props} sx={{width:"100%", height:"100%",border:'none'}} />}
                     inputFormat={"yyyy-MM-dd"}
                     value={startDateValue}
                     mask={"____-__-__"}
@@ -171,7 +182,6 @@ const SearchModal = (props) => {
                 <Grid item xs={12} sm={12} md={12} ><br/></Grid>
 
                 <Grid item xs={12} sm={12} md={12} align="center">
-                    {/* <Button sx={filter._condition=='distance'?ButtonClickedItem:ButtonItem} onClick={onSelectDistance}>거리 순</Button> */}
                     <Button sx={filter._condition=='review_average_score'?ButtonClickedItem:ButtonItem} onClick={onSelectReview}>리뷰점수 순</Button>
                     <Button sx={filter._condition=='start_date'?ButtonClickedItem:ButtonItem} onClick={onSelectTime}>시간 순</Button>
                 </Grid>

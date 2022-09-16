@@ -13,10 +13,22 @@ import isEmptyObj from '../Utils/BasicUtils';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import SearchModal from './Children/SearchPopup';
 import dayjs from "dayjs";
+const InputTitle = {
+  backgroundColor: '#1A2027',
+  padding: '2px',
+  textAlign: 'center',
+  color:'#fff',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '35px',
+  border: '2px solid #1A2027',
+  borderRadius:1,
+  boxShadow: 10
+}
 
 const MyCarpoolList = () => {
 
-  const [query, setQuery] = React.useState({user_id:'3'});
+  const [query, setQuery] = React.useState({user_id:'test-d-001@gmail.com'});
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
@@ -26,10 +38,10 @@ const MyCarpoolList = () => {
 
     setQuery({
       user_id : query.user_id,
-      place : data._place,
-      dates : dayjs(data._dates).format("YYYY-MM-DD"),
-      order_condition : data._condition
-
+      departure : data._departure,
+      destination : data._destination,
+      start_date : dayjs(data._dates).format("YYYY-MM-DD"),
+      condition : data._condition
     });
   }
 
@@ -42,15 +54,18 @@ const MyCarpoolList = () => {
         await setIsLoading(true);
 
         const response = await getPartyInfoMyNow(query);
+        console.log(response);
         let array = [];
-        for(let index in response.data){
-          array.push(response.data[index])
+        //for(let index in response.data){
+        for(let index in response){
+          array.push(response[index])
         }
         await setPost(!response.message ? array : []);
         await setIsLoading(false);
     }
     const isEmpty = isEmptyObj(post)||(post.length === 0);
     // console.log('isEmpty',isEmpty,' isloading',isLoading);
+
     if(isEmpty || isLoading){
       return (
       <>
@@ -107,7 +122,7 @@ const MyCarpoolList = () => {
                     }}
                   >
                     <Stack direction="row" spacing={2}>
-                      <Subtitle sx={{width:'12%'}}>파티상태</Subtitle>
+                      <Subtitle sx={{width:'12%',p:1}}>파티상태</Subtitle>
                       <Item sx={{boxShadow:0}}>
                       <Typography variant="h6" noWrap sx={{boxShadow:0}}>
                         {p.curNumberOfParty} / {p.maxNumberOfParty} 명
@@ -116,20 +131,23 @@ const MyCarpoolList = () => {
                       <Item sx={{fontSize:'1em', color:'#d11', fontWeight:'bold', boxShadow:0}}>
                         {ListStatusDesc[p.status]}
                       </Item>
+                      <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
+                        [ {p.driver.userId=== 'test-d-001@gmail.com'?'운전자':'카풀러'} ]
+                      </Item>
                     </Stack>
                   </Paper>
                   </Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발지</Subtitle> </Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>출발지</Subtitle> </Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.placeOfDeparture}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발시간</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>출발시간</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{ConvertToYYYYMMDDhhmmtoKor(p.moveInfo.startDate)}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차종</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>차종</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.driver.carKind}</Item> </Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>도착지</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>도착지</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.destination}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>거리</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>거리</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.distance}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차번호</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>차번호</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.driver.carNumber}</Item></Grid>
               </Grid>
               </Link>

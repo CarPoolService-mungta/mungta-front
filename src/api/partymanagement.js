@@ -8,7 +8,7 @@ import stringify from 'json-stringify';
  * @returns
  */
  export const getPartyInfo = async params =>
- axiosInstance.get('/party-management/partyInfos/carpool-info',{params});
+ axiosInstance.get('/api/party-management/partyInfos/carpool-info',{params});
 
 /**
  * 현재 참여 가능한 카풀리스트 전체 검색
@@ -18,21 +18,21 @@ import stringify from 'json-stringify';
  * @returns
  */
 export const getPartyInfoAllNow = async params =>
-       axiosInstance.get('/party-management/partyInfos/carpool-now-list',{params});
+       axiosInstance.get('/api/party-management/partyInfos/carpool-now-list',{params});
 
 /**
 *  개인 별 진행 중인 카풀 내역 검색
 * js : MyCarpoolList.js
 */
 export const getPartyInfoMyNow = async params =>
-       axiosInstance.get('/party-management/partyInfos/carpool-now-my-list',{params});
+       axiosInstance.get('/api/party-management/partyInfos/carpool-now-my-list',{params});
 
 /**
 *  개인 별 지난 카풀 내역 검색
 * js : MyCarpoolPastList.js
 */
 export const getPartyInfoPastMyNow = async params =>
-       axiosInstance.get('/party-management/partyInfos/carpool-past-my-list',{params});
+       axiosInstance.get('/api/party-management/partyInfos/carpool-past-my-list',{params});
 
 /**
  * 이동정보 등록

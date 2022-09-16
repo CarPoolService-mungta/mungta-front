@@ -46,22 +46,9 @@ ShadowBox.propTypes = {
     shadow: PropTypes.string.isRequired
 };
 
-function DetailSubInfo(props) {
-    const isDriver = props.isDriver;
-    const status = props.posts.status;
-    console.log('isDriver:',isDriver);
-    if (isDriver) {
-      // if(status==='STARTED'){
-      //   return <MyCarpoolDetailForDriver posts={props.posts}/>;
-      // }else{
-      //   return <></>
-      // }
-      return <MyCarpoolDetailForDriver posts={props.posts}/>;
-    }
-    else return <MyCarpoolDetailForCarpooler posts={props.posts}/>;
-  }
 
-const MyCarpoolDetail = (props) => {
+
+const MyCarpoolDetailForMatching = (props) => {
 
 
   const location=useLocation();
@@ -75,32 +62,22 @@ const MyCarpoolDetail = (props) => {
 
   const [isLoading, setIsLoading] = React.useState(false);
   const partyId = location.state.data.id;
+  function isInParty(carpooler) {
+    return carpooler.userId === 'test-d-001@gmail.com'
+  }
   console.log('post:',post);
 
-    // React.useEffect(async ()=>{
-    //     await getPartyInfos();
-    // },[partyId]);
 
-    // const getPartyInfos = async ()=>{
-    //     await setIsLoading(true);
-
-    //     const response = await getPartyInfo(partyId);
-    //     let array = [];
-    //     for(let index in response.data){
-    //       array.push(response.data[index])
-    //     }
-    //     await setPost(!response.message ? array : []);
-    //     await setIsLoading(false);
-    // }
-
-    //console.log(post, post.partyInfoes.length);
-    //const isEmpty = (post.partyInfoes.length === 0);
-    // console.log(post);
-    // console.log(moveInfo);
-    const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
+    const type = location.state.type
     const isDriver = (location.state.data.driver.userId === 'test-d-001@gmail.com'); //여기에 나중에 user id랑 비교
-    const canDelete = (location.state.data.curNumberOfParty === 1) && (location.state.data.status ==='OPEN'); //여기에 나중에 user id랑 비교
-    console.log("isDriver:",isDriver);
+    const canApply = (location.state.data.curNumberOfParty <location.state.data.maxNumberOfParty)
+                      && (location.state.data.status ==='OPEN')
+                      && !isDriver
+                      && (location.state.data.carPooler.find(carpoolers=>isInParty(carpoolers))===undefined);
+     console.log(location);
+     console.log("isDriver:",isDriver);
+     console.log('canApply:',canApply);
+
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -173,26 +150,25 @@ const MyCarpoolDetail = (props) => {
                         }
                         </Stack>
                     </Box>
-                    {(canDelete)?
+                    {(canApply)?
                     <Grid item xs={12} sx={{textAlign:"center"}}>
                       {/* <Link to="/modify-carpool-detail"
                         style={{ textDecoration: 'none' }}
                         state={{ data:post}}>
                         <Button size="small" variant="contained" color="primary" align="center">삭제하기</Button>
                       </Link> */}
-                      <Button size="small" variant="contained" color="error" align="center" onClick={()=>alert('삭제하기')}>삭제하기</Button>
+                      <Button size="small" variant="contained" color="error" align="center" onClick={()=>alert('파티신청하기')}>파티신청하기</Button>
                      </Grid>
                     :<br/>
                     }
                     </MainCard>
 
                 </Grid>
-                
-                <DetailSubInfo isDriver={isDriver} posts={post}/>
+
 
             </Grid>
         </ComponentSkeleton>
       </>
       );
 };
-export default MyCarpoolDetail;
+export default MyCarpoolDetailForMatching;

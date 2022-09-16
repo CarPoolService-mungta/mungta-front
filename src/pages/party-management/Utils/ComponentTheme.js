@@ -15,16 +15,16 @@ export const Item = styled(Paper)(({ theme }) => ({
   }));
 export const Subtitle = styled(Paper)(({ theme }) => ({
     backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
+    // padding: theme.spacing(1),
     textAlign: 'center',
-    fontSize:'80%',
+    fontSize:'100%',
     color:'#fff'
   }));
 
 export  const ListBgColor = {
-    OPEN : '#B8FEFF',
-    FULL : '#FF7B7B',
-    STARTED : '#FFE67B',
+    OPEN : '#0080FF',
+    FULL : '#FF4000',
+    STARTED : '#FACC2E',
     CLOSED : '#626262'
   }
 

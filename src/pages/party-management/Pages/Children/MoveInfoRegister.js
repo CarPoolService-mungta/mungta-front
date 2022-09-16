@@ -33,12 +33,38 @@ import {postMoveInfo} from 'api/partymanagement';
 import { useSnackbar } from 'notistack';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 
+const InputTitle = {
+    backgroundColor: '#1A2027',
+    textAlign: 'center',
+    color:'#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '50px',
+    border: '2px solid #1A2027',
+    borderRadius:1,
+    boxShadow: 10
+  }
+
+const InputItem = {
+    backgroundColor: '#fff',
+    padding: '2px',
+    margin:'5px',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '50px',
+    border: '2px solid #fff',
+    borderRadius:1,
+    boxShadow: 10
+  }
+
+
 const MoveInfoRegister = () => {
     const navigate = useNavigate();
     const formik = useFormik({
       initialValues: {
-        placeOfDeparture: '출발',
-        destination: '도착',
+        placeOfDeparture: '',
+        destination: '',
         startDate: '',
         distance:'',
         maxNumberOfParty:'',
@@ -108,16 +134,18 @@ const MoveInfoRegister = () => {
         <form onSubmit={formik.handleSubmit}>
 
             <Grid container  spacing={3}>
+
                 <Grid item xs={3} sm={3} md={3} sx={{p:1}}>
-                    <Subtitle><div style={{marginTop:'10px'}}>출발지</div></Subtitle>
+                    <Subtitle sx={InputTitle}><div style={{marginTop:'10px'}}>출발지</div></Subtitle>
                 </Grid>
                 <Grid item xs={9} sm={9} md={9} sx={{p:1}}>
-                    <Item>
-                        <MapModal textName="출발지역 선택" type="a" mapid="TMapDepart"/>
+                     <Item sx={InputItem}>
+                        {/* <MapModal textName="출발지역 선택" type="a" mapid="TMapDepart"/> */}
                         <input
                             id="placeOfDeparture"
                             name="placeOfDeparture"
-                            type="hidden"
+                            type="text"
+                            style={{width:"100%", height:"100%", border:"1px solid #ccc", borderRadius:"5px"}}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.placeOfDeparture}
@@ -128,17 +156,18 @@ const MoveInfoRegister = () => {
                     ) : null}
                 </Grid>
                 <Grid item xs={3} sm={3} md={3} sx={{p:1}}>
-                    <Subtitle >
+                    <Subtitle sx={InputTitle}>
                         <div style={{marginTop:'10px'}}>도착지</div>
                     </Subtitle>
                 </Grid>
                 <Grid item xs={9} sm={9} md={9} sx={{p:1}}>
-                    <Item>
-                        <MapModalDestination textName="도착지역 선택" type="b" mapid="TMapDest"/>
+                    <Item sx={InputItem}>
+                        {/* <MapModalDestination textName="도착지역 선택" type="b" mapid="TMapDest"/> */}
                         <input
                             id="destination"
                             name="destination"
-                            type="hidden"
+                            type="text"
+                            style={{width:"100%", height:"100%", border:"1px solid #ccc", borderRadius:"5px"}}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.destination}
@@ -150,7 +179,7 @@ const MoveInfoRegister = () => {
                 </Grid>
                 <Grid item xs={12} md={6} sx={{p:1}}>
                     <Stack spacing={1} sx={{p:1}}>
-                        <Subtitle ><div  style={{marginTop:'10px'}}>출발시간</div></Subtitle>
+                        <Subtitle sx={InputTitle}><div  style={{marginTop:'10px'}}>출발시간</div></Subtitle>
                         <Field
                             name="startDate"
                             component={DatepickerField}
@@ -159,6 +188,7 @@ const MoveInfoRegister = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.startDate}
+                            
                         />
                         {formik.touched.startDate && formik.errors.startDate ? (
                         <div>{formik.errors.startDate}</div>
@@ -167,7 +197,7 @@ const MoveInfoRegister = () => {
                 </Grid>
                 <Grid item xs={12} md={6} sx={{p:1}}>
                     <Stack spacing={1} sx={{p:1}}>
-                        <Subtitle >
+                        <Subtitle sx={InputTitle}>
                             <div style={{marginTop:'10px'}}>이동거리</div>
                         </Subtitle>
                         <OutlinedInput
@@ -176,19 +206,21 @@ const MoveInfoRegister = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.distance}
+                                sx={InputItem}
                             />
                             {formik.touched.distance && formik.errors.distance ? (
                             <div>{formik.errors.distance}</div>
                             ) : null}
                     </Stack>
                     <Stack spacing={1} sx={{p:1}}>
-                        <Subtitle ><div style={{marginTop:'10px'}}>파티인원</div></Subtitle>
+                        <Subtitle sx={InputTitle}><div style={{marginTop:'10px'}}>파티인원</div></Subtitle>
                         <OutlinedInput
                                 id="maxNumberOfParty"
                                 name="maxNumberOfParty"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.maxNumberOfParty}
+                                sx={InputItem}
                             />
                             {formik.touched.maxNumberOfParty && formik.errors.maxNumberOfParty ? (
                             <div>{formik.errors.maxNumberOfParty}</div>
