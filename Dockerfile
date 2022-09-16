@@ -4,4 +4,7 @@ COPY package.json ./
 RUN npm install
 COPY ./ ./
 EXPOSE 3000
-CMD ["npm","start"]
+
+ARG ENVIRONMENT
+ENV FRONT_ENV="${ENVIRONMENT}"
+CMD npm run start:$FRONT_ENV

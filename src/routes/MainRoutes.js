@@ -10,23 +10,23 @@ import MyCarpoolList from 'pages/party-management/Pages/MyCarpoolList';
 import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 
-// render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
-
-// render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
-
-// render - utilities
-const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
-const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
-const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
-const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
 
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
+const PartyMemberList = Loadable(lazy(() => import('pages/party-matching/PartyMemberList')));
 
-const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
-const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
-const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
+const Questions = Loadable(lazy(() => import('pages/question/Questions')));
+const Question = Loadable(lazy(() => import('pages/question/Question')));
+const PostQuestion = Loadable(lazy(() => import('pages/question/PostQuestion')));
+
+const Mypage = Loadable(lazy(() => import('pages/authentication/Mypage')));
+
+const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
+const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
+const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
+
+//admin
+const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
+const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
 
 const Accusations = Loadable(lazy(() => import('pages/user-profile/accusation/Accusations')));
 const AccusationDetail = Loadable(lazy(() => import('pages/user-profile/accusation/AccusationDetail')));
@@ -43,40 +43,16 @@ const MainRoutes = {
     children: [
         {
             path: '/',
-            element: <DashboardDefault />
-        },
-        {
-            path: 'color',
-            element: <Color />
-        },
-        {
-            path: 'dashboard',
-            children: [
-                {
-                    path: 'default',
-                    element: <DashboardDefault />
-                }
-            ]
-        },
-        {
-            path: 'sample-page',
-            element: <SamplePage />
-        },
-        {
-            path: 'shadow',
-            element: <Shadow />
-        },
-        {
-            path: 'typography',
-            element: <Typography />
-        },
-        {
-            path: 'icons/ant',
-            element: <AntIcons />
+            element:
+              <SelectRole />
         },
         {
             path: 'party-matching',
             element: <PartyMatching />
+        },
+        {
+            path: 'party-member',
+            element: <PartyMemberList />
         },
         {
             path: 'questions',
@@ -89,6 +65,18 @@ const MainRoutes = {
         {
             path: 'question/post',
             element: <PostQuestion/>
+        },
+        {
+            path: 'notices',
+            element: <Notices />
+        },
+        {
+            path: 'notice/:id',
+            element: <Notice/>
+        },
+        {
+            path: 'notice/post',
+            element: <PostNotice/>
         },
         {
             path: 'party-management',
@@ -119,6 +107,18 @@ const MainRoutes = {
             element: <MyCarpoolDetail />
         },
         {
+            path: 'mypage',
+            element: <Mypage />
+        },
+        {
+            path: 'admin/question-management',
+            element: <QuestionsManagement />
+        },
+        {
+            path: 'admin/question-management/response/:id',
+            element: <PostResponseToQuestion />
+        },
+        {
             path: 'accusations',
             element: <Accusations/>
         },
@@ -141,7 +141,7 @@ const MainRoutes = {
         {
             path: 'admin-accusations/:accusationId',
             element: <AdminAccusationDetail/>
-        }
+        },
     ]
 };
 

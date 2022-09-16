@@ -8,11 +8,11 @@ import { SnackbarProvider } from 'notistack';
 
 const App = () => (
     <ThemeCustomization>
-        <SnackbarProvider>
-            <ScrollTop>
-                <Routes />
-            </ScrollTop>
-        </SnackbarProvider>
+      <SnackbarProvider>
+        <ScrollTop>
+            <Routes />
+        </ScrollTop>
+      </SnackbarProvider>
     </ThemeCustomization>
 );
 
