@@ -1,13 +1,12 @@
 import React, { useState, useRef } from 'react';
-//import { signout} from 'utils/fetchHandler';
-import { Link,Button,Container,Avatar,Typography} from '@material-ui/core';
-import Box from '@mui/material/Box';
-import pic from 'assets/images/users/avatar-1.png'
-import { useSelector } from 'react-redux';
-import PropTypes from "prop-types";
 import MainCard from 'components/MainCard';
+import Box from '@mui/material/Box';
+import {Link,Button,Container,Avatar,Typography} from '@material-ui/core';
+import {useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+//import PropTypes from "prop-types";
 
+import pic from 'assets/images/users/avatar-1.png'
 // Avatar.propTypes = {
 //     src:PropTypes.oneOfType([
 //       PropTypes.string,
@@ -17,14 +16,25 @@ import {useNavigate} from 'react-router-dom';
 const avartarStyle = {
 height: "20vh",
 width : "10vw",
+marginLeft: 100,
+marginBottom: 20,
 }
 
 const Mypage = () => {
-
-  const navigate = useNavigate();
   let userInfo   = useSelector(state =>  state.userInfo );
   console.log("reduxInfo:",userInfo );
 
+  const navigate = useNavigate();
+
+  const goUpdate = () => {
+    alert("회원정보수정");
+    //navigate('/party-management')
+  };
+
+  const goAdminChange = () => {
+    alert("관리자회원변경신청");
+    //navigate('/party-management')
+  };
   const goReview = () => {
     alert("리뷰화면이동!");
     //navigate('/party-management')
@@ -36,6 +46,7 @@ const Mypage = () => {
   const goCarpool = () => {
     navigate('/party-management')
   };
+
 ////////////////////////////////// 파일업로드 테스트중
   // const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
   // const [imageUrl, setImageUrl] = useState(null);
@@ -93,20 +104,19 @@ const Mypage = () => {
   return (
     <MainCard darkTitle={true}  title="Mypage" >
       <Box sx={{ alignSelf: 'center',maxWidth: { xs: 400, lg: 475 }, margin: { xs: 2.5, md: 3 }, }}>
-        <Container align="center" >
+        <Container align="left" sx={{ margin: 1 }} >
           <Avatar src={pic} style = {avartarStyle} ></Avatar>
-          <Typography variant="h3">
-            {userInfo.userName} : {userInfo.userId}<br></br>{userInfo.userTeam}
+          <Typography  variant="h3">
+            {userInfo.userName}님 환영합니다.
           </Typography>
         </Container>
         <Container>
-        <Link to="/mypage/modify">
-          <Button type="submit"  sx={{ width: 165, padding: 1, margin: 1 }} variant="contained" color="primary">회원정보수정</Button>
-        </Link>
+        {/* <Link to="/mypage/modify"> */}
+          <Button type="submit"  sx={{ width: 148, padding: 1, margin: 1 }} variant="contained" color="primary" onClick={goUpdate}>회원정보수정</Button>
+        {/* </Link> */}
         <span>  </span>
-        <Link to="/mypage/modify">
-          <Button type="submit" sx={{ width: 165, padding: 1, margin: 1 }} variant="contained" color="primary">관리자회원변경</Button>
-        </Link>
+
+          <Button type="submit" sx={{ width: 148, padding: 1, margin: 1 }} variant="contained" color="primary" onClick={goAdminChange}>관리자회원변경</Button>
         </Container>
         <p></p>
         <div className="Mypage-detail">
