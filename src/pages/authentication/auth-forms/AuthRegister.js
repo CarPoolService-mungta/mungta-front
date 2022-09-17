@@ -29,38 +29,41 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import {authenticatedByEmail, authnumcheckByEmail} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 
+import { useSnackbar } from 'notistack';
+import CustomError from 'utils/CustomError';
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
 
     const navigate = useNavigate();
-const handleSubmit = ()=>{
-alert("handleSubmit");
-}
+    const { enqueueSnackbar } = useSnackbar();
 
     const authenticationNumSend  = async ()=>{
-        await authenticatedByEmail({userMailAddress: emaillogin.value ,authNumber: '', possibleYn:''})
+        await authenticatedByEmail({userMailAddress: email.value ,authNumber: '', possibleYn:''})
         .then((response) => {
             if(response instanceof CustomError){
+                console.log("userInfo:",response.message );
                 enqueueSnackbar(response.message, {variant: 'error'});
             }else{
                 enqueueSnackbar('인증번호가 발송되었습니다. ', {variant: 'success'});
             }
         });
-
-        alert("인증번호발송");
-
     };
     const authenticationNumCheck  = async ()=>{
-        await authnumcheckByEmail({emaillogin,authnum})
-            //{userMailAddress: emaillogin.value ,authNumber: authnum.value, possibleYn:''})
+
+        await authnumcheckByEmail({userMailAddress: email.value ,authNumber: authnum.value, possibleYn:''})
         .then((response) => {
             if(response instanceof CustomError){
                 enqueueSnackbar(response.message, {variant: 'error'});
             }else{
-                enqueueSnackbar('인증번호가 확인되었습니다. ', {variant: 'success'});
-                navigate('/auth/registerform');
-
+                console.log("userInfo:",response.userMailAddress );
+                console.log("userInfo:",response.possibleYn );
+                if(response.possibleYn === 'Y'){
+                    enqueueSnackbar('인증번호가 확인되었습니다. ', {variant: 'success'});
+                    navigate('/auth/registerform');
+                }else{
+                    enqueueSnackbar('인증이 실패하였습니다.', {variant: 'error'});
+                }
             }
         });
     };
@@ -96,7 +99,7 @@ alert("handleSubmit");
                                     <InputLabel htmlFor="email-signup">Email Address</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        id="emaillogin"
+                                        id="email"
                                         type="email"
                                         value={values.email}
                                         name="email"
@@ -116,7 +119,7 @@ alert("handleSubmit");
                                     <OutlinedInput
                                         fullWidth
                                         id="authnum"
-                                        value={values.company}
+                                        value={values.authnum}
                                         name="authNum"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
@@ -143,6 +146,7 @@ alert("handleSubmit");
 
                             </Grid>
                         </Grid>
+                        
                     </form>
                 )}
             </Formik>
