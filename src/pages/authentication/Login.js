@@ -13,7 +13,7 @@ return (
                 <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{mb:{xs: -0.5, sm: 0.5 }}}>
                     <Typography variant="h3">로그인</Typography>
                     <Typography component={Link} to="/auth/register" variant="body1" sx={{textDecoration:'none'}} color="primary">
-                        회원이 아니신가요?
+                        Don&apos;t have an account?
                     </Typography>
                 </Stack>
             </Grid>

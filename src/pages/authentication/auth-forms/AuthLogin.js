@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -22,6 +22,8 @@ import { setUserInfo } from 'store/reducers/userInfo';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 const AuthLogin = () => {
+    const initialState = {email:'', password:''};
+    const [userData, setuserData] = useState(initialState);
     let dispatch = useDispatch();
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
