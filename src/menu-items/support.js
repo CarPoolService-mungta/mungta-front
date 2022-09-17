@@ -1,5 +1,6 @@
 // assets
 import { ChromeOutlined, QuestionOutlined, EyeOutlined,NotificationOutlined } from '@ant-design/icons';
+import {ADMIN_TYPE} from "utils/constants";
 
 // icons
 const icons = {
@@ -33,6 +34,7 @@ const support = {
         {
             id: 'admin',
             title: '관리자 영역',
+            authority: ADMIN_TYPE,
             type: 'collapse',
             icon: icons.EyeOutlined,
             children: [
