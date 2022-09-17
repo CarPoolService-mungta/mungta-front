@@ -15,10 +15,12 @@ import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
 import MyCarpoolDetailForCarpooler from './Children/MyCarpoolDetailForCarpooler';
 import MyCarpoolDetailForDriver from './Children/MyCarpoolDetailForDriver';
-import {Link, useLocation} from 'react-router-dom';
-import { getPartyInfo } from 'api/partymanagement';
+import {Link, useLocation,useNavigate} from 'react-router-dom';
+import { deleteMoveInfo, getPartyInfo } from 'api/partymanagement';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
-
+import CustomError from 'utils/CustomError';
+import DeleteCheckModal from 'components/@extended/DeleteCheckModal';
+import { useSnackbar } from 'notistack';
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -62,8 +64,8 @@ function DetailSubInfo(props) {
   }
 
 const MyCarpoolDetail = (props) => {
-
-
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const location=useLocation();
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState(location.state.data);
@@ -74,29 +76,27 @@ const MyCarpoolDetail = (props) => {
   console.log('location type :',location.state.type);
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const partyId = location.state.data.id;
   console.log('post:',post);
 
-    // React.useEffect(async ()=>{
-    //     await getPartyInfos();
-    // },[partyId]);
+  const onDeleteConfirm = async () => {
+    const response = await deleteMoveInfo({partyId});
+    console.log(response);
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+    } else {
+      enqueueSnackbar('운전정보가 삭제되었습니다.', {variant: 'success'});
+      navigate(`/my-carpool-list`);
+    }
+  }
+  const onDeleteCheckClick=()=>{
+    setDeleteModalOpen(true);
+  }
+  const onDeleteCancel = ()=>{
+    setDeleteModalOpen(false);
+  }
 
-    // const getPartyInfos = async ()=>{
-    //     await setIsLoading(true);
-
-    //     const response = await getPartyInfo(partyId);
-    //     let array = [];
-    //     for(let index in response.data){
-    //       array.push(response.data[index])
-    //     }
-    //     await setPost(!response.message ? array : []);
-    //     await setIsLoading(false);
-    // }
-
-    //console.log(post, post.partyInfoes.length);
-    //const isEmpty = (post.partyInfoes.length === 0);
-    // console.log(post);
-    // console.log(moveInfo);
     const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
     const isDriver = (location.state.data.driver.userId === 'test-d-001@gmail.com'); //여기에 나중에 user id랑 비교
     const canDelete = (location.state.data.curNumberOfParty === 1) && (location.state.data.status ==='OPEN'); //여기에 나중에 user id랑 비교
@@ -175,19 +175,17 @@ const MyCarpoolDetail = (props) => {
                     </Box>
                     {(canDelete)?
                     <Grid item xs={12} sx={{textAlign:"center"}}>
-                      {/* <Link to="/modify-carpool-detail"
-                        style={{ textDecoration: 'none' }}
-                        state={{ data:post}}>
-                        <Button size="small" variant="contained" color="primary" align="center">삭제하기</Button>
-                      </Link> */}
-                      <Button size="small" variant="contained" color="error" align="center" onClick={()=>alert('삭제하기')}>삭제하기</Button>
+                      <Button size="small" variant="contained" color="error" align="center" onClick={onDeleteCheckClick}>삭제하기</Button>
+                      <DeleteCheckModal modalOpen={deleteModalOpen}
+                          onCancel={onDeleteCancel}
+                          onOk={onDeleteConfirm}/>
                      </Grid>
                     :<br/>
                     }
                     </MainCard>
 
                 </Grid>
-                
+
                 <DetailSubInfo isDriver={isDriver} posts={post}/>
 
             </Grid>

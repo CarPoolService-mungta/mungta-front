@@ -32,6 +32,7 @@ import {postMoveInfo} from 'api/partymanagement';
 //import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
+import CustomError from 'utils/CustomError';
 
 const InputTitle = {
     backgroundColor: '#1A2027',
@@ -60,6 +61,7 @@ const InputItem = {
 
 
 const MoveInfoRegister = () => {
+    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const formik = useFormik({
       initialValues: {
@@ -119,13 +121,13 @@ const MoveInfoRegister = () => {
         setSubmitting(false);
 
         //enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
-        navigate(`/my-carpool-list`);
-        // if(response instanceof CustomError){
-        //     enqueueSnackbar(response.message, {variant: 'error'});
-        // }else{
-        //     enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
-        //     navigate(`/my-carpool-list`);
-        // }
+        //navigate(`/my-carpool-list`);
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+        }else{
+            enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
+            navigate(`/my-carpool-list`);
+        }
     },
     });
     return (
@@ -188,7 +190,7 @@ const MoveInfoRegister = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.startDate}
-                            
+
                         />
                         {formik.touched.startDate && formik.errors.startDate ? (
                         <div>{formik.errors.startDate}</div>

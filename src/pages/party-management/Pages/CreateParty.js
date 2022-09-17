@@ -14,7 +14,13 @@ import {
     Typography
 } from '@mui/material';
 import MoveInfoRegister from './Children/MoveInfoRegister';
+import {useSelector } from 'react-redux';
+import {useNavigate} from 'react-router-dom';
+
 const CreateParty = () => {
+    let userInfo   = useSelector(state =>  state.userInfo );
+    console.log("CreateParty reduxInfo:",userInfo );
+
     return (
         <>
 

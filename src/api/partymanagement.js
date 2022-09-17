@@ -48,3 +48,5 @@ export const postMoveInfo = async function (Data) {
     return response;
 }
 
+export const deleteMoveInfo = async params =>
+       axiosInstance.delete('/api/party-management/partyInfos/delete-moveinfo',{params});
