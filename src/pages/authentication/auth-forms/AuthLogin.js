@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -29,6 +29,7 @@ const AuthLogin = () => {
     const { enqueueSnackbar } = useSnackbar();
     //const [checked, setChecked] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
+    const userInfo   = useSelector(state =>  state.userInfo );
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -37,6 +38,16 @@ const AuthLogin = () => {
         event.preventDefault();
     };
 
+    useEffect(()=>{
+        dispatch(
+            setUserInfo({ userId     : "",
+                userName   : "",
+                userTeam   : "",
+                email      : "",
+                driverYn   : "",
+                userType   : ""
+            }));
+    },[])
     const signinConfirm = async ()=>{
         await signinById({userId: email.value ,userPassword: password.value})
         .then((response) => {
@@ -48,7 +59,7 @@ const AuthLogin = () => {
                 localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
 
                 const userInfo = parseJwt(response.accessToken);
-                console.log("userInfo:",userInfo );
+                // console.log("userInfo:",userInfo );
 
                 dispatch(
                 setUserInfo({ userId     : response.key,
@@ -76,14 +87,13 @@ const AuthLogin = () => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        setStatus({ success: false });
-                        setSubmitting(false);
-                        signinConfirm();
-                    } catch (err) {
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
+                    setStatus({ success: false });
+                    setSubmitting(true);
+                    const result = await signinConfirm();
+                    setSubmitting(false);
+                    if(result instanceof CustomError){
+                        enqueueSnackbar(result.message, {variant: 'error'});
+                        return;
                     }
                 }}
             >
