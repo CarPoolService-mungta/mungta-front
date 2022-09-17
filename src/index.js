@@ -16,25 +16,14 @@ import App from './App';
 import { store } from 'store';
 import reportWebVitals from './reportWebVitals';
 
-import AuthGuard from 'pages/AuthGuard'
-// 추가
-import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
-const persistor = persistStore(store);
-
 // ==============================|| MAIN - REACT DOM RENDER  ||============================== //
-
 
 ReactDOM.render(
     <StrictMode>
         <ReduxProvider store={store}>
-          <PersistGate persistor={persistor}>
-              <BrowserRouter>
-                <AuthGuard>
-                  <App />
-                </AuthGuard>
-              </BrowserRouter>
-          </PersistGate>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
         </ReduxProvider>
     </StrictMode>,
     document.getElementById('root')

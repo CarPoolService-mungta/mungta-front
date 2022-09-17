@@ -18,17 +18,17 @@ const pages = {
             id: 'login1',
             title: 'Login',
             type: 'item',
-            url: '/auth/login',
+            url: '/login',
             icon: icons.LoginOutlined,
-            // target: true
+            target: true
         },
         {
             id: 'register1',
             title: 'Register',
             type: 'item',
-            url: '/auth/register',
+            url: '/register',
             icon: icons.ProfileOutlined,
-            // target: true
+            target: true
         }
     ]
 };

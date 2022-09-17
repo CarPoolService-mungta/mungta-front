@@ -3,6 +3,7 @@ import {Typography} from "@mui/material";
 
 const ContentsCard = ({contents})=>{
 
+    console.log("contents : ", contents.title);
     return <>
         {contents.title ?
             <MainCard darkTitle={true} title={contents.title} >

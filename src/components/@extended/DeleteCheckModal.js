@@ -1,11 +1,9 @@
 import {useState} from "react";
 import {Box, Button, Grid, Modal} from "@mui/material";
-import {LoadingButton} from '@material-ui/lab';
 
 const DeleteCheckModal = ({modalOpen=false,
                           onOk,
-                          onCancel,
-                              deleteLoading})=>{
+                          onCancel})=>{
 
     return <>
         <Modal
@@ -22,15 +20,10 @@ const DeleteCheckModal = ({modalOpen=false,
                     justifyContent="center"
                     spacing={2}>
                     <Grid item>
-                        <LoadingButton variant="contained"
-                                       onClick={onOk}
-                                       color="error"
-                                       loading={deleteLoading}>삭제</LoadingButton>
+                        <Button variant="contained" onClick={onOk} color="error">삭제</Button>
                     </Grid>
                     <Grid item>
-                        <LoadingButton variant="contained"
-                                onClick={onCancel}
-                                loading={deleteLoading}>취소</LoadingButton>
+                        <Button variant="contained" onClick={onCancel}>취소</Button>
                     </Grid>
                 </Grid>
             </Box>
