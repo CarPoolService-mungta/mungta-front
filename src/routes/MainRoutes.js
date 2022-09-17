@@ -24,6 +24,12 @@ const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
 const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
 const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
+const ReviewRegister = Loadable(lazy(() => import('pages/review-management/ReviewRegister')));
+const ReviewSelect = Loadable(lazy(() => import('pages/review-management/ReviewSelect')));
+const DriverReview = Loadable(lazy(() => import('pages/review-management/DriverReview')));
+const CarPoolerReview = Loadable(lazy(() => import('pages/review-management/CarPoolerReview')));
+const Reviews = Loadable(lazy(() => import('pages/review-management/Reviews')));
+
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
 const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
@@ -111,6 +117,30 @@ const MainRoutes = {
             path: 'admin/question-management/response/:id',
             element: <PostResponseToQuestion />
         },
+        {
+            path: 'review-register',
+            element: <ReviewRegister/>
+        }
+        ,
+        {
+            path: 'review-select',
+            element: <ReviewSelect/>
+        }
+        ,
+        {
+            path: 'driver-review',
+            element: <DriverReview/>
+        }
+        ,
+        {
+            path: 'carpooler-review',
+            element: <CarPoolerReview/>
+        }
+        ,
+        {
+            path: 'reviews',
+            element: <Reviews/>
+        }
     ]
 };
 

@@ -10,6 +10,8 @@ import {
 } from '@ant-design/icons';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import HistoryIcon from '@mui/icons-material/History';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+
 // icons
 const icons = {
     FontSizeOutlined,
@@ -56,7 +58,51 @@ const utilities = {
                     breadcrumbs: false
                 }
             ]
-        }
+        },
+        {
+            id:'review-register',
+            title : '리뷰 하기',
+            type : 'collapse',
+            icon: RateReviewOutlinedIcon,
+            children: [
+                {
+                    id:'review-select',
+                    title : '리뷰대상 선택하기',
+                    type : 'item',
+                    url : '/review-select',
+                    breadcrumbs: false
+                },
+                {
+                    id:'review-register',
+                    title : '리뷰 작성하기',
+                    type : 'item',
+                    url : '/review-register',
+                    breadcrumbs: false
+                },
+                {
+                    id:'driver-review',
+                    title : '운전자 리뷰',
+                    type : 'item',
+                    url : '/driver-review',
+                    breadcrumbs: false
+                },
+                {
+                    id:'carpooler-review',
+                    title : '카풀러 리뷰',
+                    type : 'item',
+                    url : '/carpooler-review',
+                    breadcrumbs: false
+                },
+                {
+                    id:'reviews',
+                    title : '마이리뷰',
+                    type : 'item',
+                    url : '/reviews',
+                    breadcrumbs: false
+                }
+
+            ]
+        },
     ]
 };
 
