@@ -6,7 +6,6 @@ import {useNavigate} from 'react-router-dom';
 import {Button, Grid} from "@mui/material";
 import CustomError from 'utils/CustomError';
 import { useSnackbar } from 'notistack';
-import { axios } from 'utils';
 
 
 const Questions = ()=>{

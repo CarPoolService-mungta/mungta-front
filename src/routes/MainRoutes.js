@@ -14,11 +14,19 @@ import MyCarpoolDetailForMatching from 'pages/party-management/Pages/MyCarpoolDe
 import MoveInfo from 'pages/party-management/Pages/Children/MoveInfo';
 import UpdateParty from 'pages/party-management/Pages/UpdateParty';
 
-const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
 
-const Questions = Loadable(lazy(() => import('pages/user-profile/question/Questions')));
-const Question = Loadable(lazy(() => import('pages/user-profile/question/Question')));
-const PostQuestion = Loadable(lazy(() => import('pages/user-profile/question/PostQuestion')));
+const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
+const PartyMemberList = Loadable(lazy(() => import('pages/party-matching/PartyMemberList')));
+
+const Questions = Loadable(lazy(() => import('pages/question/Questions')));
+const Question = Loadable(lazy(() => import('pages/question/Question')));
+const PostQuestion = Loadable(lazy(() => import('pages/question/PostQuestion')));
+
+const Mypage = Loadable(lazy(() => import('pages/authentication/Mypage')));
+
+const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
+const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
+const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
@@ -40,6 +48,10 @@ const MainRoutes = {
             element: <PartyMatching />
         },
         {
+            path: 'party-member',
+            element: <PartyMemberList />
+        },
+        {
             path: 'questions',
             element: <Questions/>
         },
@@ -54,6 +66,18 @@ const MainRoutes = {
         /*
             Party Management Page Start
         */
+        {
+            path: 'notices',
+            element: <Notices />
+        },
+        {
+            path: 'notice/:id',
+            element: <Notice/>
+        },
+        {
+            path: 'notice/post',
+            element: <PostNotice/>
+        },
         {
             path: 'party-management',
             element: <SelectRole />,
@@ -87,21 +111,17 @@ const MainRoutes = {
             element: <MyCarpoolDetailForMatching />
         },
         {
+            path: 'mypage',
+            element: <Mypage />
+        },
+        {
             path: 'admin/question-management',
             element: <QuestionsManagement />
         },
         {
             path: 'admin/question-management/response/:id',
             element: <PostResponseToQuestion />
-        }
-        ,
-        {
-            path: 'modify-carpool-detail',
-            element: <UpdateParty />
-        }
-        /*
-            Party Management Page End
-        */
+        },
     ]
 };
 

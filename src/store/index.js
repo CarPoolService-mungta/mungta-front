@@ -1,5 +1,5 @@
 // third-party
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit'
 
 // project import
 import reducers from './reducers';

@@ -25,7 +25,7 @@ export const postQuestionById = async data =>
 
 //ADMIN
 /**
- * @param {{userId: number}} params
+ *
  */
 export const getAllQuestions = async () =>
   axios.get('/api/question/admin/question-show-all');
