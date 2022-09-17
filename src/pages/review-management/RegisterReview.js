@@ -90,7 +90,7 @@ const RegisterReview = () => {
     return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
   }
 
-  const [value, setValue] = React.useState(2);
+  const [value, setValue] = React.useState(3);
   const [hover, setHover] = React.useState(-1);
 
   const {
@@ -105,7 +105,7 @@ const RegisterReview = () => {
 
   return (
     <>
-      <MainCard darkTitle={true} title={'리뷰하기'}>
+      <MainCard darkTitle={true} title={'리뷰 작성하기'}>
       <Grid container display="flex" style={{ marginBottom:10}}>
         <Card sx={{ maxWidth: 200 }}>
             <CardMedia component="img" height="200" src={avatar1} />
@@ -162,7 +162,7 @@ const RegisterReview = () => {
                   }
                 />
                 {value !== null && (
-                  <Box sx={{ ml: 2 }}>
+                  <Box sx={{ ml: 2, }}>
                     {labels[hover !== -1 ? hover : value]}
                   </Box>
                 )}

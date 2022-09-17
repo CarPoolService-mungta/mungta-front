@@ -80,10 +80,10 @@ const utilities = {
                     breadcrumbs: false
                 },
                 {
-                    id:'driver-review',
-                    title : '운전자 리뷰',
+                    id:'my-review',
+                    title : '내가 작성한 리뷰',
                     type : 'item',
-                    url : '/driver-review',
+                    url : '/my-review',
                     breadcrumbs: false
                 },
                 {

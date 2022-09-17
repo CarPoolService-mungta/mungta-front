@@ -24,9 +24,9 @@ const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
 const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
 const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
-const ReviewRegister = Loadable(lazy(() => import('pages/review-management/ReviewRegister')));
+const ReviewRegister = Loadable(lazy(() => import('pages/review-management/RegisterReview')));
 const ReviewSelect = Loadable(lazy(() => import('pages/review-management/ReviewSelect')));
-const DriverReview = Loadable(lazy(() => import('pages/review-management/DriverReview')));
+const MyReview = Loadable(lazy(() => import('pages/review-management/MyReview')));
 const CarPoolerReview = Loadable(lazy(() => import('pages/review-management/CarPoolerReview')));
 const Reviews = Loadable(lazy(() => import('pages/review-management/Reviews')));
 
@@ -128,8 +128,8 @@ const MainRoutes = {
         }
         ,
         {
-            path: 'driver-review',
-            element: <DriverReview/>
+            path: 'my-review',
+            element: <MyReview/>
         }
         ,
         {
