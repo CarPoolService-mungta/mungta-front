@@ -6,3 +6,6 @@ export const authenticatedByEmail = async data => axios.post('/api/user/auth/mai
 
 export const authnumcheckByEmail = async params => axios.get('/api/user/auth/confirm',  {params});
 
+export const getPhotoByUserId = async (id) => axios.get('/api/user/auth/downloadFile/' + id);
+
+
