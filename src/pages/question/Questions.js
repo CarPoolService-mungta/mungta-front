@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {Button, Grid} from "@mui/material";
 import CustomError from 'utils/CustomError';
 import { useSnackbar } from 'notistack';
+import {useSelector} from "react-redux";
 
 
 const Questions = ()=>{
@@ -14,6 +15,7 @@ const Questions = ()=>{
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const userInfo   = useSelector(state =>  state.userInfo );
 
     useEffect(async ()=>{
         await searchQuestion()
@@ -21,9 +23,8 @@ const Questions = ()=>{
 
     const searchQuestion = async ()=>{
         await setIsLoading(true);
-        // Todo 수정 필요
-        const userId=0;
-        const response = await getQuestionsByUserId({userId});
+        const userId=userInfo.userId;
+        const response = await getQuestionsByUserId();
         if(response instanceof CustomError){
             enqueueSnackbar(response.message, {variant: 'error'});
             return;

@@ -7,6 +7,7 @@ import {useNavigate} from 'react-router-dom';
 //import PropTypes from "prop-types";
 
 import pic from 'assets/images/users/avatar-1.png'
+import {onSlientRefresh} from "../../utils/authProvider";
 // Avatar.propTypes = {
 //     src:PropTypes.oneOfType([
 //       PropTypes.string,

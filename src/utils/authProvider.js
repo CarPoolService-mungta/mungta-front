@@ -1,7 +1,8 @@
 import { parseJwt, setAuthHeader, localStorageHandler} from 'utils';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
+import {ACCESS_TOKEN, JWT_EXPIRY_TIME, REFRESH_TOKEN} from './constants';
 import {setUserInfo} from "../store/reducers/userInfo";
 import {useDispatch} from "react-redux";
+import {authRefresh} from "api/user";
 
 // export const login =({userEmail, password})=>{
 //   //const response = api.login({userId, password});
@@ -45,6 +46,13 @@ export const logOut=()=>{
   if (!location.hash) {
     location.hash = '#reload';
     location.href = location.href;
-
   }
+}
+
+export const onSlientRefresh = async ()=>{
+  const refreshToken = localStorageHandler.getItem(REFRESH_TOKEN);
+  const accessToken = await authRefresh({refreshToken: 'Bearer ' + refreshToken});
+
+  localStorageHandler.setItem(ACCESS_TOKEN , accessToken);
+  setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
 }

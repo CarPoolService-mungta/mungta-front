@@ -15,10 +15,11 @@ import { useSnackbar } from 'notistack';
 import CustomError from 'utils/CustomError';
 
 import { parseJwt, setAuthHeader, localStorageHandler} from 'utils';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from 'utils/constants';
+import {ACCESS_TOKEN, JWT_EXPIRY_TIME, REFRESH_TOKEN} from 'utils/constants';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUserInfo } from 'store/reducers/userInfo';
+import {onSlientRefresh} from "../../../utils/authProvider";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 const AuthLogin = () => {
@@ -29,7 +30,6 @@ const AuthLogin = () => {
     const { enqueueSnackbar } = useSnackbar();
     //const [checked, setChecked] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
-    const userInfo   = useSelector(state =>  state.userInfo );
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -70,6 +70,7 @@ const AuthLogin = () => {
                               userType   : userInfo.userType
                 }));
                 enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
+                setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
                 navigate('/mypage');
             }
         });
