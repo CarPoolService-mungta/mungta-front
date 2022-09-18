@@ -4,13 +4,26 @@ import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './Children/EmptyList';
-import { Button, Stack, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
+import {
+    Button,
+    Stack,
+    Grid,
+    Typography,
+    Paper,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Avatar,
+    Box, CircularProgress
+} from '@mui/material';
 import { Link,useLocation  } from 'react-router-dom';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import { getPartyInfoPastMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
 import SearchModal from './Children/SearchPopup';
 import dayjs from "dayjs";
+import {useSelector} from "react-redux";
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -25,14 +38,14 @@ const InputTitle = {
 }
 const MyCarpoolPastList = () => {
 
-  const [query, setQuery] = React.useState({user_id:'test-d-001@gmail.com'});
+    const userInfo   = useSelector(state =>  state.userInfo );
+  const [query, setQuery] = React.useState({});
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
   function handleCloseModal(data) {
     console.log('부모에서 받은',data);
     setQuery({
-      user_id : query.user_id,
       departure : data._departure,
       destination : data._destination,
       start_date : dayjs(data._dates).format("YYYY-MM-DD"),
@@ -46,7 +59,10 @@ const MyCarpoolPastList = () => {
   const getPartyInfos = async ()=>{
       await setIsLoading(true);
 
-      const response = await getPartyInfoPastMyNow(query);
+      const response = await getPartyInfoPastMyNow({
+          user_id: userInfo.userId,
+          ...query
+      });
       let array = [];
       for(let index in response){
         array.push(response[index])
@@ -56,7 +72,7 @@ const MyCarpoolPastList = () => {
   }
   const isEmpty = isEmptyObj(post)||(post.length === 0);
 
-  if(isEmpty || isLoading){
+  if(!isLoading && isEmpty){
     return (
     <>
       <Grid item xs={12} md={6}>
@@ -83,7 +99,11 @@ const MyCarpoolPastList = () => {
         </Typography>
         <List>
         <Demo>
-        {
+        {isLoading?
+            <Box sx={{py: 3, minHeight: 560, alignContent: 'center'}}>
+                <CircularProgress />
+            </Box>
+            :
           post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
 
@@ -121,7 +141,7 @@ const MyCarpoolPastList = () => {
                       {ListStatusDesc[p.status]}
                     </Item>
                     <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
-                        [ {p.driver.userId=== 'test-d-001@gmail.com'?'운전자':'카풀러'} ]
+                        [ {p.driver.userId=== userInfo.userId?'운전자':'카풀러'} ]
                     </Item>
                   </Stack>
                 </Paper>

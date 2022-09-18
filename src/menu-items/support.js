@@ -45,13 +45,13 @@ const support = {
                     url: '/admin/question-management',
                     breadcrumbs: false
                 },
-                // {
-                //     id: 'last-carpool ',
-                //     title: '지난 카풀',
-                //     type: 'item',
-                //     url: '/my-carpool-past-list',
-                //     breadcrumbs: false
-                // }
+                {
+                    id: 'admin-accusation-list',
+                    title: '회원 신고 리스트',
+                    type: 'item',
+                    url: '/admin-accusations',
+                    breadcrumbs: false
+                },
             ]
         }
     ]

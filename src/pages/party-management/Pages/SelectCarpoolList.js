@@ -1,6 +1,18 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import { Button, Stack, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
+import {
+    Button,
+    Stack,
+    Grid,
+    Typography,
+    Paper,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Avatar,
+    Box, CircularProgress
+} from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
@@ -35,7 +47,6 @@ const SelectCarpoolList = () => {
   const location = useLocation();
 
   const onCloseModal = function handleCloseModal(data) {
-    console.log('부모에서 받은',data);
 
     setQuery({
       departure : data._departure,
@@ -44,7 +55,6 @@ const SelectCarpoolList = () => {
       condition : data._condition
     });
   };
-  console.log('query:',query);
     useEffect(async ()=>{
         await getPartyInfos(query);
     },[query]);
@@ -59,12 +69,9 @@ const SelectCarpoolList = () => {
         await setPost(!response.message ? array : []);
         await setIsLoading(false);
     }
-    console.log(location.state.type)
-    console.log(post);
     const isEmpty = isEmptyObj(post)||(post.length === 0);
 
-    if(isEmpty || isLoading){
-      console.log('isEmpty or isLoading')
+    if(!isLoading && isEmpty){
         return (
         <>
           <Grid item xs={12} md={6}>
@@ -94,7 +101,11 @@ const SelectCarpoolList = () => {
             </Typography>
             <List>
             <Demo >
-            {
+            {isLoading?
+                <Box sx={{py: 3, minHeight: 560, alignContent: 'center'}}>
+                    <CircularProgress />
+                </Box>
+                :
               post.map((p, index)=>
                 <ListItem sx={{m:3,bgcolor:'#eee', width:'95%'}} key={index} >
                 <ListItemAvatar sx={{m:1, p:2, width:'10%', textAlign:'center',justifyContent: "center"}}>

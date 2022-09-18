@@ -12,27 +12,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { styled } from '@mui/material/styles';
 // third party
 import * as Yup from 'yup';
-import { Field, Form, Formik, useFormik ,FormikProvider} from 'formik';
-// project import
-//import FirebaseSocial from './FirebaseSocial';
-import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
+import { Field, useFormik ,FormikProvider} from 'formik';
 
-// assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import BasicDateTimePicker from '../../Utils/BasicDateTimePicker';
 // ============================|| FIREBASE - REGISTER ||============================ //
-import { DesktopDateTimePicker } from '@mui/x-date-pickers-pro';
-import MapModal from '../../Utils/MapPopup';
-import MapModalDestination from '../../Utils/MapPopupDest';
-import {Link, useNavigate} from 'react-router-dom';
-import { DesktopTimePicker } from 'formik-mui-lab';
+import {useNavigate} from 'react-router-dom';
 import DatepickerField from '../../Utils/DatepickerField';
-import {postMoveInfo} from 'api/partymanagement';
-//import CustomError from 'utils/CustomError'
+import {getDriverInfo, postMoveInfo} from 'api/partymanagement';
 import { useSnackbar } from 'notistack';
-import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
+import {Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 import CustomError from 'utils/CustomError';
+import {useSelector} from "react-redux";
 
 const InputTitle = {
     backgroundColor: '#1A2027',
@@ -63,6 +52,8 @@ const InputItem = {
 const MoveInfoRegister = () => {
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const userInfo   = useSelector(state =>  state.userInfo );
+
     const formik = useFormik({
       initialValues: {
         placeOfDeparture: '',
@@ -81,44 +72,41 @@ const MoveInfoRegister = () => {
         startDate: Yup.string().required('Required'),
         maxNumberOfParty: Yup.string().required('Required'),
       }),
-    //   onSubmit: (values) => {
-    //     alert(JSON.stringify(values, null, 2));
-    //   },
     onSubmit: async (values, { setSubmitting})=>{
 
         setSubmitting(true);
-        // Todo 수정 필요
+        const driverInfo = await getDriverInfo();
         const moveInfoRegisterRequest = {
 
             curNumberOfParty:1,
             driver:{
-                userId:"1",
-                carKind: "BMW",
-                carNumber: "12가1234",
+                userId:userInfo.userId,
+                carKind: driverInfo.carType,
+                carNumber: driverInfo.carNumber,
                 department: values.placeOfDeparture,
-                gender: "male",
-                name: "test",
-                profileImage: "profile_img_src",
+                gender: userInfo.userGender,
+                name: userInfo.userName,
+                //Todo 넣는다면 구조 다 바꿔야합니다.
+                // profileImage: "profile_img_src",
+                //Todo 리뷰랑 연동
                 reviewInfo: {
                   recentComment: "good boy",
                   reviewAverageScore: 2.1
                 },
-                settlementUrl: "settlementUrl.html",
+                settlementUrl: driverInfo.settlementUrl,
             },
             moveInfo:{
                 placeOfDeparture: values.placeOfDeparture,
                 destination: values.destination,
                 startDate: values.startDate,
                 distance: values.distance,
-                price: 0
+                //Todo 변경할 수도 있다.
+                price: values.distance*200
             },
             maxNumberOfParty:values.maxNumberOfParty,
             status: "OPEN"
         };
-        console.log("작성한거",moveInfoRegisterRequest);
-        const response =  postMoveInfo(moveInfoRegisterRequest);
-        console.log('돌아온거',response);
-        setSubmitting(false);
+        const response =  await postMoveInfo(moveInfoRegisterRequest);
 
         //enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
         //navigate(`/my-carpool-list`);
@@ -200,11 +188,12 @@ const MoveInfoRegister = () => {
                 <Grid item xs={12} md={6} sx={{p:1}}>
                     <Stack spacing={1} sx={{p:1}}>
                         <Subtitle sx={InputTitle}>
-                            <div style={{marginTop:'10px'}}>이동거리</div>
+                            <div style={{marginTop:'10px'}}>이동거리(km)</div>
                         </Subtitle>
                         <OutlinedInput
                                 id="distance"
                                 name="distance"
+                                type='number'
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.distance}

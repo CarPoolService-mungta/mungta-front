@@ -45,6 +45,7 @@ const AuthLogin = () => {
                 userTeam   : "",
                 email      : "",
                 driverYn   : "",
+                userGender   : "",
                 userType   : ""
             }));
     },[])
@@ -67,6 +68,7 @@ const AuthLogin = () => {
                               userTeam   : userInfo.team,
                               email      : userInfo.email,
                               driverYn   : userInfo.driverYn,
+                              userGender : userInfo.userGender,
                               userType   : userInfo.userType
                 }));
                 enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});

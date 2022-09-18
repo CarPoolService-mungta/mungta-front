@@ -50,3 +50,8 @@ export const postMoveInfo = async function (Data) {
 
 export const deleteMoveInfo = async params =>
        axiosInstance.delete('/api/party-management/partyInfos/delete-moveinfo',{params});
+
+export const getDriverInfo = async params =>
+    axiosInstance.get('/api/user/driver-info',{params});
+
+

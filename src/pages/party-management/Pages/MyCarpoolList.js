@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
@@ -6,13 +5,27 @@ import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
 import EmptyList from './Children/EmptyList';
-import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
+import {
+  Stack,
+  Box,
+  Grid,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  CircularProgress
+} from '@mui/material';
 import { Link,useSearchParams,useLocation } from 'react-router-dom';
 import { getPartyInfoMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import SearchModal from './Children/SearchPopup';
 import dayjs from "dayjs";
+import {useSelector} from "react-redux";
+import {useEffect, useState} from "react";
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -27,33 +40,32 @@ const InputTitle = {
 }
 
 const MyCarpoolList = () => {
-
-  const [query, setQuery] = React.useState({user_id:'test-d-001@gmail.com'});
-  const [post, setPost] = React.useState({});
-  const [isLoading, setIsLoading] = React.useState(false);
+  const userInfo   = useSelector(state =>  state.userInfo );
+  const [query, setQuery] = useState({});
+  const [post, setPost] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
 //search 조건을 바꿔야함.
   function handleCloseModal(data) {
     console.log('부모에서 받은',data);
 
     setQuery({
-      user_id : query.user_id,
       departure : data._departure,
       destination : data._destination,
       start_date : dayjs(data._dates).format("YYYY-MM-DD"),
       condition : data._condition
     });
   }
-
-  console.log('QUERY : ',query);
-    React.useEffect(async ()=>{
+    useEffect(async ()=>{
         await getPartyInfos();
     },[query]);
 
     const getPartyInfos = async ()=>{
         await setIsLoading(true);
-
-        const response = await getPartyInfoMyNow(query);
+        const response = await getPartyInfoMyNow({
+          user_id: userInfo.userId,
+          ...query
+        });
         console.log(response);
         let array = [];
         //for(let index in response.data){
@@ -64,9 +76,8 @@ const MyCarpoolList = () => {
         await setIsLoading(false);
     }
     const isEmpty = isEmptyObj(post)||(post.length === 0);
-    // console.log('isEmpty',isEmpty,' isloading',isLoading);
 
-    if(isEmpty || isLoading){
+    if(!isLoading && isEmpty){
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -94,7 +105,11 @@ const MyCarpoolList = () => {
           </Typography>
           <List>
           <Demo>
-          {
+          {isLoading?
+              <Box sx={{py: 3, minHeight: 560, alignContent: 'center'}}>
+                <CircularProgress />
+              </Box>
+              :
             // post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL' || p.status === 'STARTED') ).map((p, index)=>
             post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
