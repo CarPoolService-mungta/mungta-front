@@ -6,7 +6,6 @@ import {useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {getPhotoByUserId} from 'api/user'
 import CustomError from 'utils/CustomError';
-import { SignalCellularConnectedNoInternet2Bar } from '../../../node_modules/@material-ui/icons/index';
 
 const avartarStyle = {
 height: "20vh",
@@ -18,22 +17,20 @@ marginBottom: 20,
 const Mypage = () => {
 
   let userInfo   = useSelector(state =>  state.userInfo );
-  console.log("reduxInfo:",userInfo );
 
   const navigate = useNavigate();
   const [dataUrlmage   , setdataUrlmage]    = useState(null);
   const imgRef   = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(async ()=>{
-      await viewPhoto()
-  },[]);
+  useEffect(async ()=>{await viewPhoto()},[]);
 
   let dataUrlmagetmp ='';
 
   const viewPhoto = async ()=>{
 
       await setIsLoading(true);
+
       const response = await getPhotoByUserId(userInfo.userId)
       .then((response) => {
         if(response instanceof CustomError){
@@ -46,11 +43,10 @@ const Mypage = () => {
           dataUrlmagetmp =str1+str2+str3+str4;
         }
       });
+
       await setdataUrlmage(dataUrlmage => dataUrlmagetmp);
       await setIsLoading(false);
   };
-  const handleImage = async(e)=>{}
-
 
   const goUpdate = () => {
     alert("회원정보수정");
@@ -72,14 +68,12 @@ const Mypage = () => {
     navigate('/party-management')
   };
 
-
-
   return (
     <MainCard darkTitle={true}  title="Mypage" >
       <Box sx={{ alignSelf: 'center',maxWidth: { xs: 400, lg: 475 }, margin: { xs: 2.5, md: 3 }, }}>
         <Container align="left" sx={{ margin: 1 }} >
           <Avatar src={dataUrlmage} style = {avartarStyle}></Avatar>
-          <input  type='file' style={{display:'none'}} accept='image/jpg,impge/png,image/jpeg' name='profileImg' onChange={handleImage} ref={imgRef}/>
+          <input  type='file' style={{display:'none'}} accept='image/jpg,impge/png,image/jpeg' name='profileImg' ref={imgRef}/>
           <Typography  variant="h3">
             {userInfo.userName}님 환영합니다.
           </Typography>

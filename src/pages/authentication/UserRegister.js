@@ -5,7 +5,7 @@ import { Grid, Stack, Typography } from '@mui/material';
 
 // project import
 import FirebaseRegister from './auth-forms/AuthUserRegister';
-import AuthWrapper from './AuthWrapper';
+import AuthWrapper      from './AuthWrapper';
 
 // ================================|| REGISTER ||================================ //
 
