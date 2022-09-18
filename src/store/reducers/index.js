@@ -12,7 +12,7 @@ import storageLocal   from 'redux-persist/lib/storage';
 // ==============================|| COMBINE REDUCERS ||============================== //
 const persistConfig = {
   key: "root",
-  storage: storageSession,
+  storage: storageLocal,
   whitelist: ["userInfo"],
   // blacklist
 };

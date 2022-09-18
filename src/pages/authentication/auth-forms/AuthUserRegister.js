@@ -44,6 +44,7 @@ const avartarStyle = {
 const AuthRegister = () => {
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -114,14 +115,40 @@ const AuthRegister = () => {
       //imageURL = result.data;
     }
   }
+
  ////////////////////////////////// 파일업로드 테스트중 (end)
+ const signinConfirm = async ()=>{
+    await registerConfirm({userId: email.value ,userPassword: password.value})
+    .then((response) => {
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+        }else{
+            setAuthHeader(`Bearer ${response.accessToken}`);
+            localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
+            localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
+
+            const userInfo = parseJwt(response.accessToken);
+            console.log("userInfo:",userInfo );
+
+            dispatch(
+            setUserInfo({ userId     : response.key,
+                          userName   : userInfo.name,
+                          userTeam   : userInfo.team,
+                          email      : userInfo.email,
+                          driverYn   : userInfo.driverYn,
+                          userType   : userInfo.userType
+            }));
+            enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
+            navigate('/mypage');
+        }
+    });
+}
     return (
         <>
             <Formik
                 initialValues={{
                     firstname: '',
                     lastname: '',
-                    email: '',
                     company: '',
                     password: '',
                     submit: null
@@ -136,6 +163,7 @@ const AuthRegister = () => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        registerConfirm();
                     } catch (err) {
                         console.error(err);
                         setStatus({ success: false });
@@ -154,7 +182,7 @@ const AuthRegister = () => {
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.email && errors.email)}
-                                        id="email-login"
+                                        id="email"
                                         type="email"
                                         value={values.email}
                                         name="email"
@@ -174,8 +202,8 @@ const AuthRegister = () => {
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="firstname-signup">ID*</InputLabel>
                                     <OutlinedInput
-                                        id="firstname-login"
-                                        type="firstname"
+                                        id="userid"
+                                        type="id"
                                         value={values.firstname}
                                         name="firstname"
                                         onBlur={handleBlur}
@@ -242,7 +270,7 @@ const AuthRegister = () => {
                                     </Grid>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="firstname-signup">Name*</InputLabel>
                                     <OutlinedInput

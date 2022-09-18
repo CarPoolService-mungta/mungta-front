@@ -3,15 +3,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
-    Box,
     Button,
-    Divider,
-    FormControl,
-    FormHelperText,
     Grid,
-    Link,
-    IconButton,
-    InputAdornment,
     InputLabel,
     OutlinedInput,
     Stack,
@@ -146,7 +139,7 @@ const AuthRegister = () => {
 
                             </Grid>
                         </Grid>
-                        
+
                     </form>
                 )}
             </Formik>
