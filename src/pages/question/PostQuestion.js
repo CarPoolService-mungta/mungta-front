@@ -29,7 +29,6 @@ const PostQuestion = ()=>{
         onSubmit: async (values, { setSubmitting})=>{
 
             setSubmitting(true);
-            // Todo 수정 필요
             const questionRegisterRequest = {
                 question:{
                     title: values.title,

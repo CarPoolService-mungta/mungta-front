@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {
   getMatchInfo,
   applyParty,
@@ -17,9 +17,10 @@ import {
   AvatarGroup,
   Box,
   Button,
-  Grid,
+  Grid, OutlinedInput,
   Stack,
   Typography,
+  InputAdornment
 } from '@mui/material';
 
 // project import
@@ -90,6 +91,8 @@ const PartyMatching = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const {id} = useParams();
+
   const [userMatchStatus, setUserMatchStatus] = useState(null);
   const [matchUsers, setMatchUsers] = useState(null);
   //   const [partyInfo, setPartyInfo] = useState(null);
@@ -101,10 +104,10 @@ const PartyMatching = () => {
     ));
 
   useEffect(async () => {
-    const partyInfoId = 2;
+    const partyInfoId = id;
     const userId = 'lee1234';
     const matchStatus = 'WAITING';
-    const matchResult = await getMatchInfo({ partyInfoId, userId });
+    const matchResult = await getMatchInfo({ partyInfoId });
     // const partyResult = await getMatchInfo({ partyInfoId, userId }); //파티 정보 조회로 변경
     const userResult = await getMatchUsers({ partyInfoId, matchStatus }); //파티 정보 조회로 변경
     setUserMatchStatus(matchResult.matchStatus);
@@ -121,12 +124,12 @@ const PartyMatching = () => {
 
   const btnMatchClick = async () => {
     const data = {
-      partyInfoId: 2,
+      partyInfoId: id,
       userId: 'lee1234',
     };
 
     const matchProcess = {
-      partyInfoId: 2,
+      partyInfoId: id,
       driverId: 'driver1234', //현재 userID 넣어주기
     };
 
@@ -152,8 +155,14 @@ const PartyMatching = () => {
               <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
                 <Box p={4}>차종</Box>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API</Box>
+              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
+                <OutlinedInput
+                    id="outlined-adornment-weight"
+                    value={"차종"}
+                    disabled={true}
+                    endAdornment={<InputAdornment position="end">kg</InputAdornment>}
+                    aria-describedby="outlined-weight-helper-text"
+                />
               </Grid>
               <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
                 <Box p={4}>출발시간</Box>
@@ -176,8 +185,15 @@ const PartyMatching = () => {
               <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
                 <Box p={4}>거리</Box>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API Km</Box>
+              <Grid item xs={6} sm={4} md={3} lg={2} alignItems="center">
+                <OutlinedInput
+                    id="outlined-adornment-weight"
+                    value={"거리"}
+                    disabled={true}
+                    variant="contained"
+                    endAdornment={<InputAdornment position="end">km</InputAdornment>}
+                    aria-describedby="outlined-weight-helper-text"
+                />
               </Grid>
               <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
                 <Box p={4}>탑승인원</Box>

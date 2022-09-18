@@ -65,7 +65,7 @@ const AuthLogin = () => {
             const result = await getPhotoByUserId(userInfo.userId);
             let photo = null;
             if(result instanceof CustomError){
-                return;
+                // return;
             }else{
                 const str1='data:image/';
                 const str2=result.fileExtension;;

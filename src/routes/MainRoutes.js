@@ -57,7 +57,7 @@ const MainRoutes = {
               <SelectRole />
         },
         {
-            path: 'party-matching',
+            path: 'party-matching/:id',
             element: <PartyMatching />
         },
         {
