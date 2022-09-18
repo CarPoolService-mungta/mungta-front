@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import PropTypes from 'prop-types';
 import {
     TableHead,
     TableBody,
@@ -55,7 +56,8 @@ const DataTable = ({columns,
                                     <TableRow hover
                                               tabIndex={-1}
                                               key={row.id}
-                                              onClick={e=>rowClick(e,row)}>
+                                              onClick={e=>rowClick(e,row)}
+                                              style= {{cursor: 'pointer'}}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
@@ -70,11 +72,13 @@ const DataTable = ({columns,
                                     </TableRow>
                                 );
                             }) :
-                            <TableCell align="center" colSpan={6}>
-                                <Box sx={{py: 3, minHeight: 560}}>
-                                    <CircularProgress />
-                                </Box>
-                            </TableCell>}
+                            <TableRow>
+                                <TableCell align="center" colSpan={6}>
+                                    <Box sx={{py: 3, minHeight: 560}}>
+                                        <CircularProgress />
+                                    </Box>
+                                </TableCell>
+                            </TableRow>}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -92,3 +96,11 @@ const DataTable = ({columns,
 }
 
 export default DataTable
+
+DataTable.propTypes = {
+    columns: PropTypes.array,
+    rows: PropTypes.array,
+    rowsPerPageOptions: PropTypes.array,
+    isLoading: PropTypes.bool,
+    rowClick: PropTypes.func
+};

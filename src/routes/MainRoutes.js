@@ -32,6 +32,13 @@ const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
 const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
 
+const Accusations = Loadable(lazy(() => import('pages/user-profile/accusation/Accusations')));
+const AccusationDetail = Loadable(lazy(() => import('pages/user-profile/accusation/AccusationDetail')));
+const PartyMembers = Loadable(lazy(() => import('pages/user-profile/accusation/PartyMembers')));
+const RegisterAccusation = Loadable(lazy(() => import('pages/user-profile/accusation/RegisterAccusation')));
+const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
+const AdminAccusationDetail = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusationDetail')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -121,6 +128,30 @@ const MainRoutes = {
         {
             path: 'admin/question-management/response/:id',
             element: <PostResponseToQuestion />
+        },
+        {
+            path: 'accusations',
+            element: <Accusations/>
+        },
+        {
+            path: 'accusations/:accusationId',
+            element: <AccusationDetail/>
+        },
+        {
+            path: 'register-accusation/parties/:partyId',
+            element: <PartyMembers/>
+        },
+        {
+            path: 'register-accusation',
+            element: <RegisterAccusation/>
+        },
+        {
+            path: 'admin-accusations',
+            element: <AdminAccusations/>
+        },
+        {
+            path: 'admin-accusations/:accusationId',
+            element: <AdminAccusationDetail/>
         },
     ]
 };
