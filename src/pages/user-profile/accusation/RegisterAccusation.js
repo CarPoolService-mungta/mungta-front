@@ -63,13 +63,12 @@ const RegisterAccusation = () => {
                 onSubmit={async (values, { setErrors, setSubmitting }) => {
                     try {
                         setSubmitting(true);
-
-                        const memberId = 1;     // TODO: get userID
+                        
                         const accusationContents = {};
                         accusationContents.title = values.title;
                         accusationContents.desc = values.desc;
 
-                        const response = await registerAccusation({ memberId, partyInfo, accusedMember, accusationContents });
+                        const response = await registerAccusation({ partyInfo, accusedMember, accusationContents });
 
                         setSubmitting(false);
                         if (response instanceof CustomError) {
