@@ -20,10 +20,17 @@ const AjaxUtils = {
   },
 
   getPartyList: async function (query) {
-    console.log(this.BASE_URL + '/partyInfoes');
-    const resposne = await axios.get('http://localhost:8081/partyInfoes');
-    return resposne.data._embedded;
+    console.log(query);
+    const resposne = await axios.get('http://localhost:8080/api/partyInfos/carpool-now-list?condition='+query.condition);
+    console.log(resposne);
+    return resposne.data;
   }
+
+  // getPartyList: async function (query) {
+  //   console.log(this.BASE_URL + '/partyInfoes');
+  //   const resposne = await axios.get('http://localhost:8080/partyInfoes');
+  //   return resposne.data._embedded;
+  // }
 // callback 을 사용할 때,
   // getPartyList: async function() {
   //   const url = "http://localhost:8081/partyInfos/partyinfoes";

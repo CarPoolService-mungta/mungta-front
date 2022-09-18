@@ -15,12 +15,10 @@ import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
 import MyCarpoolDetailForCarpooler from './Children/MyCarpoolDetailForCarpooler';
 import MyCarpoolDetailForDriver from './Children/MyCarpoolDetailForDriver';
-import {Link, useLocation,useNavigate} from 'react-router-dom';
-import { deleteMoveInfo, getPartyInfo } from 'api/partymanagement';
+import {Link, useLocation} from 'react-router-dom';
+import { getPartyInfo } from 'api/partymanagement';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
-import CustomError from 'utils/CustomError';
-import DeleteCheckModal from 'components/@extended/DeleteCheckModal';
-import { useSnackbar } from 'notistack';
+
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -48,24 +46,11 @@ ShadowBox.propTypes = {
     shadow: PropTypes.string.isRequired
 };
 
-function DetailSubInfo(props) {
-    const isDriver = props.isDriver;
-    const status = props.posts.status;
-    console.log('isDriver:',isDriver);
-    if (isDriver) {
-      // if(status==='STARTED'){
-      //   return <MyCarpoolDetailForDriver posts={props.posts}/>;
-      // }else{
-      //   return <></>
-      // }
-      return <MyCarpoolDetailForDriver posts={props.posts}/>;
-    }
-    else return <MyCarpoolDetailForCarpooler posts={props.posts}/>;
-  }
 
-const MyCarpoolDetail = (props) => {
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+
+const MyCarpoolDetailForMatching = (props) => {
+
+
   const location=useLocation();
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState(location.state.data);
@@ -76,31 +61,23 @@ const MyCarpoolDetail = (props) => {
   console.log('location type :',location.state.type);
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const partyId = location.state.data.id;
+  function isInParty(carpooler) {
+    return carpooler.userId === 'test-d-001@gmail.com'
+  }
   console.log('post:',post);
 
-  const onDeleteConfirm = async () => {
-    const response = await deleteMoveInfo({partyId});
-    console.log(response);
-    if(response instanceof CustomError){
-      enqueueSnackbar(response.message, {variant: 'error'});
-    } else {
-      enqueueSnackbar('운전정보가 삭제되었습니다.', {variant: 'success'});
-      navigate(`/my-carpool-list`);
-    }
-  }
-  const onDeleteCheckClick=()=>{
-    setDeleteModalOpen(true);
-  }
-  const onDeleteCancel = ()=>{
-    setDeleteModalOpen(false);
-  }
 
-    const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
+    const type = location.state.type
     const isDriver = (location.state.data.driver.userId === 'test-d-001@gmail.com'); //여기에 나중에 user id랑 비교
-    const canDelete = (location.state.data.curNumberOfParty === 1) && (location.state.data.status ==='OPEN'); //여기에 나중에 user id랑 비교
-    console.log("isDriver:",isDriver);
+    const canApply = (location.state.data.curNumberOfParty <location.state.data.maxNumberOfParty)
+                      && (location.state.data.status ==='OPEN')
+                      && !isDriver
+                      && (location.state.data.carPooler.find(carpoolers=>isInParty(carpoolers))===undefined);
+     console.log(location);
+     console.log("isDriver:",isDriver);
+     console.log('canApply:',canApply);
+
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -173,12 +150,14 @@ const MyCarpoolDetail = (props) => {
                         }
                         </Stack>
                     </Box>
-                    {(canDelete)?
+                    {(canApply)?
                     <Grid item xs={12} sx={{textAlign:"center"}}>
-                      <Button size="small" variant="contained" color="error" align="center" onClick={onDeleteCheckClick}>삭제하기</Button>
-                      <DeleteCheckModal modalOpen={deleteModalOpen}
-                          onCancel={onDeleteCancel}
-                          onOk={onDeleteConfirm}/>
+                      {/* <Link to="/modify-carpool-detail"
+                        style={{ textDecoration: 'none' }}
+                        state={{ data:post}}>
+                        <Button size="small" variant="contained" color="primary" align="center">삭제하기</Button>
+                      </Link> */}
+                      <Button size="small" variant="contained" color="error" align="center" onClick={()=>alert('파티신청하기')}>파티신청하기</Button>
                      </Grid>
                     :<br/>
                     }
@@ -186,11 +165,10 @@ const MyCarpoolDetail = (props) => {
 
                 </Grid>
 
-                <DetailSubInfo isDriver={isDriver} posts={post}/>
 
             </Grid>
         </ComponentSkeleton>
       </>
       );
 };
-export default MyCarpoolDetail;
+export default MyCarpoolDetailForMatching;

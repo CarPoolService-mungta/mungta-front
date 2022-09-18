@@ -4,77 +4,76 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import AjaxUtils from 'utils/AjaxUtils';
 import { ConvertToYYYYMMDDhhmmtoKor} from '../Utils/DateUtils';
-import EmptyList from './EmptyList';
+import EmptyList from './Children/EmptyList';
 import {  Stack, Box, Grid,Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
-import { Link } from 'react-router-dom';
-
-const Demo = styled('div')(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    padding:15
-  }));
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    fontSize : '80%'
-  }));
-  const Subtitle = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A2027',
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize:'80%',
-    color:'#fff'
-  }));
-
-const ListBgColor = {
-  OPEN : '#B8FEFF',
-  FULL : '#FF7B7B',
-  STARTED : '#FFE67B',
-  CLOSED : '#626262'
-}
-
-const ListStatusDesc = {
-  OPEN : '신청 가능',
-  FULL : '신청 마감',
-  STARTED : '카풀 진행 중',
-  CLOSED : '종료'
+import { Link,useSearchParams,useLocation } from 'react-router-dom';
+import { getPartyInfoMyNow } from 'api/partymanagement';
+import isEmptyObj from '../Utils/BasicUtils';
+import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
+import SearchModal from './Children/SearchPopup';
+import dayjs from "dayjs";
+const InputTitle = {
+  backgroundColor: '#1A2027',
+  padding: '2px',
+  textAlign: 'center',
+  color:'#fff',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '35px',
+  border: '2px solid #1A2027',
+  borderRadius:1,
+  boxShadow: 10
 }
 
 const MyCarpoolList = () => {
-  console.log(AjaxUtils.BASE_URL);
 
-  const [query, setQuery] = React.useState({id:0});
-  const [post, setPost] = React.useState({partyInfoes:[]});
+  const [query, setQuery] = React.useState({user_id:'test-d-001@gmail.com'});
+  const [post, setPost] = React.useState({});
+  const [isLoading, setIsLoading] = React.useState(false);
+  const location = useLocation();
+//search 조건을 바꿔야함.
+  function handleCloseModal(data) {
+    console.log('부모에서 받은',data);
 
-    React.useEffect(() => {
-      let completed = false; //초기에는 실행해야 되기때문에 false flag 변수
-      console.log(query);
-      //query를 리턴하는 함수를 result에 할당
-      async function get() {
-        const result = await AjaxUtils.getPartyList(query);
-        if (!completed) setPost(result);
-      }
-      get();
-      return () => {
-        completed = true;
-      };
-      //query가 변할때 useEffect를 실행해야하는 시점이다
-    }, [query]); //input에 값이 변경이 되었을때 effect를 실행한다
-    console.log(post, post.partyInfoes.length);
-    const isEmpty = (post.partyInfoes.length === 0);
+    setQuery({
+      user_id : query.user_id,
+      departure : data._departure,
+      destination : data._destination,
+      start_date : dayjs(data._dates).format("YYYY-MM-DD"),
+      condition : data._condition
+    });
+  }
 
-    if(isEmpty){
+  console.log('QUERY : ',query);
+    React.useEffect(async ()=>{
+        await getPartyInfos();
+    },[query]);
+
+    const getPartyInfos = async ()=>{
+        await setIsLoading(true);
+
+        const response = await getPartyInfoMyNow(query);
+        console.log(response);
+        let array = [];
+        //for(let index in response.data){
+        for(let index in response){
+          array.push(response[index])
+        }
+        await setPost(!response.message ? array : []);
+        await setIsLoading(false);
+    }
+    const isEmpty = isEmptyObj(post)||(post.length === 0);
+    // console.log('isEmpty',isEmpty,' isloading',isLoading);
+
+    if(isEmpty || isLoading){
       return (
       <>
         <Grid item xs={12} md={6}>
           <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
           진행 중인 카풀
-          <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+          {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
+          <SearchModal/>
           </Typography>
           <EmptyList/>
         </Grid>
@@ -88,12 +87,16 @@ const MyCarpoolList = () => {
         <Grid item xs={12} md={6}>
             <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
             진행 중인 카풀
-            <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
+            {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
+            <SearchModal
+                onCloseModal={handleCloseModal}
+              />
           </Typography>
           <List>
           <Demo>
           {
-            post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL') ).map((p, index)=>
+            // post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL' || p.status === 'STARTED') ).map((p, index)=>
+            post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
               <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
                 <Avatar sx ={{ width: 80, height: 80}}>
@@ -101,7 +104,12 @@ const MyCarpoolList = () => {
                 </Avatar>
                 <ListItemText primary="Manager" />
               </ListItemAvatar>
-              <Link to="/my-carpool-detail?type=now" style={{ textDecoration: 'none' }}>
+              <Link to={"/my-carpool-detail"}
+                    style={{ textDecoration: 'none' }}
+                    state={{
+                      type:'now',
+                      data:p
+                    }}>
               <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
                   <Grid item xs={12} sm={12} md={12} >
                   <Paper
@@ -114,7 +122,7 @@ const MyCarpoolList = () => {
                     }}
                   >
                     <Stack direction="row" spacing={2}>
-                      <Subtitle sx={{width:'12%'}}>파티상태</Subtitle>
+                      <Subtitle sx={{width:'12%',p:1}}>파티상태</Subtitle>
                       <Item sx={{boxShadow:0}}>
                       <Typography variant="h6" noWrap sx={{boxShadow:0}}>
                         {p.curNumberOfParty} / {p.maxNumberOfParty} 명
@@ -123,20 +131,23 @@ const MyCarpoolList = () => {
                       <Item sx={{fontSize:'1em', color:'#d11', fontWeight:'bold', boxShadow:0}}>
                         {ListStatusDesc[p.status]}
                       </Item>
+                      <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
+                        [ {p.driver.userId=== 'test-d-001@gmail.com'?'운전자':'카풀러'} ]
+                      </Item>
                     </Stack>
                   </Paper>
                   </Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발지</Subtitle> </Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>출발지</Subtitle> </Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.placeOfDeparture}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>출발시간</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>출발시간</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{ConvertToYYYYMMDDhhmmtoKor(p.moveInfo.startDate)}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차종</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>차종</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.driver.carKind}</Item> </Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>도착지</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>도착지</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.destination}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>거리</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>거리</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.moveInfo.distance}</Item></Grid>
-                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle>차번호</Subtitle></Grid>
+                  <Grid item xs={1.5} sm={1.5} md={1.5} ><Subtitle sx={InputTitle}>차번호</Subtitle></Grid>
                   <Grid item xs={2.5} sm={2.5} md={2.5} ><Item>{p.driver.carNumber}</Item></Grid>
               </Grid>
               </Link>
