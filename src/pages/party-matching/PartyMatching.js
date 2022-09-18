@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
-import { useAsync, useCallback, useEffect, useState } from 'react';
-import { SnackbarProvider } from 'notistack';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getMatchInfo,
   applyParty,
   getMatchUsers,
   cancelMatch,
-  acceptMatch,
-  denyMatch,
   startParty,
   closeParty,
 } from 'api/partyMatching';
@@ -17,32 +14,17 @@ import UserPhoto from 'pages/party-matching/UserPhoto';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-  Avatar,
   AvatarGroup,
   Box,
   Button,
   Grid,
-  List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemSecondaryAction,
-  ListItemText,
-  MenuItem,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 
 // project import
 import MainCard from 'components/MainCard';
 import ComponentSkeleton from 'pages/components-overview/ComponentSkeleton';
-// assets
-import {
-  GiftOutlined,
-  MessageOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import { isDirectiveLiteral } from '../../../../../Users/ljj56/AppData/Local/Microsoft/TypeScript/4.7/node_modules/@babel/types/lib/index';
 
 // avatar style
 const avatarSX = {
