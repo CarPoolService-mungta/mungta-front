@@ -4,6 +4,7 @@ import MainCard from 'components/MainCard';
 import {makeStyles} from '@material-ui/core/styles';
 import { Box, ThemeProvider, createTheme } from '@mui/system';
 import { Breadcrumbs, Divider, Grid, Stack, Typography, Button, Card, CardActionArea, CardContent} from '@mui/material';
+import {useSelector} from "react-redux";
 
 const theme = createTheme({
   palette: {
@@ -24,17 +25,19 @@ const theme = createTheme({
   },
 });
 
-const driverCard = (
-    <>
-        <CardActionArea component={Link} to="/create-party" state={{ type:"driver"}}>
-        <CardContent>
-            <Typography variant="h3" align="center" sx={{color:'white'}}>
-                운전자
-            </Typography>
-        </CardContent>
-        </CardActionArea>
-    </>
-);
+const driverCard =(isDriver)=>{
+    return (
+        <>
+            <CardActionArea disabled={!isDriver} component={Link} to="/create-party" state={{ type:"driver"}}>
+                <CardContent>
+                    <Typography variant="h3" align="center" sx={{color:'white'}}>
+                        운전자
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
+        </>
+    );
+}
 const carpoolerCard = (
     <>
         <CardActionArea component={Link} to="/select-carpool-list" state={{ type:"carpooler"}}>
@@ -49,6 +52,7 @@ const carpoolerCard = (
 
 
 const SelectRole = () => {
+    const userInfo   = useSelector(state =>  state.userInfo );
     return (
         <div style={{margin: 'auto'}}>
         <ThemeProvider theme={theme} >
@@ -63,8 +67,8 @@ const SelectRole = () => {
                         p: 11,
                         m: 2,
                         minHeight: { xs: 'calc(100vh-100px)', md: 'calc(100vh-100px)'  },
-                        bgcolor:'background.primary'
-                        }} variant="outlined" >{driverCard}</Card>
+                        bgcolor: userInfo.driverYn=='Y' ? 'background.primary' : 'grey'
+                        }} variant="outlined" >{driverCard(userInfo.driverYn=='Y')}</Card>
                 </Grid>
                 <Grid xs={4}>
                     <Card  sx={{
