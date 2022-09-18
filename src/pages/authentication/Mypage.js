@@ -32,17 +32,15 @@ const Mypage = () => {
       await setIsLoading(true);
 
       const response = await getPhotoByUserId(userInfo.userId)
-      .then((response) => {
-        if(response instanceof CustomError){
-          return;
-        }else{
-          const str1='data:image/';
-          const str2=response.fileExtension;;
-          const str3=';base64,';
-          const str4=response.userPhoto;
-          dataUrlmagetmp =str1+str2+str3+str4;
-        }
-      });
+      if(response instanceof CustomError){
+        return;
+      }else{
+        const str1='data:image/';
+        const str2=response.fileExtension;;
+        const str3=';base64,';
+        const str4=response.userPhoto;
+        dataUrlmagetmp =str1+str2+str3+str4;
+      }
 
       await setdataUrlmage(dataUrlmage => dataUrlmagetmp);
       await setIsLoading(false);

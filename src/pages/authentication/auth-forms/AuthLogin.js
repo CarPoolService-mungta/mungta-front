@@ -8,7 +8,7 @@ import {Button,FormHelperText,Grid,Link,IconButton,InputAdornment,InputLabel,Out
 //Checkbox,Divider,FormControlLabel,Typography
 //import FirebaseSocial from './FirebaseSocial';
 
-import {signinById} from 'api/user'
+import {getPhotoByUserId, signinById} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 // import { values } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -46,36 +46,48 @@ const AuthLogin = () => {
                 email      : "",
                 driverYn   : "",
                 userGender   : "",
-                userType   : ""
+                userType   : "",
+                userPhoto  : '',
             }));
     },[])
     const signinConfirm = async ()=>{
-        await signinById({userId: email.value ,userPassword: password.value})
-        .then((response) => {
-            if(response instanceof CustomError){
-                enqueueSnackbar(response.message, {variant: 'error'});
+        const response = await signinById({userId: email.value ,userPassword: password.value})
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+        }else{
+            setAuthHeader(`Bearer ${response.accessToken}`);
+            localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
+            localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
+
+            const userInfo = parseJwt(response.accessToken);
+            // console.log("userInfo:",userInfo );
+
+            const result = await getPhotoByUserId(userInfo.userId);
+            let photo = null;
+            if(result instanceof CustomError){
+                return;
             }else{
-                setAuthHeader(`Bearer ${response.accessToken}`);
-                localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
-                localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
-
-                const userInfo = parseJwt(response.accessToken);
-                // console.log("userInfo:",userInfo );
-
-                dispatch(
-                setUserInfo({ userId     : response.key,
-                              userName   : userInfo.name,
-                              userTeam   : userInfo.team,
-                              email      : userInfo.email,
-                              driverYn   : userInfo.driverYn,
-                              userGender : userInfo.userGender,
-                              userType   : userInfo.userType
-                }));
-                enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
-                setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
-                navigate('/mypage');
+                const str1='data:image/';
+                const str2=result.fileExtension;;
+                const str3=';base64,';
+                const str4=result.userPhoto;
+                photo =str1+str2+str3+str4;
             }
-        });
+
+            dispatch(
+                setUserInfo({ userId     : response.key,
+                    userName   : userInfo.name,
+                    userTeam   : userInfo.team,
+                    email      : userInfo.email,
+                    driverYn   : userInfo.driverYn,
+                    userGender : userInfo.userGender,
+                    userType   : userInfo.userType,
+                    userPhoto  : photo
+                }));
+            enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
+            setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
+            navigate('/mypage');
+        }
     }
     return (
         <>

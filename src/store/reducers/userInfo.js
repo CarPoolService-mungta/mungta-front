@@ -8,7 +8,8 @@ const initialState = {
   email      :'',
   driverYn   :'',
   userGender : '',
-  userType   :'',
+  userType   : '',
+  userPhoto  : null,
 }
 const userInfo = createSlice({
   name: 'userInfo',
@@ -22,6 +23,7 @@ const userInfo = createSlice({
           state.driverYn  = action.payload.driverYn;
           state.userGender = action.payload.userGender;
           state.userType  = action.payload.userType;
+          state.userPhoto  = action.payload.userPhoto;
       },
   },
 
