@@ -21,9 +21,8 @@ const PartyMembers = () => {
 
     const searchPartyMembers = useCallback(async () => {
         setIsLoading(true);
-
-        const memberId = 1;     // TODO: get userID
-        const response = await getPartyMembers({ memberId, partyId });
+        
+        const response = await getPartyMembers({ partyId });
 
         setData(!response.message ? response : []);
         setIsLoading(false);
