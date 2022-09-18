@@ -9,7 +9,7 @@ import {
 // third party
 import * as Yup from 'yup';
 import {Formik } from 'formik';
-import {signupById} from 'api/user'
+import {authIdCheck, signupById} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar } from 'notistack';
 import CustomError from 'utils/CustomError';
@@ -19,6 +19,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import {strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import {LoadingButton} from '@material-ui/lab';
 
 const avartarStyle = {
     height: "10vh",
@@ -27,6 +28,9 @@ const avartarStyle = {
     marginTop: 20,
     marginBottom: 20,
 }
+const CHECK_ID_YET = 0;
+const CHECK_ID_NOT_DUPLICATED = 1;
+const CHECK_ID_DUPLICATED=2;
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 const AuthRegister = () => {
@@ -39,9 +43,9 @@ const AuthRegister = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
     const [imageUrl, setImageUrl] = useState(null);
-
+    const [isCheckLoading, setCheckLoading] = useState(false);
     const imgRef   = useRef();
-
+    const [isDuplicated, setIsDuplicated] = useState(CHECK_ID_YET);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleClickShowPassword = () => {
@@ -100,8 +104,8 @@ const AuthRegister = () => {
         let formData = new FormData();
         formData.append("profileImg"     , imageUrl);
         formData.append("userId"         , userid.value);
-        //formData.append("userPassword"   , password.value);
-        formData.append("userPassword"   , '12341234');
+        formData.append("userPassword"   , password.value);
+        // formData.append("userPassword"   , '12341234');
         formData.append("userMailAddress", email.value );
         formData.append("userName"       , username.value);
         formData.append("userTeamName"   , company.value);
@@ -124,6 +128,14 @@ const AuthRegister = () => {
         });
 
         await setIsLoading(false);
+    }
+
+    const checkId = async (userId)=>{
+        setCheckLoading(true);
+        const result = await authIdCheck({userId});
+        setIsDuplicated(result ? CHECK_ID_DUPLICATED : CHECK_ID_NOT_DUPLICATED);
+        setCheckLoading(false);
+
     }
 return (
         <>
@@ -148,6 +160,13 @@ return (
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    if(isDuplicated==CHECK_ID_YET){
+                        enqueueSnackbar("중복체크를 해주세요", {variant: 'warning'});
+                        return;
+                    }else if(isDuplicated==CHECK_ID_DUPLICATED){
+                        enqueueSnackbar("중복된 아이디입니다.", {variant: 'warning'});
+                        return;
+                    }
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
@@ -206,26 +225,44 @@ return (
                                     )}
                                 </Stack>
                             </Grid>
-                            <Grid item xs={3} >
+                            <Grid item xs={4} >
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="btn-signup">..</InputLabel>
-                                    <OutlinedInput
-                                        id="btnadd"
-                                        type="text"
-                                        value={values.test1}
-                                        name="btnadd"
-                                        placeholder="중복체크"
-                                        disabled="true"
-                                    />
+                                    <LoadingButton
+                                        variant="contained"
+                                        size="medium"
+                                        onClick={()=>{checkId(values.userid)}}
+                                        loading={isCheckLoading}
+                                    >
+                                        중복체크
+                                    </LoadingButton>
+                                    {isDuplicated==CHECK_ID_YET?
+                                    <></>
+                                    :isDuplicated==CHECK_ID_DUPLICATED ?
+                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="error">
+                                        중복된 ID입니다.
+                                        </Typography>
+                                    :
+                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="primary">
+                                         사용 가능한 ID입니다.
+                                        </Typography>
+                                    }
+                                    {/*    id="btnadd"*/}
+                                    {/*    type="text"*/}
+                                    {/*    value={values.test1}*/}
+                                    {/*    name="btnadd"*/}
+                                    {/*    placeholder="중복체크"*/}
+                                    {/*    disabled="true"*/}
+                                    {/*/>*/}
                                 </Stack>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-signup">비밀번호</InputLabel>
+                                    <InputLabel htmlFor="password">비밀번호</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
-                                        id="password-signup"
+                                        id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         value={values.password}
                                         name="password"

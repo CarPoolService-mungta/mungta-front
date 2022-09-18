@@ -28,7 +28,6 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     ({status: httpStatus, data: response}) => {
       // if (httpStatus <200 || httpStatus >= 300) throw new CustomError(response);
-      console.log('resposne1:',response)
       return response;
     },
     ({httpStatus, response}) => {

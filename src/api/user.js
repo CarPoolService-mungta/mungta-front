@@ -10,11 +10,6 @@ export const getPhotoByUserId = async (id) => axios.get('/api/user/auth/download
 
 export const signupById = async data => axios.post('/api/user/auth/signup', data);
 
-
-
-
-
-
 /**
  * @param {{refreshToken: string}} data
  */
@@ -22,4 +17,9 @@ export const authRefresh = async data =>
     axios.put('/api/user/token-refresh',null,{
         headers: data
     });
+/**
+ * @param {{userId: text}} params
+ */
+export const authIdCheck = async params =>
+    axios.get('/api/user/auth/check-id-duplicate', {params});
 
