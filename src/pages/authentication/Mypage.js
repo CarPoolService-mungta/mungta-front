@@ -18,7 +18,6 @@ marginBottom: 20,
 const Mypage = () => {
 
   let userInfo   = useSelector(state =>  state.userInfo );
-  console.log("reduxInfo:",userInfo );
 
   const navigate = useNavigate();
   const [dataUrlmage   , setdataUrlmage]    = useState(null);

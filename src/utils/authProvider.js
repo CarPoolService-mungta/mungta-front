@@ -51,8 +51,9 @@ export const logOut=()=>{
 
 export const onSlientRefresh = async ()=>{
   const refreshToken = localStorageHandler.getItem(REFRESH_TOKEN);
-  const accessToken = await authRefresh({refreshToken: 'Bearer ' + refreshToken});
+  const token = await authRefresh({refreshToken: 'Bearer ' + refreshToken});
 
-  localStorageHandler.setItem(ACCESS_TOKEN , accessToken);
+  localStorageHandler.setItem(ACCESS_TOKEN , token);
+  console.log("TEST")
   setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
 }
