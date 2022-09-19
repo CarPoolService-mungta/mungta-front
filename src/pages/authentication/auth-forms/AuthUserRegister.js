@@ -28,6 +28,9 @@ const avartarStyle = {
     marginTop: 20,
     marginBottom: 20,
 }
+const letterCol = {
+    color: '#ffffff'
+}
 const CHECK_ID_YET = 0;
 const CHECK_ID_NOT_DUPLICATED = 1;
 const CHECK_ID_DUPLICATED=2;
@@ -204,7 +207,7 @@ return (
                                     )}
                                 </Stack>
                             </Grid>
-                            <Grid item xs={9} md={6}>
+                            <Grid item xs={8}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="id-signup">아이디*</InputLabel>
                                     <OutlinedInput
@@ -227,7 +230,7 @@ return (
                             </Grid>
                             <Grid item xs={4} >
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="btn-signup">..</InputLabel>
+                                    <InputLabel htmlFor="btn-signup"  style = {letterCol}>..</InputLabel>
                                     <LoadingButton
                                         variant="contained"
                                         size="medium"
