@@ -147,7 +147,7 @@ const SelectCarpoolList = () => {
                         {ListStatusDesc[p.status]}
                       </Item>
                       <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
-                        신청 시 역할 [ {p.driver.userId=== 'test-d-001@gmail.com'?'운전자':'카풀러'} ]
+                        신청 시 역할 [ {'카풀러'} ]
                       </Item>
                     </Stack>
                   </Paper>

@@ -77,7 +77,7 @@ const MyCarpoolPastList = () => {
     <>
       <Grid item xs={12} md={6}>
         <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
-        진행 중인 카풀
+            지난 카풀 내역
         <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
         </Typography>
         <EmptyList/>

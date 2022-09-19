@@ -34,8 +34,9 @@ export const startParty = async (matchProcess) => axios.post('/api/match/partySt
  * @param {{partyId: number}} params
  */
 export const closeParty = async (matchProcess) => axios.post('/api/match/partyClose', matchProcess);
+
 /**
- * @param {{partyId: number}} params
+ * @param {{partyInfoId: number}} params
  */
-// export const cancelParty = async (data) =>
-//   axios.post('/match/partyCancel', data);
+export const getPartyMemberSummary = async (params) =>
+    axios.get('/api/match/partymembers/summary', { params });

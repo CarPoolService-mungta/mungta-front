@@ -7,9 +7,8 @@ import {
   getMatchUsers,
   cancelMatch,
   startParty,
-  closeParty,
+  closeParty, getPartyMemberSummary,
 } from 'api/partyMatching';
-import UserPhoto from 'pages/party-matching/UserPhoto';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -20,45 +19,18 @@ import {
   Grid, OutlinedInput,
   Stack,
   Typography,
-  InputAdornment
+  InputAdornment, CircularProgress
 } from '@mui/material';
 
 // project import
 import MainCard from 'components/MainCard';
 import ComponentSkeleton from 'pages/components-overview/ComponentSkeleton';
-
-// avatar style
-const avatarSX = {
-  width: 36,
-  height: 36,
-  fontSize: '1rem',
-};
-
-// action style
-const actionSX = {
-  mt: 0.75,
-  ml: 1,
-  top: 'auto',
-  right: 'auto',
-  alignSelf: 'flex-start',
-  transform: 'none',
-};
-
-// sales report status
-const status = [
-  {
-    value: 'today',
-    label: 'Today',
-  },
-  {
-    value: 'month',
-    label: 'This Month',
-  },
-  {
-    value: 'year',
-    label: 'This Year',
-  },
-];
+import {getPartyInfo} from "api/partymanagement";
+import CustomError from "utils/CustomError";
+import {useSnackbar} from "notistack";
+import moment from 'moment';
+import UserPhoto from './UserPhoto'
+import {useSelector} from "react-redux";
 
 const partyInfoTitle = {
   fontSize: '1.0rem',
@@ -86,57 +58,95 @@ function checkUserMatchStatus(userMatchStatus) {
     return MatchStatusCode.MATCHAPPLY;
   }
 }
+const initPartyInfo = {
+  curNumberOfParty:0,
+  maxNumberOfParty:0,
+  moveInfo: {
+    placeOfDeparture:'',
+    destination:'',
+    startDate:'',
+    price:'',
+    distance:'',
+  },
+  driver:{
+    carNumber:'',
+    carKind:''
+  }
+}
 
 const PartyMatching = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {id} = useParams();
 
   const [userMatchStatus, setUserMatchStatus] = useState(null);
   const [matchUsers, setMatchUsers] = useState(null);
-  //   const [partyInfo, setPartyInfo] = useState(null);
+  const [partyInfo, setPartyInfo] = useState(initPartyInfo);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMember,setIsLoadingMember] = useState(false);
+  const userInfo   = useSelector(state =>  state.userInfo );
 
-  const photoList =
-    matchUsers &&
-    matchUsers.map((user) => (
-      <UserPhoto userId={user.userId} curPhoto={user.curPhoto} />
-    ));
+  const searchPartyInfo = async ()=>{
+    setIsLoading(true);
+    const partyInfoResponse = await getPartyInfo({id});
+    if(partyInfoResponse instanceof CustomError){
+      enqueueSnackbar(partyInfoResponse.message, {variant: 'error'});
+    }else{
+      setPartyInfo(partyInfoResponse);
+    }
+    setIsLoading(false);
+  }
 
-  useEffect(async () => {
-    const partyInfoId = id;
-    const userId = 'lee1234';
-    const matchStatus = 'WAITING';
-    const matchResult = await getMatchInfo({ partyInfoId });
-    // const partyResult = await getMatchInfo({ partyInfoId, userId }); //파티 정보 조회로 변경
-    const userResult = await getMatchUsers({ partyInfoId, matchStatus }); //파티 정보 조회로 변경
-    setUserMatchStatus(matchResult.matchStatus);
+  const searchPartyMembersSummary= async ()=>{
+    setIsLoadingMember(true);
+    const partyMemberResponse = await getPartyMemberSummary({partyInfoId: id});
+    if(partyMemberResponse instanceof CustomError){
+      enqueueSnackbar(partyMemberResponse.message, {variant: 'error'});
+    }else{
+      setMatchUsers(partyMemberResponse.userResponses);
+      setUserMatchStatus(partyMemberResponse.matchStatus);
+    }
+    setIsLoadingMember(false);
+  }
+
+  useEffect(() => {
+    searchPartyInfo();
+    searchPartyMembersSummary();
+
+    // const matchResult = await getMatchInfo({ id });
+    // const userResult = await getMatchUsers({ id, matchStatus }); //파티 정보 조회로 변경
+    // setUserMatchStatus(matchResult.matchStatus);
     // setPartyInfo(partyResult);
 
-    if (userResult != 'undefined' && userResult != null) {
-      setMatchUsers(userResult);
-    }
+    // if (userResult != 'undefined' && userResult != null) {
+    //   setMatchUsers(userResult);
+    // }
   }, []);
 
-  const goBackList = () => {
-    navigate(`/party-member`);
+  const goPartyMemberDetailList = () => {
+    navigate(`/party-member/${id}`);
   }; //파티 ID 넘겨주기
 
   const btnMatchClick = async () => {
     const data = {
       partyInfoId: id,
-      userId: 'lee1234',
+      userId: userInfo.userId,
     };
 
     const matchProcess = {
       partyInfoId: id,
-      driverId: 'driver1234', //현재 userID 넣어주기
+      driverId: partyInfo.driver.userId, //현재 userID 넣어주기
     };
 
+    //이거 로직이 조금 이상하긴 한데 그냥 일단 넘어가자
+    //시작 전에만 파티 취소가 가능해야하는데 여긴 파티를 시작하고 취소가 가능하다.
+    //파티 start가 누구한테 떨어지는건지 모르겠지만... 이것도 이상해..
     if (userMatchStatus === 'WAITING' || userMatchStatus === 'ACCEPT') {
       const cancelResult = await cancelMatch(data);
     } else if (userMatchStatus === 'DENY') {
-      alert('신청이 거절된 파티입니다.');
+      enqueueSnackbar('신청이 거절된 파티입니다.', {variant: 'error'});
     } else if (userMatchStatus === 'FORMED') {
       const startResult = await startParty(matchProcess);
     } else if (userMatchStatus === 'START') {
@@ -151,57 +161,121 @@ const PartyMatching = () => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <MainCard title="파티 상세 정보">
-            <Grid container spacing={3}>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>차종</Box>
+            {isLoading ?
+                <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+                  <CircularProgress />
+                </Box>:
+            <Grid container direction="row" spacing={3}>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>출발지</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.moveInfo.placeOfDeparture}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <OutlinedInput
-                    id="outlined-adornment-weight"
-                    value={"차종"}
-                    disabled={true}
-                    endAdornment={<InputAdornment position="end">kg</InputAdornment>}
-                    aria-describedby="outlined-weight-helper-text"
-                />
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>목적지</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.moveInfo.destination}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>출발시간</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>출발시간</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={moment(partyInfo.moveInfo.startDate).format('YYYY-MM-DD HH:mm:ss')}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>총 요금</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.moveInfo.price}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                      endAdornment={<InputAdornment position="end">원</InputAdornment>}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>총 요금</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>차종</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.driver.carKind}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API 원</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>차번호</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.driver.carNumber}
+                      disabled={true}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>차번호</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>거리</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={partyInfo.moveInfo.distance}
+                      disabled={true}
+                      variant="contained"
+                      endAdornment={<InputAdornment position="end">km</InputAdornment>}
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>거리</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} alignItems="center">
-                <OutlinedInput
-                    id="outlined-adornment-weight"
-                    value={"거리"}
-                    disabled={true}
-                    variant="contained"
-                    endAdornment={<InputAdornment position="end">km</InputAdornment>}
-                    aria-describedby="outlined-weight-helper-text"
-                />
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>탑승인원</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API 명</Box>
+              <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
+                <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
+                  <Box p={4}>탑승인원</Box>
+                </Grid>
+                <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
+                  <OutlinedInput
+                      id="outlined-adornment-weight"
+                      value={`${partyInfo.curNumberOfParty}/${partyInfo.maxNumberOfParty}`}
+                      disabled={true}
+                      variant="contained"
+                      aria-describedby="outlined-weight-helper-text"
+                  />
+                </Grid>
               </Grid>
             </Grid>
+            }
           </MainCard>
         </Grid>
       </Grid>
@@ -220,22 +294,30 @@ const PartyMatching = () => {
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }} noWrap>
                       파티 신청 멤버
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      color="secondary"
-                      noWrap
-                      sx={{ mt: 2 }}
-                    >
-                      {
+                    <br/>
+                    {isLoadingMember ?
+                        <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+                          <CircularProgress/>
+                        </Box> :
                         <AvatarGroup
-                          sx={{
-                            '& .MuiAvatar-root': { width: 42, height: 42 },
-                          }}
+                            sx={{
+                              '& .MuiAvatar-root': {width: 100, height: 100},
+                            }}
                         >
-                          {photoList}
+                          {matchUsers &&
+                              matchUsers.map((user) => (
+                                  <>
+                                    <UserPhoto userId={user.userId}
+                                               userPhoto={user.userPhoto}
+                                               fileExtension={user.fileExtension}
+                                               userName={user.userName}
+                                               userTeam={user.userTeamName}
+                                               isDriver={user.userId==partyInfo.driver.userId}/>
+
+                                  </>
+                              ))}
                         </AvatarGroup>
-                      }
-                    </Typography>
+                    }
                   </Stack>
                 </Grid>
                 {/* <Grid item>
@@ -253,7 +335,7 @@ const PartyMatching = () => {
                     size="small"
                     variant="contained"
                     style={{ width: '200px' }}
-                    onClick={goBackList}
+                    onClick={goPartyMemberDetailList}
                   >
                     파티 멤버 확인
                   </Button>
@@ -264,32 +346,34 @@ const PartyMatching = () => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} style={{ margin: '10px 0px 0px 0px' }}>
-          <MainCard title="이동 경로">
-            <Grid container spacing={3}>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>출발지</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>
-                <Box p={4}>도착지</Box>
-              </Grid>
-              <Grid item xs={6} sm={4} md={3} lg={2}>
-                <Box p={4}>API</Box>
-              </Grid>
-            </Grid>
-          </MainCard>
-        </Grid>
-      </Grid>
+      {/*<Grid container spacing={3}>*/}
+      {/*  <Grid item xs={12} style={{ margin: '10px 0px 0px 0px' }}>*/}
+      {/*    <MainCard title="이동 경로">*/}
+      {/*      <Grid container spacing={3}>*/}
+      {/*        <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>*/}
+      {/*          <Box p={4}>출발지</Box>*/}
+      {/*        </Grid>*/}
+      {/*        <Grid item xs={6} sm={4} md={3} lg={2}>*/}
+      {/*          <Box p={4}>API</Box>*/}
+      {/*        </Grid>*/}
+      {/*        <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>*/}
+      {/*          <Box p={4}>도착지</Box>*/}
+      {/*        </Grid>*/}
+      {/*        <Grid item xs={6} sm={4} md={3} lg={2}>*/}
+      {/*          <Box p={4}>API</Box>*/}
+      {/*        </Grid>*/}
+      {/*      </Grid>*/}
+      {/*    </MainCard>*/}
+      {/*  </Grid>*/}
+      {/*</Grid>*/}
 
       <Grid container direction="row" justifyContent="center" spacing={2}>
         <Grid item>
+          {
           <Button sx={{ mt: 2 }} variant="contained" onClick={btnMatchClick}>
             {checkUserMatchStatus(userMatchStatus)}
           </Button>
+        }
         </Grid>
       </Grid>
     </ComponentSkeleton>

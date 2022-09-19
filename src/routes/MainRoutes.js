@@ -61,7 +61,7 @@ const MainRoutes = {
             element: <PartyMatching />
         },
         {
-            path: 'party-member',
+            path: 'party-member/:id',
             element: <PartyMemberList />
         },
         {

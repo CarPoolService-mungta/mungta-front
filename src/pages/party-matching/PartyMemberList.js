@@ -31,6 +31,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { TableRow } from '../../../node_modules/@mui/material/index';
+import {useParams} from "react-router-dom";
 
 // avatar style
 const avatarSX = {
@@ -63,7 +64,7 @@ function isDriver() {
 }
 
 const PartyMemberList = () => {
-  const theme = useTheme();
+  const {id} = useParams();
 
   const [userResult, setUserResult] = useState(null);
   const [waitResult, setWaitResult] = useState(null);

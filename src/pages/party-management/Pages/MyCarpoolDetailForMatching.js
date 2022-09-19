@@ -15,9 +15,10 @@ import PropTypes from 'prop-types';
 import AnimateButton from '../../../components/@extended/AnimateButton';
 import MyCarpoolDetailForCarpooler from './Children/MyCarpoolDetailForCarpooler';
 import MyCarpoolDetailForDriver from './Children/MyCarpoolDetailForDriver';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { getPartyInfo } from 'api/partymanagement';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
+import {useSelector} from "react-redux";
 
 const InputTitle = {
   backgroundColor: '#1A2027',
@@ -56,20 +57,19 @@ const MyCarpoolDetailForMatching = (props) => {
   const [post, setPost] = React.useState(location.state.data);
   //const { type, isDriver } = queryString.parse(location.search);
 
-  console.log('location',location);
-  console.log('location data :',location.state.data);
-  console.log('location type :',location.state.type);
+  const userInfo   = useSelector(state =>  state.userInfo );
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = React.useState(false);
   const partyId = location.state.data.id;
   function isInParty(carpooler) {
-    return carpooler.userId === 'test-d-001@gmail.com'
+    return carpooler.userId === userInfo.userId
   }
   console.log('post:',post);
 
 
     const type = location.state.type
-    const isDriver = (location.state.data.driver.userId === 'test-d-001@gmail.com'); //여기에 나중에 user id랑 비교
+    const isDriver = (location.state.data.driver.userId === userInfo.userId); //여기에 나중에 user id랑 비교
     const canApply = (location.state.data.curNumberOfParty <location.state.data.maxNumberOfParty)
                       && (location.state.data.status ==='OPEN')
                       && !isDriver
@@ -78,6 +78,9 @@ const MyCarpoolDetailForMatching = (props) => {
      console.log("isDriver:",isDriver);
      console.log('canApply:',canApply);
 
+     const applyParty = ()=>{
+         navigate(`/party-matching/${partyId}`)
+     }
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -157,7 +160,7 @@ const MyCarpoolDetailForMatching = (props) => {
                         state={{ data:post}}>
                         <Button size="small" variant="contained" color="primary" align="center">삭제하기</Button>
                       </Link> */}
-                      <Button size="small" variant="contained" color="error" align="center" onClick={()=>alert('파티신청하기')}>파티신청하기</Button>
+                      <Button size="small" variant="contained" color="error" align="center" onClick={applyParty}>파티신청하기</Button>
                      </Grid>
                     :<br/>
                     }
