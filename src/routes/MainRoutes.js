@@ -23,6 +23,7 @@ const Question = Loadable(lazy(() => import('pages/question/Question')));
 const PostQuestion = Loadable(lazy(() => import('pages/question/PostQuestion')));
 
 const Mypage = Loadable(lazy(() => import('pages/authentication/Mypage')));
+const UserUpdate = Loadable(lazy(() => import('pages/authentication/UserUpdate')));
 
 const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
 const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
@@ -126,6 +127,11 @@ const MainRoutes = {
         {
             path: 'mypage',
             element: <Mypage />
+        },
+        {
+            // path: 'update-user-info/:userId',
+            path: 'update-user-info',
+            element: <UserUpdate />
         },
         {
             path: 'admin/question-management',

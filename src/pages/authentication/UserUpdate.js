@@ -1,23 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-// material-ui
-import {
-    Box,Button,Divider,FormControl,FormHelperText,Grid,Link,IconButton,InputAdornment,
-    InputLabel,OutlinedInput, Stack,Typography,Avatar,Container
+import MainCard from 'components/MainCard';
+import { Box,Button,Divider,FormControl,FormHelperText,Grid,Link,IconButton,InputAdornment,
+    InputLabel,OutlinedInput, Stack,Typography,Avatar,Container,
 } from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import {Formik } from 'formik';
-import {authIdCheck, signupByUserId} from 'api/user'
+import {getUserByUserId, updateByUserId} from 'api/user'
 import {useNavigate} from 'react-router-dom';
+import {useSelector } from 'react-redux';
 import {useSnackbar } from 'notistack';
 import CustomError from 'utils/CustomError';
-// project import
-//import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 import {strengthColor, strengthIndicator } from 'utils/password-strength';
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import {LoadingButton} from '@material-ui/lab';
 
@@ -28,28 +22,30 @@ const avartarStyle = {
     marginTop: 20,
     marginBottom: 20,
 }
-const letterCol = {
-    color: '#ffffff'
-}
-const CHECK_ID_YET = 0;
-const CHECK_ID_NOT_DUPLICATED = 1;
-const CHECK_ID_DUPLICATED=2;
-
 // ============================|| FIREBASE - REGISTER ||============================ //
-const AuthRegister = () => {
+const UserUpdate = () => {
 
     let fileBf = '';
+    let dataUrlmagetmp ='';
+
+    const userInfo   = useSelector(state =>  state.userInfo );
+
     const navigate = useNavigate();
     const {enqueueSnackbar } = useSnackbar();
+    const [isCheckLoading, setCheckLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
+
+
     const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
     const [imageUrl, setImageUrl] = useState(null);
-    const [isCheckLoading, setCheckLoading] = useState(false);
     const imgRef   = useRef();
-    const [isDuplicated, setIsDuplicated] = useState(CHECK_ID_YET);
-    const [isLoading, setIsLoading] = useState(false);
+
+    const [userEmail, setUserEmail] = useState(null);
+
+
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -64,7 +60,37 @@ const AuthRegister = () => {
         setLevel(strengthColor(temp));
     };
 
-    useEffect(() => {changePassword('');}, []);
+    //useEffect(() => {changePassword('');}, []);
+    useEffect(async ()=>{await inqUser()},[]);
+
+
+    const inqUser = async ()=>{
+        await setIsLoading(true);
+        const response = await getUserByUserId(userInfo.userId)
+            if(response instanceof CustomError){
+                enqueueSnackbar(response.message, {variant: 'error'});
+            }else{
+                console.log("userInfo:",response.userMailAddress );
+                //console.log("userInfo:",response.possibleYn );
+
+                const str1='data:image/';
+                const str2=response.fileExtension;;
+                const str3=';base64,';
+                const str4=response.userPhoto;
+                dataUrlmagetmp =str1+str2+str3+str4;
+                setUserEmail(userEmail=>response.userMailAddress)
+            }
+            //await setdataUrlmage(dataUrlmage => dataUrlmagetmp);
+        await setIsLoading(false);
+    }
+
+
+
+
+
+
+
+
 
     const handleImage = async(e)=>{
 
@@ -102,13 +128,12 @@ const AuthRegister = () => {
         return err;
     }
 
-    const registerConfirm  = async ()=>{
+    const updateConfirm  = async ()=>{
 
         let formData = new FormData();
         formData.append("profileImg"     , imageUrl);
         formData.append("userId"         , userid.value);
         formData.append("userPassword"   , password.value);
-        // formData.append("userPassword"   , '12341234');
         formData.append("userMailAddress", email.value );
         formData.append("userName"       , username.value);
         formData.append("userTeamName"   , company.value);
@@ -118,30 +143,25 @@ const AuthRegister = () => {
         formData.append("carType"        , cartype.value);
         formData.append("carNumber"      , carnumber.value);
 
-        await signupByUserId(formData)
+        await updateByUserId(userInfo.userId, formData)
         .then((response) => {
             console.log("response:",response );
 
             if(response instanceof CustomError){
                 enqueueSnackbar(response.message, {variant: 'error'});
             }else{
-                enqueueSnackbar('회원가입이 완료되었습니다.', {variant: 'success'});
-                navigate('/auth/login');
+                enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
+                navigate('/mypage');
             }
         });
 
         await setIsLoading(false);
     }
 
-    const checkId = async (userId)=>{
-        setCheckLoading(true);
-        const result = await authIdCheck({userId});
-        setIsDuplicated(result ? CHECK_ID_DUPLICATED : CHECK_ID_NOT_DUPLICATED);
-        setCheckLoading(false);
 
-    }
 return (
         <>
+         <MainCard darkTitle={true}  title="회원정보관리" >
             <Formik
                 initialValues={{
                     email: '',
@@ -158,22 +178,15 @@ return (
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    userid: Yup.string().max(255).required('ID is required'),
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    // userid: Yup.string().max(255).required('ID is required'),
+                    // email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    // password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    if(isDuplicated==CHECK_ID_YET){
-                        enqueueSnackbar("중복체크를 해주세요", {variant: 'warning'});
-                        return;
-                    }else if(isDuplicated==CHECK_ID_DUPLICATED){
-                        enqueueSnackbar("중복된 아이디입니다.", {variant: 'warning'});
-                        return;
-                    }
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
-                        registerConfirm();
+                        updateConfirm();
                     } catch (err) {
                         console.error(err);
                         setStatus({ success: false });
@@ -184,79 +197,35 @@ return (
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit}>
-                        <Grid container spacing={1}>
+
+                        <Grid container spacing={1} item xs={6}>
                         <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-signup">이메일*</InputLabel>
+                                    <InputLabel htmlFor="email-signup">이메일</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
                                         id="email"
                                         type="email"
-                                        value={values.email}
+                                        readOnly="true"
+                                        disabled="true"
+                                        value= {userEmail}
                                         name="email"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="Email Address"
                                         inputProps={{}}
                                     />
-                                    {touched.email && errors.email && (
-                                        <FormHelperText error id="helper-text-email-signup">
-                                            {errors.email}
-                                        </FormHelperText>
-                                    )}
                                 </Stack>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="id-signup">아이디*</InputLabel>
+                                    <InputLabel htmlFor="id-signup">아이디</InputLabel>
                                     <OutlinedInput
                                         id="userid"
                                         type="text"
+                                        disabled="true"
+                                        readOnly="true"
                                         value={values.userid}
                                         name="userid"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="ID"
                                         fullWidth
-                                        error={Boolean(touched.userid && errors.userid)}
                                     />
-                                    {touched.userid && errors.userid && (
-                                        <FormHelperText error id="helper-text-userid-signup">
-                                            {errors.userid}
-                                        </FormHelperText>
-                                    )}
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={5} >
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="btn-signup"  style = {letterCol}>..</InputLabel>
-                                    <LoadingButton
-                                        variant="contained"
-                                        size="medium"
-                                        onClick={()=>{checkId(values.userid)}}
-                                        loading={isCheckLoading}
-                                    >
-                                        중복체크
-                                    </LoadingButton>
-                                    {isDuplicated==CHECK_ID_YET?
-                                    <></>
-                                    :isDuplicated==CHECK_ID_DUPLICATED ?
-                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="error">
-                                        중복된 ID입니다.
-                                        </Typography>
-                                    :
-                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="primary">
-                                         사용 가능한 ID입니다.
-                                        </Typography>
-                                    }
-                                    {/*    id="btnadd"*/}
-                                    {/*    type="text"*/}
-                                    {/*    value={values.test1}*/}
-                                    {/*    name="btnadd"*/}
-                                    {/*    placeholder="중복체크"*/}
-                                    {/*    disabled="true"*/}
-                                    {/*/>*/}
                                 </Stack>
                             </Grid>
                             <Grid item xs={12}>
@@ -377,7 +346,7 @@ return (
                             <Avatar src= {image} style = {avartarStyle} onClick={()=>{imgRef.current.click()}}></Avatar>
                                 <input  type='file' style={{display:'none'}} accept='image/jpg,impge/png,image/jpeg' name='profileImg' onChange={handleImage} ref={imgRef}/>
                         </Container>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={1} item xs={6}>
                             <Grid item xs={3}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="driveryn-signup">운전여부</InputLabel>
@@ -463,23 +432,6 @@ return (
                                 </Stack>
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography variant="body2">
-                                    By Signing up, you agree to our &nbsp;
-                                    <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Terms of Service
-                                    </Link>
-                                    &nbsp; and &nbsp;
-                                    <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Privacy Policy
-                                    </Link>
-                                </Typography>
-                            </Grid>
-                            {errors.submit && (
-                                <Grid item xs={12}>
-                                    <FormHelperText error>{errors.submit}</FormHelperText>
-                                </Grid>
-                            )}
-                            <Grid item xs={12}>
                                 <AnimateButton>
                                     <Button
                                         disableElevation
@@ -494,20 +446,13 @@ return (
                                     </Button>
                                 </AnimateButton>
                             </Grid>
-                            {/* <Grid item xs={12}>
-                                <Divider>
-                                    <Typography variant="caption">Sign up with</Typography>
-                                </Divider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FirebaseSocial />
-                            </Grid> */}
                         </Grid>
                     </form>
                 )}
             </Formik>
+            </MainCard>
         </>
     );
 };
 
-export default AuthRegister;
+export default UserUpdate;
