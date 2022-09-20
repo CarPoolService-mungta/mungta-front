@@ -8,7 +8,7 @@ import {Button,FormHelperText,Grid,Link,IconButton,InputAdornment,InputLabel,Out
 //Checkbox,Divider,FormControlLabel,Typography
 //import FirebaseSocial from './FirebaseSocial';
 
-import {getPhotoByUserId, signinById} from 'api/user'
+import {getPhotoByUserId, signinByUserId} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 // import { values } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -51,7 +51,7 @@ const AuthLogin = () => {
             }));
     },[])
     const signinConfirm = async ()=>{
-        const response = await signinById({userId: email.value ,userPassword: password.value})
+        const response = await signinByUserId({userId: email.value ,userPassword: password.value})
         if(response instanceof CustomError){
             enqueueSnackbar(response.message, {variant: 'error'});
         }else{
