@@ -15,7 +15,7 @@ import {
 import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
 import avatar1 from 'assets/images/users/avatar-1.png';
 
-const UserPhoto = ({userId, userName, userTeam, userPhoto, fileExtension, isDriver}) => {
+const UserPhoto = ({userId, userName, userTeam, userPhoto, fileExtension, isDriver = false}) => {
 
     const [userImage, setUserImage] = useState(null);
 
@@ -31,7 +31,7 @@ const UserPhoto = ({userId, userName, userTeam, userPhoto, fileExtension, isDriv
 
     return (<>
             <Grid container direction="column" alignItems="center" justifyContent="center">
-                <Avatar key={userId} src={userImage} alt="userName" style={{borderColor: isDriver? 'red' : 'alpha', width:100, height:100}}/>
+                <Avatar key={userId} src={userImage} style={{borderColor: isDriver? 'red' : 'alpha', width:100, height:100}}/>
 
                 <Typography variant="h5" >{userName}</Typography>
                 <Typography variant="h6" >{userTeam}</Typography>

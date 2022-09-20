@@ -11,128 +11,117 @@ import avatar3 from 'assets/images/users/avatar-1.png';
 import avatar4 from 'assets/images/users/avatar-1.png';
 
 
-import { Link } from 'react-router-dom';
+import {Link, useLocation, useNavigate, useParams} from 'react-router-dom';
 import { Box } from '../../../node_modules/@material-ui/core/index';
 import MainCard from '../../components/MainCard';
 
 import Grid from '@mui/material/Unstable_Grid2';
+import {useEffect, useState} from "react";
+import {getPartyMember} from "../../api/review";
+import CustomError from "../../utils/CustomError";
+import {useSnackbar} from "notistack";
+import {useSelector} from "react-redux";
 
-const driverCard = (
-  <Card sx={{ maxWidth: 200 }}>
-    <CardActionArea>
-      <CardMedia component="img" height="200" src={avatar1} />
-      <CardContent>
-        <Typography align="center" gutterBottom variant="h5" component="div">
-          운전자
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          부서
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          이름
-        </Typography>
-      </CardContent>
-    </CardActionArea>
-  </Card>
-);
+// const driverCard = (
+//   <Card sx={{ maxWidth: 200 }}>
+//     <CardActionArea>
+//       <CardMedia component="img" height="200" src={avatar1} />
+//       <CardContent>
+//         <Typography align="center" gutterBottom variant="h5" component="div">
+//           운전자
+//         </Typography>
+//         <Typography variant="body2" color="text.secondary">
+//           부서
+//         </Typography>
+//         <Typography variant="body2" color="text.secondary">
+//           이름
+//         </Typography>
+//       </CardContent>
+//     </CardActionArea>
+//   </Card>
+// );
 
-export default function ActionAreaCard() {
+const ReviewSelect = ()=> {
+
+  const {id} = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const userInfo   = useSelector(state =>  state.userInfo );
+
+  const [memberList, setMemberList] = useState([]);
+  const [party, setParty]= useState('');
+
+
+  useEffect(async ()=>{
+    setParty(location.state.party);
+
+    const response = await getPartyMember({partyInfoId: location.state.party.id});
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+    } else {
+      setMemberList(response)
+    }
+  },[])
+
+  const makePhoto = (userPhoto, fileExtension)=>{
+    if(userPhoto && fileExtension){
+      const str1='data:image/';
+      const str2=fileExtension;;
+      const str3=';base64,';
+      const str4=userPhoto;
+      return str1+str2+str3+str4;
+    }else{
+      return null;
+    }
+  }
+
+  const goPostReview=(member)=>{
+    if(member.userId!=userInfo.userId){
+      navigate(`/review-register`, {
+        state: {
+          member: member,
+          party: party
+        }
+      })
+    }else{
+      enqueueSnackbar('자신을 리뷰할 수 없습니다.', {variant: 'warning'});
+    }
+  }
+
   return (
     <MainCard darkTitle={true} title={'리뷰대상 선택하기'}>
       <Grid container display="flex">
-        <Grid xs>
-          <Card sx={{ maxWidth: 200 }}>
-            <CardActionArea component={Link} to="/review-register">
-              <CardMedia component="img" height="200" src={avatar1} />
-              <CardContent>
-                <Typography
-                  align="center"
-                  gutterBottom
-                  variant="h4"
-                  component="div"
-                >
-                  운전자
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  부서
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  이름
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-        <Grid xs>
-          <Card sx={{ maxWidth: 200 }}>
-            <CardActionArea component={Link} to="/review-register">
-              <CardMedia component="img" height="200" src={avatar2} />
-              <CardContent>
-                <Typography
-                  align="center"
-                  gutterBottom
-                  variant="h4"
-                  component="div"
-                >
-                  카풀러1
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  부서
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  이름
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-        <Grid xs>
-          <Card sx={{ maxWidth: 200 }}>
-            <CardActionArea component={Link} to="/review-register">
-              <CardMedia component="img" height="200" src={avatar3} />
-              <CardContent>
-                <Typography
-                  align="center"
-                  gutterBottom
-                  variant="h4"
-                  component="div"
-                >
-                  카풀러2
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  부서
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  이름
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-        <Grid xs>
-          <Card sx={{ maxWidth: 200 }}>
-            <CardActionArea component={Link} to="/review-register">
-              <CardMedia component="img" height="200" src={avatar4} />
-              <CardContent>
-                <Typography
-                  align="center"
-                  gutterBottom
-                  variant="h4"
-                  component="div"
-                >
-                  카풀러3
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  부서
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  이름
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
+        {memberList &&
+          memberList.map((member)=>
+                <Grid xs>
+                  <Card sx={{maxWidth: 200}}>
+                    <CardActionArea onClick={()=>goPostReview(member)} >
+                      <CardMedia component="img" height="200" src={makePhoto(member.userPhoto, member.fileExtension)}/>
+                      <CardContent style={{background:member.userId==userInfo.userId ?'alpha':'#D1DFE8'}}>
+                        <Typography
+                            align="center"
+                            gutterBottom
+                            variant="h4"
+                            component="div"
+                        >
+                          {party.driver.userId == member.userId ? '운전자' : '카풀러'}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {`부서: ${member.userTeamName}`}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {`이름: ${member.userName}`}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              )
+        }
       </Grid>
     </MainCard>
   );
 }
+
+export default ReviewSelect;

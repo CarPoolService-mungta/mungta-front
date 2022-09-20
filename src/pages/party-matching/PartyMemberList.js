@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
-import { SnackbarProvider } from 'notistack';
+import {SnackbarProvider, useSnackbar} from 'notistack';
 import { getMatchUsers } from 'api/partyMatching';
 import UserTable from 'pages/party-matching/UserTable';
 import WaitTable from 'pages/party-matching/WaitTable';
@@ -9,7 +9,7 @@ import DataTable from 'components/@extended/DataTable';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-  Avatar,
+  Avatar, Box, CircularProgress,
   Grid,
   List,
   ListItemAvatar,
@@ -31,7 +31,9 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { TableRow } from '../../../node_modules/@mui/material/index';
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
+import CustomError from "../../utils/CustomError";
+import {useSelector} from "react-redux";
 
 // avatar style
 const avatarSX = {
@@ -59,52 +61,54 @@ const columns = [
   },
 ];
 
-function isDriver() {
-    return true;
-}
-
 const PartyMemberList = () => {
-  const {id} = useParams();
 
-  const [userResult, setUserResult] = useState(null);
-  const [waitResult, setWaitResult] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const userInfo   = useSelector(state =>  state.userInfo );
 
-  const acceptList =
-    userResult &&
-    userResult.map((user) => (
-      <UserTable
-        userId={user.userId}
-        curPhoto={user.curPhoto}
-        userTeamName={user.userTeamName}
-        content={user.content}
-        reviewScore={user.reviewScore}
-      />
-    ));
-  const nameList =
-    waitResult &&
-    waitResult.map((user) => (
-      <WaitTable
-        userId={user.userId}
-        curPhoto={user.curPhoto}
-        userTeamName={user.userTeamName}
-        content={user.content}
-        reviewScore={user.reviewScore}
-      />
-    ));
+  const partyInfo = location.state.partyInfo;
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [acceptMembers, setAcceptMembers] = useState([]);
+  const [waitingMembers, setWaitingMembers]= useState([]);
 
   useEffect(async () => {
-    const partyInfoId = 2;
-    const matchStatus = 'WAITING';
-    const matchResult = await getMatchUsers({ partyInfoId, matchStatus });
-    setWaitResult(matchResult);
+    setIsLoading(true);
+    const response = await getMatchUsers({partyInfoId: partyInfo.id});
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+      return;
+    }
+    if(response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
+      setAcceptMembers([...response.matchStatusMembers.FORMED, ...response.matchStatusMembers.ACCEPT])
+    }else if(response.matchStatusMembers.FORMED && !response.matchStatusMembers.ACCEPT){
+      setAcceptMembers([...response.matchStatusMembers.FORMED])
+    }else if(!response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
+      setAcceptMembers([...response.matchStatusMembers.ACCEPT])
+    }else{
+      setAcceptMembers([])
+    }
+
+    if(response.matchStatusMembers.WAITING){
+      setWaitingMembers([...response.matchStatusMembers.WAITING]);
+    }else{
+      setWaitingMembers([]);
+    }
+    setIsLoading(false);
   }, []);
 
-  useEffect(async () => {
-    const partyInfoId = 2;
-    const matchStatus = 'ACCEPT';
-    const matchResult = await getMatchUsers({ partyInfoId, matchStatus });
-    setUserResult(matchResult);
-  }, []);
+  const makePhoto = (userPhoto, fileExtension)=>{
+    if(userPhoto && fileExtension){
+      const str1='data:image/';
+      const str2=fileExtension;;
+      const str3=';base64,';
+      const str4=userPhoto;
+      return str1+str2+str3+str4;
+    }else{
+      return null;
+    }
+  }
 
   return (
     <ComponentSkeleton>
@@ -113,52 +117,81 @@ const PartyMemberList = () => {
           <Typography variant="h5">파티 확정 멤버</Typography>
         </Grid>
         <Grid item xs={12}>
-          <MainCard content={false}>
-            <List
-              component="nav"
-              sx={{
-                px: 0,
-                py: 0,
-                '& .MuiListItemButton-root': {
-                  py: 1.5,
-                  '& .MuiAvatar-root': avatarSX,
-                  '& .MuiListItemSecondaryAction-root': {
-                    ...actionSX,
-                    position: 'relative',
-                  },
-                },
-              }}
-            >
-              {acceptList}
-            </List>
-          </MainCard>
+          {isLoading ?
+              <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+                <CircularProgress/>
+              </Box> :
+              <MainCard content={false}>
+                <List
+                    component="nav"
+                    sx={{
+                      px: 0,
+                      py: 0,
+                      '& .MuiListItemButton-root': {
+                        py: 1.5,
+                        '& .MuiAvatar-root': avatarSX,
+                        '& .MuiListItemSecondaryAction-root': {
+                          ...actionSX,
+                          position: 'relative',
+                        },
+                      },
+                    }}
+                >
+                  {acceptMembers.length > 0 &&
+                      acceptMembers.map((user) => (
+                          <UserTable
+                              userName={user.userName}
+                              userTeam={user.userTeamName}
+                              userPhoto={makePhoto(user.userPhoto, user.fileExtension)}
+                              scoreAvg={user.scoreAvg}
+                              comment={user.comment}
+                          />
+                      ))}
+                </List>
+              </MainCard>
+          }
         </Grid>
       </Grid>
 
-      {isDriver() && <Grid container spacing={3} sx={{ mt: 2 }}>
+      {userInfo.userId==partyInfo.driver.userId && <Grid container spacing={3} sx={{ mt: 2 }}>
         <Grid item sx={{ mt: 2 }}>
           <Typography variant="h5">파티 요청 멤버</Typography>
         </Grid>
         <Grid item xs={12}>
-          <MainCard content={false}>
-            <List
-              component="nav"
-              sx={{
-                px: 0,
-                py: 0,
-                '& .MuiListItemButton-root': {
-                  py: 1.5,
-                  '& .MuiAvatar-root': avatarSX,
-                  '& .MuiListItemSecondaryAction-root': {
-                    ...actionSX,
-                    position: 'relative',
-                  },
-                },
-              }}
-            >
-              {nameList}
-            </List>
-          </MainCard>
+          {isLoading ?
+              <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+                <CircularProgress/>
+              </Box> :
+              <MainCard content={false}>
+                <List
+                    component="nav"
+                    sx={{
+                      px: 0,
+                      py: 0,
+                      '& .MuiListItemButton-root': {
+                        py: 1.5,
+                        '& .MuiAvatar-root': avatarSX,
+                        '& .MuiListItemSecondaryAction-root': {
+                          ...actionSX,
+                          position: 'relative',
+                        },
+                      },
+                    }}
+                >
+                  {waitingMembers.length > 0 &&
+                      waitingMembers.map((user) => (
+                          <UserTable
+                              userName={user.userName}
+                              userTeam={user.userTeamName}
+                              userPhoto={makePhoto(user.userPhoto, user.fileExtension)}
+                              scoreAvg={user.scoreAvg}
+                              comment={user.comment}
+                              isWaitingMembers={true}
+                          />
+                      ))}
+                </List>
+              </MainCard>
+          }
         </Grid>
       </Grid>}
     </ComponentSkeleton>

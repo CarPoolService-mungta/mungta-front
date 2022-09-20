@@ -1,10 +1,10 @@
 import MainCard from 'components/MainCard';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { Form, useFormik, FormikProvider } from 'formik';
 
 import * as Yup from 'yup';
 import { LoadingButton } from '@material-ui/lab';
-import { TextField, Button, Grid } from '@mui/material';
+import {TextField, Button, Grid, OutlinedInput, Stack} from '@mui/material';
 import { registerReview } from 'api/review';
 import CustomError from 'utils/CustomError';
 import { useSnackbar } from 'notistack';
@@ -23,49 +23,47 @@ import Typography from '@mui/material/Typography';
 
 
 import avatar1 from 'assets/images/users/avatar-1.png';
+import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import moment from "moment";
 
 
 
 const RegisterReview = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const location = useLocation();
+  const userInfo   = useSelector(state =>  state.userInfo );
+
+  const [value, setValue] = React.useState(3);
+  const [hover, setHover] = React.useState(-1);
+
+  useEffect(()=>{
+    console.log("location.state.member:", location.state.member);
+    console.log("location.state.party:", location.state.party);
+  },[]);
 
   const formik = useFormik({
     initialValues: {
-      partyId: '0',
-      userId: 'oh',
-      username: 'oh',
-      profileImage: 'image',
-      department: 'ICT',
-      carPoolRole: 'DRIVER',
+      party: location.state.party,
+      member: location.state.member,
     },
     validationSchema: Yup.object().shape({
       comment: Yup.string().required('내용을 입력해주세요.'),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
-      // Todo 수정 필요
-
-      const reviewerId = values.reviewerId;
-      const reviewTargetId = values.reviewTargetId;
-      
-      const reviewContents = {};
-      reviewContents.reviewScore = value;
-      reviewContents.comment = values.comment;
-
-      const partyInfo = {};
-      partyInfo.partyId = '0';
-      partyInfo.userId = 'oh';
-      partyInfo.username = 'oh';
-      partyInfo.profileImage = 'image';
-      partyInfo.department = 'ICT';
-      partyInfo.carPoolRole = 'DRIVER';
 
       const response = await registerReview({
-        reviewerId,
-        reviewTargetId,
-        partyInfo,
-        reviewContents,
+        reviewerId : userInfo.userId,
+        reviewTargetId : values.member.userId,
+        partyId : values.party.id,
+        reviewContents:{
+          reviewScore: value,
+          comment: values.comment
+        },
+        reviewerRole: values.party.driver.userId == userInfo.userId ? 'DRIVER' : 'CARPOOLER',
+        targetRole: values.party.driver.userId == values.member.userId ? 'DRIVER' : 'CARPOOLER'
       });
 
       setSubmitting(false);
@@ -90,8 +88,6 @@ const RegisterReview = () => {
     return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
   }
 
-  const [value, setValue] = React.useState(3);
-  const [hover, setHover] = React.useState(-1);
 
   const {
     values,
@@ -106,29 +102,63 @@ const RegisterReview = () => {
   return (
     <>
       <MainCard darkTitle={true} title={'리뷰 작성하기'}>
-      <Grid container display="flex" style={{ marginBottom:10}}>
-        <Card sx={{ maxWidth: 200 }}>
-            <CardMedia component="img" height="200" src={avatar1} />
-            <CardContent>
-              <Typography
-                align="center"
-                gutterBottom
-                variant="h4"
-                component="div"
-              >
-                운전자
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                부서
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                이름
-              </Typography>
-            </CardContent>
-        </Card>
-      </Grid>
+
         <FormikProvider value={formik}>
           <Form onSubmit={handleSubmit}>
+            <Grid container display="flex" style={{ marginBottom:10}} spacing={3}>
+              <Card sx={{ maxWidth: 200, margin:5 }}>
+                <CardMedia component="img" height="200" src={avatar1} />
+                <CardContent>
+                  <Typography
+                      align="center"
+                      gutterBottom
+                      variant="h4"
+                      component="div"
+                  >
+                    {values.party.driver.userId == values.member.userId ? '운전자' : '카풀러'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {`부서: ${values.member.userTeamName}`}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {`이름: ${values.member.userName}`}
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card sx={{ maxWidth: 500, margin:5 }}>
+                <CardContent sx={{marginTop:1}}>
+                  <Grid container direction="column" alignItems="center" spacing={1}>
+                    <Typography gutterBottom variant="h4" component="div">
+                      파티정보
+                    </Typography>
+                    <TextField
+                        name="placeOfDeparture"
+                        label="출발지"
+                        fullWidth
+                        value={values.party.moveInfo.placeOfDeparture}
+                        sx={{width:400, marginTop:2}}
+                        disabled
+                    />
+                    <TextField
+                        name="destination"
+                        label="출발지"
+                        fullWidth
+                        value={values.party.moveInfo.destination}
+                        sx={{marginTop:2}}
+                        disabled
+                    />
+                    <TextField
+                        name="startDate"
+                        label="출발시간"
+                        fullWidth
+                        value={moment(values.party.moveInfo.startDate).format('YYYY-MM-DD HH:mm:ss')}
+                        sx={{marginTop:2}}
+                        disabled
+                    />
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
           <Grid
               container
               justifyContent="flex-start"
@@ -167,43 +197,6 @@ const RegisterReview = () => {
                   </Box>
                 )}
               </Box>
-            </Grid>
-            <Grid
-              container
-              justifyContent="flex-start"
-              spacing={2}
-              style={{ marginTop: 5, marginBottom: 5 }}
-            >
-              <Grid item xs={12}>
-                <TextField
-                  name="reviewerId"
-                  label="리뷰자"
-                  fullWidth
-                  {...getFieldProps('reviewerId')}
-                  error={Boolean(touched.reviewerId && errors.reviewerId)}
-                  helperText={touched.reviewerId && errors.reviewerId}
-                />
-              </Grid>
-            </Grid>
-            
-            <Grid
-              container
-              justifyContent="flex-start"
-              spacing={2}
-              style={{ marginTop: 5, marginBottom: 5 }}
-            >
-              <Grid item xs={12}>
-                <TextField
-                  name="reviewTargetId"
-                  label="리뷰대상"
-                  fullWidth
-                  {...getFieldProps('reviewTargetId')}
-                  error={Boolean(
-                    touched.reviewTargetId && errors.reviewTargetId
-                  )}
-                  helperText={touched.reviewTargetId && errors.reviewTargetId}
-                />
-              </Grid>
             </Grid>
             <Grid
               container

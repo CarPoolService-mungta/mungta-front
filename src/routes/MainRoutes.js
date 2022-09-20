@@ -30,9 +30,9 @@ const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
 const ReviewRegister = Loadable(lazy(() => import('pages/review-management/RegisterReview')));
 const ReviewSelect = Loadable(lazy(() => import('pages/review-management/ReviewSelect')));
-const MyReview = Loadable(lazy(() => import('pages/review-management/MyReview')));
+const MyReview = Loadable(lazy(() => import('pages/review-management/MyRegisteredReview')));
 const CarPoolerReview = Loadable(lazy(() => import('pages/review-management/CarPoolerReview')));
-const Reviews = Loadable(lazy(() => import('pages/review-management/Reviews')));
+const Reviews = Loadable(lazy(() => import('pages/review-management/MyReviews')));
 
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
@@ -61,7 +61,7 @@ const MainRoutes = {
             element: <PartyMatching />
         },
         {
-            path: 'party-member/:id',
+            path: 'party-member',
             element: <PartyMemberList />
         },
         {

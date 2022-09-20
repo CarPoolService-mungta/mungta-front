@@ -18,6 +18,7 @@ import DataTable from "../../components/@extended/DataTable";
 
 
 import {useCallback, useEffect, useState} from "react";
+import Rating from "@mui/material/Rating";
 
 
 function getLabelText(value) {
@@ -42,29 +43,41 @@ export default function HoverRating() {
     </MainCard>
   );
 }
+
 const columns = [
     {
-        id : 'reviewtarget',
-        label: '리뷰대상',
+        id: 'id',
+        label: 'No.',
+        width: 50,
+        align: 'center',
+    },
+    {
+        id: 'targetRole',
+        label: '역할',
         width: 60,
+        align: 'center',
+    },
+    {
+        id: 'modifiedDateTime',
+        label: '리뷰날짜',
+        width: 60,
+        align: 'center',
+    },
+    {
+        id: 'reviewScore',
+        label: '별점',
+        width: 60,
+        align: 'center',
+        render: (row)=>{
+            return <>
+                <Rating name="read-only" value={row.reviewScore} readOnly />
+            </>
+        }
+    },
+    {
+        id: 'comment',
+        label: '내용',
+        width: 290,
         align: 'left',
     },
-  {
-      id : 'createdDate',
-      label: '리뷰날짜',
-      width: 60,
-      align: 'left',
-  },
-  {
-      id : 'starrating',
-      label: '별점',
-      width: 60,
-      align: 'left',
-  },
-  {
-      id : 'existResponse',
-      label: '코멘트',
-      width: 290,
-      align: 'left',
-      }
 ];

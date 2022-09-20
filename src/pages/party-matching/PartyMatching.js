@@ -31,33 +31,13 @@ import {useSnackbar} from "notistack";
 import moment from 'moment';
 import UserPhoto from './UserPhoto'
 import {useSelector} from "react-redux";
+import ButtonContainer from "../review-management/ButtonContainer";
 
 const partyInfoTitle = {
   fontSize: '1.0rem',
   fontWeight: 'bold',
 };
 
-const MatchStatusCode = {
-  MATCHCANCEL: '매칭 취소',
-  MATCHDENY: '신청 불가',
-  MATCHAPPLY: '매칭 신청',
-  MATCHSTART: '파티 시작',
-  MATCHCLOSE: '파티 종료',
-};
-
-function checkUserMatchStatus(userMatchStatus) {
-  if (userMatchStatus === 'WAITING' || userMatchStatus === 'ACCEPT') {
-    return MatchStatusCode.MATCHCANCEL;
-  } else if (userMatchStatus === 'DENY') {
-    return MatchStatusCode.MATCHDENY;
-  } else if (userMatchStatus === 'FORMED') {
-    return MatchStatusCode.MATCHSTART;
-  } else if (userMatchStatus === 'START') {
-    return MatchStatusCode.MATCHCLOSE;
-  } else {
-    return MatchStatusCode.MATCHAPPLY;
-  }
-}
 const initPartyInfo = {
   curNumberOfParty:0,
   maxNumberOfParty:0,
@@ -114,50 +94,18 @@ const PartyMatching = () => {
   useEffect(() => {
     searchPartyInfo();
     searchPartyMembersSummary();
-
-    // const matchResult = await getMatchInfo({ id });
-    // const userResult = await getMatchUsers({ id, matchStatus }); //파티 정보 조회로 변경
-    // setUserMatchStatus(matchResult.matchStatus);
-    // setPartyInfo(partyResult);
-
-    // if (userResult != 'undefined' && userResult != null) {
-    //   setMatchUsers(userResult);
-    // }
   }, []);
 
   const goPartyMemberDetailList = () => {
-    navigate(`/party-member/${id}`);
+    navigate(`/party-member`,{
+      state: {
+        partyInfo: partyInfo
+      }
+    });
   }; //파티 ID 넘겨주기
 
-  const btnMatchClick = async () => {
-    const data = {
-      partyInfoId: id,
-      userId: userInfo.userId,
-    };
-
-    const matchProcess = {
-      partyInfoId: id,
-      driverId: partyInfo.driver.userId, //현재 userID 넣어주기
-    };
-
-    //이거 로직이 조금 이상하긴 한데 그냥 일단 넘어가자
-    //시작 전에만 파티 취소가 가능해야하는데 여긴 파티를 시작하고 취소가 가능하다.
-    //파티 start가 누구한테 떨어지는건지 모르겠지만... 이것도 이상해..
-    if (userMatchStatus === 'WAITING' || userMatchStatus === 'ACCEPT') {
-      const cancelResult = await cancelMatch(data);
-    } else if (userMatchStatus === 'DENY') {
-      enqueueSnackbar('신청이 거절된 파티입니다.', {variant: 'error'});
-    } else if (userMatchStatus === 'FORMED') {
-      const startResult = await startParty(matchProcess);
-    } else if (userMatchStatus === 'START') {
-      const closeResult = await closeParty(matchProcess);
-    } else {
-      const applyResult = await applyParty(data);
-    }
-  };
-
   return (
-    <ComponentSkeleton>
+    <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <MainCard title="파티 상세 정보">
@@ -280,103 +228,67 @@ const PartyMatching = () => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <MainCard sx={{ mt: 2 }}>
-            <Stack spacing={3}>
-              <Grid
-                container
-                justifyContent="space-between"
-                alignItems="center"
+      <MainCard sx={{ mt: 2 }}>
+        <Stack spacing={3}>
+          <Grid
+            container
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <Stack>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }} noWrap>
+                  파티 신청 멤버
+                </Typography>
+                <br/>
+                {isLoadingMember ?
+                    <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+                      <CircularProgress/>
+                    </Box> :
+                    <AvatarGroup
+                        sx={{
+                          '& .MuiAvatar-root': {width: 100, height: 100},
+                        }}
+                    >
+                      {matchUsers &&
+                          matchUsers.map((user) => (
+                              <>
+                                <UserPhoto userId={user.userId}
+                                           userPhoto={user.userPhoto}
+                                           fileExtension={user.fileExtension}
+                                           userName={user.userName}
+                                           userTeam={user.userTeamName}
+                                           isDriver={user.userId==partyInfo.driver.userId}/>
+
+                              </>
+                          ))}
+                    </AvatarGroup>
+                }
+              </Stack>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+          >
+              <Button
+                size="small"
+                variant="contained"
+                style={{ width: '200px' }}
+                onClick={goPartyMemberDetailList}
               >
-                <Grid item>
-                  <Stack>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }} noWrap>
-                      파티 신청 멤버
-                    </Typography>
-                    <br/>
-                    {isLoadingMember ?
-                        <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
-                          <CircularProgress/>
-                        </Box> :
-                        <AvatarGroup
-                            sx={{
-                              '& .MuiAvatar-root': {width: 100, height: 100},
-                            }}
-                        >
-                          {matchUsers &&
-                              matchUsers.map((user) => (
-                                  <>
-                                    <UserPhoto userId={user.userId}
-                                               userPhoto={user.userPhoto}
-                                               fileExtension={user.fileExtension}
-                                               userName={user.userName}
-                                               userTeam={user.userTeamName}
-                                               isDriver={user.userId==partyInfo.driver.userId}/>
+                파티 멤버 확인
+              </Button>
+          </Grid>
+        </Stack>
+      </MainCard>
 
-                                  </>
-                              ))}
-                        </AvatarGroup>
-                    }
-                  </Stack>
-                </Grid>
-                {/* <Grid item>
-                                    {<AvatarGroup sx={{ '& .MuiAvatar-root': { width: 32, height: 32 } }}>{photoList}</AvatarGroup>}
-                                </Grid> */}
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                spacing={2}
-              >
-                <Grid item>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ width: '200px' }}
-                    onClick={goPartyMemberDetailList}
-                  >
-                    파티 멤버 확인
-                  </Button>
-                </Grid>
-              </Grid>
-            </Stack>
-          </MainCard>
-        </Grid>
+
+      <Grid direction="row" justifyContent="center" spacing={2} style={{marginTop:30}}>
+          <ButtonContainer partyInfo={partyInfo} userId={userInfo.userId} matchStatus={userMatchStatus} />
       </Grid>
-
-      {/*<Grid container spacing={3}>*/}
-      {/*  <Grid item xs={12} style={{ margin: '10px 0px 0px 0px' }}>*/}
-      {/*    <MainCard title="이동 경로">*/}
-      {/*      <Grid container spacing={3}>*/}
-      {/*        <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>*/}
-      {/*          <Box p={4}>출발지</Box>*/}
-      {/*        </Grid>*/}
-      {/*        <Grid item xs={6} sm={4} md={3} lg={2}>*/}
-      {/*          <Box p={4}>API</Box>*/}
-      {/*        </Grid>*/}
-      {/*        <Grid item xs={6} sm={4} md={3} lg={2} style={partyInfoTitle}>*/}
-      {/*          <Box p={4}>도착지</Box>*/}
-      {/*        </Grid>*/}
-      {/*        <Grid item xs={6} sm={4} md={3} lg={2}>*/}
-      {/*          <Box p={4}>API</Box>*/}
-      {/*        </Grid>*/}
-      {/*      </Grid>*/}
-      {/*    </MainCard>*/}
-      {/*  </Grid>*/}
-      {/*</Grid>*/}
-
-      <Grid container direction="row" justifyContent="center" spacing={2}>
-        <Grid item>
-          {
-          <Button sx={{ mt: 2 }} variant="contained" onClick={btnMatchClick}>
-            {checkUserMatchStatus(userMatchStatus)}
-          </Button>
-        }
-        </Grid>
-      </Grid>
-    </ComponentSkeleton>
+    </>
   );
 };
 
