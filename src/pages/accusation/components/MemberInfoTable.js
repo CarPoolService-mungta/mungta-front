@@ -21,6 +21,18 @@ const MemberInfoTable = ({ data, isLoading }) => {
 
     const navigate = useNavigate();
 
+    const makePhoto = (userPhoto, fileExtension)=>{
+        if(userPhoto && fileExtension){
+            const str1='data:image/';
+            const str2=fileExtension;;
+            const str3=';base64,';
+            const str4=userPhoto;
+            return str1+str2+str3+str4;
+        }else{
+            return null;
+        }
+    }
+
     const registerBtnClick = (member, data) => {
         navigate('/register-accusation', {
             state: {
@@ -68,10 +80,10 @@ const MemberInfoTable = ({ data, isLoading }) => {
                                 alignItems: 'center',
                                 display: 'flex',
                             }}>
-                                {/** TODO: 사진 */}
+
                                 <Avatar
                                 alt={getInitials(member.name)}
-                                src={member.image}
+                                src={makePhoto(member.userPhoto, member.fileExtension)}
                                 sx={{ mr: 2, width: 50, height: 50 }}
                                 />
                                 <Typography color='textPrimary' variant='body1'>

@@ -18,3 +18,6 @@ export const deleteReview = async (id, params) =>
  */
 export const getPartyMember = async (params) =>
     axios.get('/api/match/partymembers/summary-for-review', { params });
+
+export const isReviewed = async params =>
+    axios.get('/api/review/is-reviewed', {params});

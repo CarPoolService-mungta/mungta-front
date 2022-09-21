@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getPartyMembers } from 'api/accusation';
-import { useParams } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import MemberInfoTable from './components/MemberInfoTable';
 import {
     Box,
@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 
 const PartyMembers = () => {
-    const {partyId} = useParams();
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
+    const location = useLocation();
+    const partyId = location.state.partyId
     const searchPartyMembers = useCallback(async () => {
         setIsLoading(true);
         

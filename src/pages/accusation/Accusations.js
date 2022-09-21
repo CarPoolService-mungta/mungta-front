@@ -78,17 +78,29 @@ AccusationStatus.propTypes = {
 };
 
 const columns = [
+    // {
+    //     id : 'id',
+    //     label: 'No.',
+    //     width: 60,
+    //     align: 'center',
+    // },
     {
-        id : 'id',
-        label: 'No.',
-        width: 60,
+        id : 'placeOfDeparture',
+        label: '출발지',
+        width: 120,
         align: 'center',
     },
     {
-        id : 'partyId',
-        label: '파티 ID',
-        width: 60,
+        id : 'destination',
+        label: '도착지',
+        width: 120,
         align: 'center',
+    },
+    {
+        id : 'partyStartedDateTime',
+        label: '출발시간',
+        width: 100,
+        align: 'left',
     },
     {
         id : 'title',

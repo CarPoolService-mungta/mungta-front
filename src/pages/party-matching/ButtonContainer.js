@@ -96,7 +96,7 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
             enqueueSnackbar(response.message, {variant: 'error'});
         }else{
             enqueueSnackbar('파티를 종료하였습니다.',{variant: 'success'});
-            navigate(`/my-carpool-list`);
+            navigate(`/my-carpool-past-list`);
         }
         setIsLoading(false);
 

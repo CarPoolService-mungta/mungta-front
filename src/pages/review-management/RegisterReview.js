@@ -76,6 +76,18 @@ const RegisterReview = () => {
     },
   });
 
+  const makePhoto = (userPhoto, fileExtension)=>{
+    if(userPhoto && fileExtension){
+      const str1='data:image/';
+      const str2=fileExtension;;
+      const str3=';base64,';
+      const str4=userPhoto;
+      return str1+str2+str3+str4;
+    }else{
+      return null;
+    }
+  }
+
   const labels = {
     1: 'VERYBAD',
     2: 'BAD',
@@ -107,7 +119,7 @@ const RegisterReview = () => {
           <Form onSubmit={handleSubmit}>
             <Grid container display="flex" style={{ marginBottom:10}} spacing={3}>
               <Card sx={{ maxWidth: 200, margin:5 }}>
-                <CardMedia component="img" height="200" src={avatar1} />
+                <CardMedia component="img" height="200" src={makePhoto(values.member.userPhoto, values.member.fileExtension)} />
                 <CardContent>
                   <Typography
                       align="center"
