@@ -8,7 +8,11 @@ export const signinByUserId = async data => axios.post('/api/user/auth/signin', 
 
 export const signupByUserId = async data => axios.post('/api/user/auth/signup', data);
 
-export const updateByUserId = async (id,data) => axios.put('/api/user/' + id);
+export const updateByUserId = async (id,data) => axios.put('/api/user/' + id,data);
+
+export const updateWoPhotoByUserId = async (id,data) => axios.put('/api/user/info/' + id,data);
+
+export const deleteByUserId = async (id) => axios.delete('/api/user/' + id);
 
 export const getUserByUserId = async (id) => axios.get('/api/user/' + id);
 

@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import {Link,Button,Container,Avatar,Typography,Grid,Stack,InputLabel} from '@material-ui/core';
 import {useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
-import {getPhotoByUserId} from 'api/user'
+import {deleteByUserId} from 'api/user'
 import CustomError from 'utils/CustomError';
 import { init,send } from 'emailjs-com';
 import { useSnackbar } from 'notistack';
-
+import { logOut } from 'utils/authProvider';
 
 const avartarStyle = {
 height: "20vh",
@@ -75,8 +75,18 @@ const Mypage = () => {
     navigate('/question/post')
   };
 
-  const deleteUser = () => {
-    alert("회원탈퇴");
+  const deleteUser = async() => {
+    await setIsLoading(true);
+    const response = await deleteByUserId(userInfo.userId)
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+    }else{
+      enqueueSnackbar('탈퇴가 완료되었습니다.', {variant: 'success'});
+      alert("탈퇴가 완료되었습니다.");
+      logOut();
+      return;
+    }
+    await setIsLoading(false);
   }
   const sendEmail = (e) => {
 
@@ -87,8 +97,8 @@ const Mypage = () => {
     formData.append("email_to"    , 'mungtaservice@gmail.com');
     formData.append("name"        , userInfo.userName);
     formData.append("message"     , '관리자회원을 신청합니다.');
+    send('', '', formData);
 
-    send('service_cb37nb9', 'template_dv9qecn', formData);
     enqueueSnackbar('관리자회원 신청이 완료되었습니다. ', {variant: 'success'});
 
   };

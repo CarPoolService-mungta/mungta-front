@@ -3,9 +3,10 @@ import MainCard from 'components/MainCard';
 import { Box,Button,Divider,FormControl,FormHelperText,Grid,Link,IconButton,InputAdornment,
     InputLabel,OutlinedInput, Stack,Typography,Avatar,Container,
 } from '@mui/material';
+
 import * as Yup from 'yup';
-import {Formik } from 'formik';
-import {getUserByUserId, updateByUserId} from 'api/user'
+import { Field, Form, Formik, useFormik ,FormikProvider} from 'formik';
+import {getUserByUserId, updateByUserId,updateWoPhotoByUserId} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 import {useSelector } from 'react-redux';
 import {useSnackbar } from 'notistack';
@@ -26,25 +27,34 @@ const avartarStyle = {
 const UserUpdate = () => {
 
     let fileBf = '';
-    let dataUrlmagetmp ='';
+    let imagetmp ='';
+    let response ='';
 
     const userInfo   = useSelector(state =>  state.userInfo );
 
     const navigate = useNavigate();
     const {enqueueSnackbar } = useSnackbar();
+
     const [isCheckLoading, setCheckLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
 
-
     const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
     const [imageUrl, setImageUrl] = useState(null);
     const imgRef   = useRef();
 
-    const [userEmail, setUserEmail] = useState(null);
-
+    const [fileChgYn     , setFileChgYn     ] = useState('N');
+    const [userEmail     , setUserEmail     ] = useState(null);
+    const [userId        , setUserId        ] = useState(null);
+    const [userName      , setUserName      ] = useState(null);
+    const [userTeamName  , setUserTeamName  ] = useState(null);
+    const [userGender    , setserGender     ] = useState(null);
+    const [driverYn      , setDriverYn      ] = useState(null);
+    const [settlementUrl , setSettlementUrl ] = useState(null);
+    const [carType       , setCarType       ] = useState(null);
+    const [carNumber     , setCarNumber    ] = useState(null);
 
 
     const handleClickShowPassword = () => {
@@ -60,41 +70,44 @@ const UserUpdate = () => {
         setLevel(strengthColor(temp));
     };
 
-    //useEffect(() => {changePassword('');}, []);
-    useEffect(async ()=>{await inqUser()},[]);
 
+    useEffect(async ()=>{await inqUser()},[]);
 
     const inqUser = async ()=>{
         await setIsLoading(true);
-        const response = await getUserByUserId(userInfo.userId)
+        response = await getUserByUserId(userInfo.userId)
             if(response instanceof CustomError){
                 enqueueSnackbar(response.message, {variant: 'error'});
             }else{
-                console.log("userInfo:",response.userMailAddress );
-                //console.log("userInfo:",response.possibleYn );
-
                 const str1='data:image/';
                 const str2=response.fileExtension;;
                 const str3=';base64,';
                 const str4=response.userPhoto;
-                dataUrlmagetmp =str1+str2+str3+str4;
-                setUserEmail(userEmail=>response.userMailAddress)
+                imagetmp =str1+str2+str3+str4;
+
+                await setUserEmail(response.userMailAddress);
+                await setUserId(response.userId);
+                await setUserName(response.userName);
+                await setUserTeamName(response.userTeamName);
+                await setserGender(response.userGender);
+                await setDriverYn(response.driverYn);
+                await setSettlementUrl(response.settlementUrl);
+                await setCarType(response.carType);
+                await setCarNumber(response.carNumber);
+                await setImage(imagetmp);
+
+                await setIsLoading(false);
+
             }
-            //await setdataUrlmage(dataUrlmage => dataUrlmagetmp);
-        await setIsLoading(false);
+
     }
-
-
-
-
-
-
 
 
 
     const handleImage = async(e)=>{
 
         const filereal = e.target.files[0];
+        setFileChgYn('Y');
         const err = checkImage(filereal);
         console.log("filereal:",filereal );
         if(filereal){
@@ -130,30 +143,65 @@ const UserUpdate = () => {
 
     const updateConfirm  = async ()=>{
 
-        let formData = new FormData();
-        formData.append("profileImg"     , imageUrl);
-        formData.append("userId"         , userid.value);
-        formData.append("userPassword"   , password.value);
-        formData.append("userMailAddress", email.value );
-        formData.append("userName"       , username.value);
-        formData.append("userTeamName"   , company.value);
-        formData.append("userGender"     , gender.value);
-        formData.append("driverYn"       , driveryn.value);
-        formData.append("settlementUrl"  , smturl.value );
-        formData.append("carType"        , cartype.value);
-        formData.append("carNumber"      , carnumber.value);
+        console.log("filereal11111:",fileChgYn );
 
-        await updateByUserId(userInfo.userId, formData)
-        .then((response) => {
-            console.log("response:",response );
+        await setIsLoading(true);
 
-            if(response instanceof CustomError){
-                enqueueSnackbar(response.message, {variant: 'error'});
-            }else{
-                enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
-                navigate('/mypage');
+
+
+        if(fileChgYn ==='Y'){
+            let formData = new FormData();
+            formData.append("profileImg"     , imageUrl);
+            formData.append("userId"         , userId);
+            formData.append("userPassword"   , password.value);
+            formData.append("userMailAddress", userEmail );
+            formData.append("userName"       , userName);
+            formData.append("userTeamName"   , userTeamName);
+            formData.append("userGender"     , userGender);
+            formData.append("driverYn"       , driverYn);
+            formData.append("settlementUrl"  , settlementUrl );
+            formData.append("carType"        , carType);
+            formData.append("carNumber"      , carNumber);
+
+            await updateByUserId(userId, formData)
+            .then((response) => {
+                console.log("response:",response );
+
+                if(response instanceof CustomError){
+                    enqueueSnackbar(response.message, {variant: 'error'});
+                }else{
+                    enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
+                    navigate('/mypage');
+                }
+            });
+        }else{
+            let formData = {
+
+                "userId"         : userId,
+                "userPassword"   : password.value,
+                "userMailAddress": userEmail ,
+                "userName"       : userName,
+                "userTeamName"   : userTeamName,
+                "userGender"     : userGender,
+                "driverYn"       : driverYn,
+                "settlementUrl"  : settlementUrl ,
+                "carType"        : carType,
+                "carNumber"      : carNumber,                   
             }
-        });
+
+
+            await updateWoPhotoByUserId(userId, formData)
+            .then((response) => {
+                console.log("response:",response );
+
+                if(response instanceof CustomError){
+                    enqueueSnackbar(response.message, {variant: 'error'});
+                }else{
+                    enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
+                    navigate('/mypage');
+                }
+            });
+        }
 
         await setIsLoading(false);
     }
@@ -174,7 +222,6 @@ return (
                     carnumber:'',
                     cartype:'',
                     smturl:'',
-                    // profileImg:'',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -195,7 +242,7 @@ return (
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit}>
 
                         <Grid container spacing={1} item xs={6}>
@@ -222,7 +269,7 @@ return (
                                         type="text"
                                         disabled="true"
                                         readOnly="true"
-                                        value={values.userid}
+                                        value={userId}
                                         name="userid"
                                         fullWidth
                                     />
@@ -284,11 +331,10 @@ return (
                                     <OutlinedInput
                                         id="username"
                                         type="name"
-                                        value={values.username}
+                                        value={userName}
                                         name="username"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="Name"
+                                        onChange={(e) => {setUserName(e.target.value)}}
                                         fullWidth
                                         error={Boolean(touched.username && errors.username)}
                                     />
@@ -306,10 +352,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.gender && errors.gender)}
                                         id="gender"
-                                        value={values.gender}
+                                        value={userGender}
                                         name="gender"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setserGender(e.target.value)}}
                                         placeholder="M or F"
                                         inputProps={{}}
                                     />
@@ -327,10 +373,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.company && errors.company)}
                                         id="company"
-                                        value={values.company}
+                                        value={userTeamName}
                                         name="company"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setUserTeamName(e.target.value)}}
                                         placeholder=""
                                         inputProps={{}}
                                     />
@@ -354,10 +400,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.company && errors.company)}
                                         id="driveryn"
-                                        value={values.driveryn}
+                                        value={driverYn}
                                         name="driveryn"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setDriverYn(e.target.value)}}
                                         placeholder="Y or N"
                                         inputProps={{}}
                                     />
@@ -375,10 +421,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.smturl && errors.smturl)}
                                         id="smturl"
-                                        value={values.smturl}
+                                        value={settlementUrl}
                                         name="smturl"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setSettlementUrl(e.target.value)}}
                                         placeholder="카카오페이접속->내프로필->송금코드클릭"
                                         inputProps={{}}
                                     />
@@ -396,10 +442,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.carnumber && errors.carnumber)}
                                         id="carnumber"
-                                        value={values.carnumber}
+                                        value={carNumber}
                                         name="carnumber"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setCarNumbere(e.target.value)}}
                                         placeholder="Car number"
                                         inputProps={{}}
                                     />
@@ -417,10 +463,10 @@ return (
                                         fullWidth
                                         error={Boolean(touched.cartype && errors.cartype)}
                                         id="cartype"
-                                        value={values.cartype}
+                                        value={carType}
                                         name="cartype"
                                         onBlur={handleBlur}
-                                        onChange={handleChange}
+                                        onChange={(e) => {setCarType(e.target.value)}}
                                         placeholder="Car Type"
                                         inputProps={{}}
                                     />
