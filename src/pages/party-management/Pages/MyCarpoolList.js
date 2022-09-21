@@ -113,6 +113,7 @@ const MyCarpoolList = () => {
             // post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL' || p.status === 'STARTED') ).map((p, index)=>
             post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
+              {console.log("p:",p)}
               <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
                 <Avatar sx ={{ width: 80, height: 80}}>
                   <BeachAccessIcon />
@@ -143,9 +144,9 @@ const MyCarpoolList = () => {
                         {p.curNumberOfParty} / {p.maxNumberOfParty} 명
                       </Typography>
                       </Item>
-                      <Item sx={{fontSize:'1em', color:'#d11', fontWeight:'bold', boxShadow:0}}>
-                        {ListStatusDesc[p.status]}
-                      </Item>
+                      {/*<Item sx={{fontSize:'1em', color:'#d11', fontWeight:'bold', boxShadow:0}}>*/}
+                      {/*  {ListStatusDesc[p.status]}*/}
+                      {/*</Item>*/}
                       <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
                         [ {p.driver.userId=== userInfo.userId?'운전자':'카풀러'} ]
                       </Item>

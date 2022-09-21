@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import {SnackbarProvider, useSnackbar} from 'notistack';
-import { getMatchUsers } from 'api/partyMatching';
+import {acceptMatch, denyMatch, getMatchUsers} from 'api/partyMatching';
 import UserTable from 'pages/party-matching/UserTable';
 import WaitTable from 'pages/party-matching/WaitTable';
 import DataTable from 'components/@extended/DataTable';
@@ -9,7 +9,7 @@ import DataTable from 'components/@extended/DataTable';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-  Avatar, Box, CircularProgress,
+  Avatar, Box, Button, CircularProgress,
   Grid,
   List,
   ListItemAvatar,
@@ -97,6 +97,7 @@ const PartyMemberList = () => {
     }
     setIsLoading(false);
   }, []);
+
 
   const makePhoto = (userPhoto, fileExtension)=>{
     if(userPhoto && fileExtension){
@@ -187,6 +188,12 @@ const PartyMemberList = () => {
                               scoreAvg={user.scoreAvg}
                               comment={user.comment}
                               isWaitingMembers={true}
+                              matchProcess={{
+                                partyInfoId:partyInfo.id,
+                                driverId:partyInfo.driver.userId,
+                                driverName:partyInfo.driver.name,
+                                userId: user.userId
+                              }}
                           />
                       ))}
                 </List>

@@ -22,6 +22,7 @@ import { useSnackbar } from 'notistack';
 import {Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 import CustomError from 'utils/CustomError';
 import {useSelector} from "react-redux";
+import {PARTY_STATUS} from "../../../../utils/constants";
 
 const InputTitle = {
     backgroundColor: '#1A2027',
@@ -104,7 +105,7 @@ const MoveInfoRegister = () => {
                 price: values.distance*200
             },
             maxNumberOfParty:values.maxNumberOfParty,
-            status: "OPEN"
+            status: PARTY_STATUS.OPEN
         };
         const response =  await postMoveInfo(moveInfoRegisterRequest);
 

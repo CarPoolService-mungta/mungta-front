@@ -61,7 +61,7 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
         if(response instanceof CustomError){
             enqueueSnackbar(response.message, {variant: 'error'});
         }else{
-            enqueueSnackbar('파티가 시작되었습니다.',{variant: 'success'});
+            enqueueSnackbar('파티를 신청하였습니다.',{variant: 'success'});
             navigate(`/my-carpool-list`);
         }
         setIsLoading(false);
@@ -78,7 +78,7 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
         if(response instanceof CustomError){
             enqueueSnackbar(response.message, {variant: 'error'});
         }else{
-            enqueueSnackbar('파티가 시작되었습니다.',{variant: 'success'});
+            enqueueSnackbar('파티신청을 취소하였습니다.',{variant: 'success'});
             navigate(`/my-carpool-list`);
         }
         setIsLoading(false);

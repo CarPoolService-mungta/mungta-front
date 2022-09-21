@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getMatchUsers } from 'api/partyMatching';
+import {acceptMatch, denyMatch, getMatchUsers} from 'api/partyMatching';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,23 +19,53 @@ import {
 import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
 import avatar1 from 'assets/images/users/avatar-1.png';
 import {LoadingButton} from "@mui/lab";
+import CustomError from "../../utils/CustomError";
+import {useSnackbar} from "notistack";
 
-const UserTable = ({userName, userTeam, userPhoto, scoreAvg, comment, isWaitingMembers=false}) => {
+const UserTable = ({userName, userTeam, userPhoto, scoreAvg, comment, isWaitingMembers=false, matchProcess={}}) => {
 
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
+    const [isLoading, setIsLoading]=useState(false);
 
-    //Todo 변경
-    const goReviewDetail = (params, e) => {
-        // const userId = params.userId;
-        // navigate('/party-matching'); //주소 변경
-    };
+    console.log("matchProcess:", matchProcess);
+
+    const acceptMember = async(userId)=>{
+        setIsLoading(true)
+        const response = await acceptMatch(matchProcess)
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+            return;
+        }
+        enqueueSnackbar('신청을 수락하였습니다.', {variant: 'success'});
+        setIsLoading(false)
+        window.location.reload()
+    }
+    const denyMember=async (userId)=>{
+        setIsLoading(true)
+        const response = await denyMatch(matchProcess)
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+            return;
+        }
+        enqueueSnackbar('신청을 거절하였습니다.', {variant: 'warning'});
+        setIsLoading(false)
+        window.location.reload()
+
+    }
+
+    // //Todo 변경
+    // const goReviewDetail = () => {
+    //     // const userId = params.userId;
+    //     // navigate('/party-matching'); //주소 변경
+    // };
 
     return (
         <ListItemButton
             divider
-            onClick={(e) => {
-                goReviewDetail(props, e);
-            }}
+            // onClick={(e) => {
+            //     goReviewDetail();
+            // }}
         >
             <ListItemAvatar>
                 <Avatar src={userPhoto} />
@@ -54,12 +84,16 @@ const UserTable = ({userName, userTeam, userPhoto, scoreAvg, comment, isWaitingM
                             <LoadingButton
                                 variant="contained"
                                 style={{margin: 1}}
+                                loading={isLoading}
+                                onClick={()=>acceptMember()}
                             >
                                 수락
                             </LoadingButton>
                             <LoadingButton
                                 variant="contained"
                                 style={{margin: 1}}
+                                onClick={denyMember}
+                                loading={isLoading}
                                 color="error">
                                 거절
                             </LoadingButton>
