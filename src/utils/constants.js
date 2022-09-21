@@ -8,6 +8,7 @@ export const PARTY_STATUS={
     CANCELED:"CANCELED",
     STARTED:"STARTED",
     CLOSED:"CLOSED",
+    REJECT:"REJECT"
 }
 export const MATCH_STATUS={
     WAITING:"WAITING",
@@ -17,5 +18,5 @@ export const MATCH_STATUS={
     START:"START",
     CLOSE:"CLOSE",
     FORMED:"FORMED",
-    AVAILABLE:"AVAILABLE"
+    REJECT:"REJECT"
 }

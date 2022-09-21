@@ -1,11 +1,6 @@
 import { axios } from 'utils';
 
 /**
- * @param {{partyInfoId: number}} params
- */
-export const getMatchInfo = async (params) =>
-  axios.get('/api/match/matchInfo', { params });
-/**
  * @param {{partyInfoId: number, userId: list}} params
  */
 export const getMatchUsers = async (params) =>
