@@ -98,7 +98,6 @@ const Mypage = () => {
     formData.append("name"        , userInfo.userName);
     formData.append("message"     , '관리자회원을 신청합니다.');
     send('', '', formData);
-
     enqueueSnackbar('관리자회원 신청이 완료되었습니다. ', {variant: 'success'});
 
   };
