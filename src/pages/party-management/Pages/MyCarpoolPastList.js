@@ -116,14 +116,14 @@ const MyCarpoolPastList = () => {
               <Avatar sx ={{ width: 80, height: 80}}>
                 <BeachAccessIcon />
               </Avatar>
-              <ListItemText primary="Manager" />
+              <ListItemText primary={`${p.driver.name}Manager`} />
             </ListItemAvatar>
-            <Link to="/my-carpool-detail"
-                  style={{ textDecoration: 'none' }}
-                  state={{
-                    type:'past',
-                    data:p
-                  }}>
+                <Link to={`/party-matching/${p.id}`}
+                      style={{ textDecoration: 'none' }}
+                      state={{
+                          type:'past',
+                          data:p
+                      }}>
             <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
             <Grid item xs={12} sm={12} md={12} >
                 <Paper

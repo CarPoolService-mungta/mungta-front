@@ -30,10 +30,13 @@ import {useSnackbar} from "notistack";
 import moment from 'moment';
 import UserPhoto from './UserPhoto'
 import {useSelector} from "react-redux";
-import ButtonContainer from "../review-management/ButtonContainer";
+import ButtonContainer from "./ButtonContainer";
 import {Item, ListStatusDesc, Subtitle} from "../party-management/Utils/ComponentTheme";
 import {ConvertToYYYYMMDDhhmmsstoKor} from "../party-management/Utils/DateUtils";
 import * as React from "react";
+import MyCarpoolDetailForDriver from "../party-management/Pages/Children/MyCarpoolDetailForDriver";
+import MyCarpoolDetailForCarpooler from "../party-management/Pages/Children/MyCarpoolDetailForCarpooler";
+import {PARTY_STATUS} from "../../utils/constants";
 
 const InputTitle = {
   backgroundColor: '#1A2027',
@@ -62,6 +65,13 @@ const initPartyInfo = {
     carNumber:'',
     carKind:''
   }
+}
+const DetailSubInfo = ({isDriver, partyInfo })=> {
+  console.log('isDriver:',isDriver);
+  if (isDriver) {
+    return <MyCarpoolDetailForDriver partyInfo={partyInfo}/>;
+  }
+  else return <MyCarpoolDetailForCarpooler partyInfo={partyInfo}/>;
 }
 
 const PartyMatching = () => {
@@ -123,116 +133,6 @@ const PartyMatching = () => {
                 <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
                   <CircularProgress />
                 </Box>:
-            // <Grid container direction="row" spacing={3}>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>출발지</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.moveInfo.placeOfDeparture}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>목적지</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.moveInfo.destination}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>출발시간</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={moment(partyInfo.moveInfo.startDate).format('YYYY-MM-DD HH:mm:ss')}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>총 요금</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.moveInfo.price}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //           endAdornment={<InputAdornment position="end">원</InputAdornment>}
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>차종</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.driver.carKind}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>차번호</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.driver.carNumber}
-            //           disabled={true}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>거리</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={partyInfo.moveInfo.distance}
-            //           disabled={true}
-            //           variant="contained"
-            //           endAdornment={<InputAdornment position="end">km</InputAdornment>}
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            //   <Grid container xs={4} direction="row" alignItems="center" spacing={1}>
-            //     <Grid lg={5} style={partyInfoTitle} justifyContent="flex-end" item direction="row">
-            //       <Box p={4}>탑승인원</Box>
-            //     </Grid>
-            //     <Grid lg={7} style={partyInfoTitle} justifyContent="flex-start" item direction="row">
-            //       <OutlinedInput
-            //           id="outlined-adornment-weight"
-            //           value={`${partyInfo.curNumberOfParty}/${partyInfo.maxNumberOfParty}`}
-            //           disabled={true}
-            //           variant="contained"
-            //           aria-describedby="outlined-weight-helper-text"
-            //       />
-            //     </Grid>
-            //   </Grid>
-            // </Grid>
                 <ListItem sx={{m:3,bgcolor:'#eee', width:'95%'}} value={0} onClick={(e) => setQuery(e.target.value)}>
                   <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
                     <Grid item xs={12} sm={12} md={12} >
@@ -336,7 +236,14 @@ const PartyMatching = () => {
           </Grid>
         </Stack>
       </MainCard>
-
+      {isLoading ?
+          <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
+            <CircularProgress/>
+          </Box> :
+          <>
+            {(partyInfo.status==PARTY_STATUS.STARTED ||partyInfo.status==PARTY_STATUS.CLOSED ) && <DetailSubInfo isDriver={userInfo.userId==partyInfo.driver.userId} partyInfo={partyInfo}/>}
+          </>
+      }
 
       <Grid direction="row" justifyContent="center" spacing={2} style={{marginTop:30}}>
         {!isLoadingMember ?

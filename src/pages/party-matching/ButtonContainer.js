@@ -2,7 +2,7 @@ import {Button, Grid} from "@mui/material";
 import {MATCH_STATUS, PARTY_STATUS} from "utils/constants";
 import {LoadingButton} from '@material-ui/lab';
 import {useState} from "react";
-import {applyParty, cancelMatch, cancelParty, startParty} from "api/partyMatching";
+import {applyParty, cancelMatch, cancelParty, closeParty, startParty} from "api/partyMatching";
 import CustomError from "utils/CustomError";
 import {useNavigate} from "react-router-dom";
 import {useSnackbar} from "notistack";
@@ -83,6 +83,24 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
         }
         setIsLoading(false);
     }
+    const closePartyClick= async ()=>{
+
+        setIsLoading(true);
+
+        const response = await closeParty({
+            partyInfoId: partyInfo.id,
+            userId: userId,
+        });
+
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+        }else{
+            enqueueSnackbar('파티를 종료하였습니다.',{variant: 'success'});
+            navigate(`/my-carpool-list`);
+        }
+        setIsLoading(false);
+
+    }
 
     const isDriver =()=>{
         return partyInfo.driver.userId == userId
@@ -107,6 +125,13 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
                         </LoadingButton>
                         <LoadingButton sx={{ mt: 2 }} variant="contained" onClick={cancelApplyClick} loading={isLoading} color={"error"} disabled={matchStatus!=MATCH_STATUS.ACCEPT} style={{margin:5}}>
                             신청취소
+                        </LoadingButton>
+                    </>
+                }
+                {((partyInfo.status == PARTY_STATUS.STARTED) && isDriver()) &&
+                    <>
+                        <LoadingButton sx={{ mt: 2 }} variant="contained" onClick={closePartyClick} loading={isLoading} color={"error"} style={{margin:5}}>
+                            파티 종료
                         </LoadingButton>
                     </>
                 }

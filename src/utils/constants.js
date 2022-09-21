@@ -20,3 +20,9 @@ export const MATCH_STATUS={
     FORMED:"FORMED",
     REJECT:"REJECT"
 }
+export const PAY_CHECK={
+
+    NOTPAID:"NOTPAID",
+    PAID:"PAID",
+    RETRY:"RETRY",
+}
