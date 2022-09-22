@@ -1,12 +1,12 @@
 import React, { useState, useRef,useEffect,useCallback } from 'react';
 import MainCard from 'components/MainCard';
 import Box from '@mui/material/Box';
-import {Link,Button,Container,Avatar,Typography,Grid,Stack,InputLabel} from '@material-ui/core';
+import {Link,Button,Container,Avatar,Typography,Grid,Stack,InputLabel,MenuItem} from '@material-ui/core';
 import {useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {deleteByUserId} from 'api/user'
 import CustomError from 'utils/CustomError';
-import { init,send } from 'emailjs-com';
+// import { init,send } from 'emailjs-com';
 import { useSnackbar } from 'notistack';
 import { logOut } from 'utils/authProvider';
 
@@ -88,20 +88,6 @@ const Mypage = () => {
     }
     await setIsLoading(false);
   }
-  const sendEmail = (e) => {
-
-    init('mungta');
-    let formData = new FormData();
-    formData.append("subject"     , '관리자회원신청');
-    formData.append("email_from"  , userInfo.email);
-    formData.append("email_to"    , 'mungtaservice@gmail.com');
-    formData.append("name"        , userInfo.userName);
-    formData.append("message"     , '관리자회원을 신청합니다.');
-    send('', '', formData);
-    enqueueSnackbar('관리자회원 신청이 완료되었습니다. ', {variant: 'success'});
-
-  };
-
   return (
     <MainCard darkTitle={true}  title="Mypage" >
       <Box sx={{ alignSelf: 'center',maxWidth: { xs: 400, lg: 475 }, margin: { xs: 2.5, md: 3 }, }}>
@@ -124,10 +110,10 @@ const Mypage = () => {
       </Box>
       <Grid container spacing={1}>
         <Grid item xs={3}>
-            <InputLabel onClick={deleteUser} style = {letterStyle}>*회원탈퇴</InputLabel>
+          <InputLabel onClick={deleteUser} style = {letterStyle}>*회원탈퇴</InputLabel>
         </Grid>
         <Grid item xs={6}>
-            <InputLabel onClick={sendEmail}>*관리자신청</InputLabel>
+          <Link href="mailto:mungtaservice@gmail.com" style={{ textDecoration: 'none' ,color: '#808080',} } >*관리자신청</Link>
         </Grid>
       </Grid>
     </MainCard>

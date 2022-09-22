@@ -186,7 +186,7 @@ const UserUpdate = () => {
                 "driverYn"       : driverYn,
                 "settlementUrl"  : settlementUrl ,
                 "carType"        : carType,
-                "carNumber"      : carNumber,                   
+                "carNumber"      : carNumber,
             }
 
 
@@ -445,7 +445,7 @@ return (
                                         value={carNumber}
                                         name="carnumber"
                                         onBlur={handleBlur}
-                                        onChange={(e) => {setCarNumbere(e.target.value)}}
+                                        onChange={(e) => {setCarNumber(e.target.value)}}
                                         placeholder="Car number"
                                         inputProps={{}}
                                     />
