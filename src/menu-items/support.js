@@ -1,5 +1,7 @@
 // assets
 import { ChromeOutlined, QuestionOutlined, EyeOutlined,NotificationOutlined } from '@ant-design/icons';
+import {ADMIN_TYPE} from "utils/constants";
+import HistoryIcon from "@mui/icons-material/History";
 
 // icons
 const icons = {
@@ -31,8 +33,17 @@ const support = {
             icon: icons.NotificationOutlined
         },
         {
+            id: 'accusations',
+            title: '신고 내역',
+            type: 'item',
+            url: '/accusations',
+            icon: HistoryIcon,
+            breadcrumbs: false
+        },
+        {
             id: 'admin',
             title: '관리자 영역',
+            authority: ADMIN_TYPE,
             type: 'collapse',
             icon: icons.EyeOutlined,
             children: [
@@ -43,13 +54,13 @@ const support = {
                     url: '/admin/question-management',
                     breadcrumbs: false
                 },
-                // {
-                //     id: 'last-carpool ',
-                //     title: '지난 카풀',
-                //     type: 'item',
-                //     url: '/my-carpool-past-list',
-                //     breadcrumbs: false
-                // }
+                {
+                    id: 'admin-accusation-list',
+                    title: '회원 신고 리스트',
+                    type: 'item',
+                    url: '/admin-accusations',
+                    breadcrumbs: false
+                },
             ]
         }
     ]

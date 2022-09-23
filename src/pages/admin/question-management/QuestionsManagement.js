@@ -5,8 +5,30 @@ import { axios } from 'utils';
 import { getAllQuestions, getQuestionsByUserId } from 'api/question';
 import CustomError from 'utils/CustomError';
 import MainCard from 'components/MainCard';
-import { Button, Grid } from '@mui/material';
+import {Button, Grid, Stack, Typography} from '@mui/material';
 import DataTable from 'components/@extended/DataTable';
+import Dot from "../../../components/@extended/Dot";
+
+
+const QuestionStatus = ({ status }) => {
+  let color;
+  let title;
+
+  if(status){
+    color = 'success';
+    title = '답변 완료';
+  }else{
+    color = 'warning';
+    title = '답변 대기';
+  }
+
+  return (
+      <Stack direction='row' spacing={1} alignItems='center'>
+        <Dot color={color} />
+        <Typography>{title}</Typography>
+      </Stack>
+  );
+};
 
 const QuestionsManagement = ()=>{
   const navigate = useNavigate();
@@ -67,7 +89,8 @@ const columns = [
     width: 50,
     align: 'left',
     render: (row)=>{
-      return <> {row.existResponse ? '있음' : '대기 중'}
+      return <>
+        <QuestionStatus status={row.existResponse}/>
       </>
     }
   },

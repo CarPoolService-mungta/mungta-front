@@ -5,11 +5,11 @@ import { Grid, Stack, Typography } from '@mui/material';
 
 // project import
 import FirebaseRegister from './auth-forms/AuthUserRegister';
-import AuthWrapper from './AuthWrapper';
+import AuthWrapper      from './AuthWrapper';
 
 // ================================|| REGISTER ||================================ //
 
-const Register = () => (
+const UserRegister = () => (
     <AuthWrapper>
         <Grid container spacing={1}>
             <Grid item xs={12}>
@@ -27,4 +27,4 @@ const Register = () => (
     </AuthWrapper>
 );
 
-export default Register;
+export default UserRegister;

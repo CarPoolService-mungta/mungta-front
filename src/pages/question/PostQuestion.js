@@ -8,10 +8,12 @@ import {TextField, Button, Grid} from "@mui/material";
 import {postQuestionById } from 'api/question'
 import CustomError from 'utils/CustomError'
 import { useSnackbar } from 'notistack';
+import {useSelector} from "react-redux";
 
 const PostQuestion = ()=>{
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const userInfo   = useSelector(state =>  state.userInfo );
 
     const formik = useFormik({
         initialValues: {
@@ -27,9 +29,7 @@ const PostQuestion = ()=>{
         onSubmit: async (values, { setSubmitting})=>{
 
             setSubmitting(true);
-            // Todo 수정 필요
             const questionRegisterRequest = {
-                userId: 0,
                 question:{
                     title: values.title,
                     body: values.body

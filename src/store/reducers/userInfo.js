@@ -7,7 +7,9 @@ const initialState = {
   userTeam   :'',
   email      :'',
   driverYn   :'',
-  userType   :'',
+  userGender : '',
+  userType   : '',
+  userPhoto  : null,
 }
 const userInfo = createSlice({
   name: 'userInfo',
@@ -19,7 +21,9 @@ const userInfo = createSlice({
           state.userTeam  = action.payload.userTeam;
           state.email     = action.payload.email;
           state.driverYn  = action.payload.driverYn;
+          state.userGender = action.payload.userGender;
           state.userType  = action.payload.userType;
+          state.userPhoto  = action.payload.userPhoto;
       },
   },
 

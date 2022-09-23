@@ -3,10 +3,31 @@ import DataTable from "components/@extended/DataTable";
 import {useCallback, useEffect, useState} from "react";
 import {getQuestionsByUserId} from 'api/question'
 import {useNavigate} from 'react-router-dom';
-import {Button, Grid} from "@mui/material";
+import {Button, Grid, Stack, Typography} from "@mui/material";
 import CustomError from 'utils/CustomError';
 import { useSnackbar } from 'notistack';
+import Dot from "../../components/@extended/Dot";
 
+
+const QuestionStatus = ({ status }) => {
+    let color;
+    let title;
+
+    if(status){
+        color = 'success';
+        title = '답변 완료';
+    }else{
+        color = 'warning';
+        title = '답변 대기';
+    }
+
+    return (
+        <Stack direction='row' spacing={1} alignItems='center'>
+            <Dot color={color} />
+            <Typography>{title}</Typography>
+        </Stack>
+    );
+};
 
 const Questions = ()=>{
     const navigate = useNavigate();
@@ -21,9 +42,7 @@ const Questions = ()=>{
 
     const searchQuestion = async ()=>{
         await setIsLoading(true);
-        // Todo 수정 필요
-        const userId=0;
-        const response = await getQuestionsByUserId({userId});
+        const response = await getQuestionsByUserId();
         if(response instanceof CustomError){
             enqueueSnackbar(response.message, {variant: 'error'});
             return;
@@ -80,7 +99,8 @@ const columns = [
         width: 50,
         align: 'left',
         render: (row)=>{
-            return <> {row.existResponse ? '있음' : '대기 중'}
+            return <>
+                <QuestionStatus status={row.existResponse}/>
             </>
         }
     },

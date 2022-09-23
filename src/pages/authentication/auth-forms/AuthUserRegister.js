@@ -1,36 +1,25 @@
-import { useEffect, useState,useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
 // material-ui
 import {
-    Box,
-    Button,
-    Divider,
-    FormControl,
-    FormHelperText,
-    Grid,
-    Link,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
-    Stack,
-    Typography,
-    Avatar,
-    Container
+    Box,Button,Divider,FormControl,FormHelperText,Grid,Link,IconButton,InputAdornment,
+    InputLabel,OutlinedInput, Stack,Typography,Avatar,Container
 } from '@mui/material';
 
 // third party
 import * as Yup from 'yup';
-import { Formik } from 'formik';
-
+import {Formik } from 'formik';
+import {authIdCheck, signupByUserId} from 'api/user'
+import {useNavigate} from 'react-router-dom';
+import {useSnackbar } from 'notistack';
+import CustomError from 'utils/CustomError';
 // project import
 //import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
+import {strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import {LoadingButton} from '@material-ui/lab';
 
 const avartarStyle = {
     height: "10vh",
@@ -38,12 +27,29 @@ const avartarStyle = {
     marginLeft: 0,
     marginTop: 20,
     marginBottom: 20,
-    }
-// ============================|| FIREBASE - REGISTER ||============================ //
+}
+const letterCol = {
+    color: '#ffffff'
+}
+const CHECK_ID_YET = 0;
+const CHECK_ID_NOT_DUPLICATED = 1;
+const CHECK_ID_DUPLICATED=2;
 
+// ============================|| FIREBASE - REGISTER ||============================ //
 const AuthRegister = () => {
+
+    let fileBf = '';
+    const navigate = useNavigate();
+    const {enqueueSnackbar } = useSnackbar();
+
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
+    const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+    const [imageUrl, setImageUrl] = useState(null);
+    const [isCheckLoading, setCheckLoading] = useState(false);
+    const imgRef   = useRef();
+    const [isDuplicated, setIsDuplicated] = useState(CHECK_ID_YET);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -58,108 +64,112 @@ const AuthRegister = () => {
         setLevel(strengthColor(temp));
     };
 
-    useEffect(() => {
-        changePassword('');
-    }, []);
+    useEffect(() => {changePassword('');}, []);
 
-////////////////////////////////// 파일업로드 테스트중
-  const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
-  const [imageUrl, setImageUrl] = useState(null);
-  const imgRef   = useRef();
+    const handleImage = async(e)=>{
 
-  const handleImage = async(e)=>{
-    const file = e.target.files[0];
-    const err = checkImage(file);
-    //프로필 사진 선택
-    if(file){
-      setImage(e.target.files[0]);
-    }else{ //업로드 취소할 시
-      setImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
-    return;
-    }
-    setImageUrl(file);
-    //화면에 프로필 사진 표시
-    const reader = new FileReader();
-    reader.onload = () => {
-      if(reader.readyState === 2){
-        setImage(reader.result);
-      }
-    }
-    reader.readAsDataURL(file);
-  }
+        const filereal = e.target.files[0];
+        const err = checkImage(filereal);
+        console.log("filereal:",filereal );
+        if(filereal){
+            setImage(e.target.files[0]);
 
-  const checkImage = (file) =>{
-    let err="";
-    if(!file) return err="File does not exist.";
-
-    if(file.size>1024*1024){
-      err = "The largest image size is 1mb.";
-    }
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png'){
-     err = "Image format is incorrect.";
-    }
-    return err;
-  }
-
-  // 이미지 업로드
-  // const handleSubmit= async(e) =>{
-  const handleSubmit= event =>{
-    event.preventDefault();
-    var imageURL = '';
-    if(imageUrl!==''){
-      const bodyFormData = new FormData();
-      bodyFormData.append('multipartFile', imageUrl);
-      // const result = await axios.post('/message/image', bodyFormData,{
-      //     headers : {Authorization : `Bearer ${auth.token}`}
-      // })
-      //imageURL = result.data;
-    }
-  }
-
- ////////////////////////////////// 파일업로드 테스트중 (end)
- const signinConfirm = async ()=>{
-    await registerConfirm({userId: email.value ,userPassword: password.value})
-    .then((response) => {
-        if(response instanceof CustomError){
-            enqueueSnackbar(response.message, {variant: 'error'});
         }else{
-            setAuthHeader(`Bearer ${response.accessToken}`);
-            localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
-            localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
-
-            const userInfo = parseJwt(response.accessToken);
-            console.log("userInfo:",userInfo );
-
-            dispatch(
-            setUserInfo({ userId     : response.key,
-                          userName   : userInfo.name,
-                          userTeam   : userInfo.team,
-                          email      : userInfo.email,
-                          driverYn   : userInfo.driverYn,
-                          userType   : userInfo.userType
-            }));
-            enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
-            navigate('/mypage');
+            setImage("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+            return;
         }
-    });
-}
-    return (
+        setImageUrl(filereal);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+        if(reader.readyState === 2){
+        setImage(reader.result);
+        }
+        }
+        reader.readAsDataURL(filereal);
+    }
+
+    const checkImage = (file) =>{
+        let err="";
+        if(!file) return err="File does not exist.";
+
+        if(file.size>1024*1024){
+            err = "The largest image size is 1mb.";
+        }
+        if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png'){
+            err = "Image format is incorrect.";
+        }
+        return err;
+    }
+
+    const registerConfirm  = async ()=>{
+
+        let formData = new FormData();
+        formData.append("profileImg"     , imageUrl);
+        formData.append("userId"         , userid.value);
+        formData.append("userPassword"   , password.value);
+        // formData.append("userPassword"   , '12341234');
+        formData.append("userMailAddress", email.value );
+        formData.append("userName"       , username.value);
+        formData.append("userTeamName"   , company.value);
+        formData.append("userGender"     , gender.value);
+        formData.append("driverYn"       , driveryn.value);
+        formData.append("settlementUrl"  , smturl.value );
+        formData.append("carType"        , cartype.value);
+        formData.append("carNumber"      , carnumber.value);
+
+        await signupByUserId(formData)
+        .then((response) => {
+            console.log("response:",response );
+
+            if(response instanceof CustomError){
+                enqueueSnackbar(response.message, {variant: 'error'});
+            }else{
+                enqueueSnackbar('회원가입이 완료되었습니다.', {variant: 'success'});
+                navigate('/auth/login');
+            }
+        });
+
+        await setIsLoading(false);
+    }
+
+    const checkId = async (userId)=>{
+        setCheckLoading(true);
+        const result = await authIdCheck({userId});
+        setIsDuplicated(result ? CHECK_ID_DUPLICATED : CHECK_ID_NOT_DUPLICATED);
+        setCheckLoading(false);
+
+    }
+return (
         <>
             <Formik
                 initialValues={{
-                    firstname: '',
-                    lastname: '',
+                    email: '',
+                    username: '',
+                    userid:'',
                     company: '',
                     password: '',
+                    gender:'',
+                    driveryn:'',
+                    carnumber:'',
+                    cartype:'',
+                    smturl:'',
+                    // profileImg:'',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    firstname: Yup.string().max(255).required('First Name is required'),
-                    lastname: Yup.string().max(255).required('Last Name is required'),
+                    userid: Yup.string().max(255).required('ID is required'),
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    if(isDuplicated==CHECK_ID_YET){
+                        enqueueSnackbar("중복체크를 해주세요", {variant: 'warning'});
+                        return;
+                    }else if(isDuplicated==CHECK_ID_DUPLICATED){
+                        enqueueSnackbar("중복된 아이디입니다.", {variant: 'warning'});
+                        return;
+                    }
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
@@ -174,11 +184,10 @@ const AuthRegister = () => {
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit}>
-
                         <Grid container spacing={1}>
                         <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                                    <InputLabel htmlFor="email-signup">이메일*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.email && errors.email)}
@@ -188,7 +197,7 @@ const AuthRegister = () => {
                                         name="email"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="demo@company.com"
+                                        placeholder="Email Address"
                                         inputProps={{}}
                                     />
                                     {touched.email && errors.email && (
@@ -198,35 +207,65 @@ const AuthRegister = () => {
                                     )}
                                 </Stack>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={7}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="firstname-signup">ID*</InputLabel>
+                                    <InputLabel htmlFor="id-signup">아이디*</InputLabel>
                                     <OutlinedInput
                                         id="userid"
-                                        type="id"
-                                        value={values.firstname}
-                                        name="firstname"
+                                        type="text"
+                                        value={values.userid}
+                                        name="userid"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="John"
+                                        placeholder="ID"
                                         fullWidth
-                                        error={Boolean(touched.firstname && errors.firstname)}
+                                        error={Boolean(touched.userid && errors.userid)}
                                     />
-                                    {touched.firstname && errors.firstname && (
-                                        <FormHelperText error id="helper-text-firstname-signup">
-                                            {errors.firstname}
+                                    {touched.userid && errors.userid && (
+                                        <FormHelperText error id="helper-text-userid-signup">
+                                            {errors.userid}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
-
+                            <Grid item xs={5} >
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="btn-signup"  style = {letterCol}>..</InputLabel>
+                                    <LoadingButton
+                                        variant="contained"
+                                        size="medium"
+                                        onClick={()=>{checkId(values.userid)}}
+                                        loading={isCheckLoading}
+                                    >
+                                        중복체크
+                                    </LoadingButton>
+                                    {isDuplicated==CHECK_ID_YET?
+                                    <></>
+                                    :isDuplicated==CHECK_ID_DUPLICATED ?
+                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="error">
+                                        중복된 ID입니다.
+                                        </Typography>
+                                    :
+                                        <Typography variant="body1" sx={{textDecoration:'none'}} color="primary">
+                                         사용 가능한 ID입니다.
+                                        </Typography>
+                                    }
+                                    {/*    id="btnadd"*/}
+                                    {/*    type="text"*/}
+                                    {/*    value={values.test1}*/}
+                                    {/*    name="btnadd"*/}
+                                    {/*    placeholder="중복체크"*/}
+                                    {/*    disabled="true"*/}
+                                    {/*/>*/}
+                                </Stack>
+                            </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-signup">Password</InputLabel>
+                                    <InputLabel htmlFor="password">비밀번호</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
-                                        id="password-signup"
+                                        id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         value={values.password}
                                         name="password"
@@ -272,42 +311,42 @@ const AuthRegister = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="firstname-signup">Name*</InputLabel>
+                                    <InputLabel htmlFor="username-signup">이름</InputLabel>
                                     <OutlinedInput
-                                        id="firstname-login"
-                                        type="firstname"
-                                        value={values.firstname}
-                                        name="firstname"
+                                        id="username"
+                                        type="name"
+                                        value={values.username}
+                                        name="username"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="John"
+                                        placeholder="Name"
                                         fullWidth
-                                        error={Boolean(touched.firstname && errors.firstname)}
+                                        error={Boolean(touched.username && errors.username)}
                                     />
-                                    {touched.firstname && errors.firstname && (
-                                        <FormHelperText error id="helper-text-firstname-signup">
-                                            {errors.firstname}
+                                    {touched.username && errors.username && (
+                                        <FormHelperText error id="helper-text-username-signup">
+                                            {errors.username}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">성별</InputLabel>
+                                    <InputLabel htmlFor="gender-signup">성별</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
+                                        error={Boolean(touched.gender && errors.gender)}
+                                        id="gender"
+                                        value={values.gender}
+                                        name="gender"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="M or F"
                                         inputProps={{}}
                                     />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
-                                            {errors.company}
+                                    {touched.gender && errors.gender && (
+                                        <FormHelperText error id="helper-text-gender-signup">
+                                            {errors.gender}
                                         </FormHelperText>
                                     )}
                                 </Stack>
@@ -318,7 +357,7 @@ const AuthRegister = () => {
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
+                                        id="company"
                                         value={values.company}
                                         name="company"
                                         onBlur={handleBlur}
@@ -335,49 +374,47 @@ const AuthRegister = () => {
                             </Grid>
                         </Grid>
                         <Container align="left" xs={6} sx={{ margin: 0 }} >
-                            {/* <InputLabel htmlFor="email-signup">사진</InputLabel> */}
                             <Avatar src= {image} style = {avartarStyle} onClick={()=>{imgRef.current.click()}}></Avatar>
                                 <input  type='file' style={{display:'none'}} accept='image/jpg,impge/png,image/jpeg' name='profileImg' onChange={handleImage} ref={imgRef}/>
-                            {/* <Button type="submit" variant="contained" color="primary"  disabled={imageUrl? false : true } onClick={handleSubmit}>제출</Button> */}
                         </Container>
                         <Grid container spacing={1}>
                             <Grid item xs={3}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">운전가능여부</InputLabel>
+                                    <InputLabel htmlFor="driveryn-signup">운전여부</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
+                                        id="driveryn"
+                                        value={values.driveryn}
+                                        name="driveryn"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="Y or N"
                                         inputProps={{}}
                                     />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
-                                            {errors.company}
+                                    {touched.driveryn && errors.driveryn && (
+                                        <FormHelperText error id="helper-text-driveryn-signup">
+                                            {errors.driveryn}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={9}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">카카오톡 송금주소</InputLabel>
+                                    <InputLabel htmlFor="smturl-signup">카카오톡 송금주소</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
+                                        error={Boolean(touched.smturl && errors.smturl)}
+                                        id="smturl"
+                                        value={values.smturl}
+                                        name="smturl"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="카카오페이접속->내프로필->송금코드클릭"
                                         inputProps={{}}
                                     />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
+                                    {touched.smturl && errors.smturl && (
+                                        <FormHelperText error id="helper-text-smturl-signup">
                                             {errors.company}
                                         </FormHelperText>
                                     )}
@@ -385,42 +422,42 @@ const AuthRegister = () => {
                             </Grid>
                             <Grid item xs={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">자동차번호</InputLabel>
+                                    <InputLabel htmlFor="carnumber-signup">자동차번호</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
+                                        error={Boolean(touched.carnumber && errors.carnumber)}
+                                        id="carnumber"
+                                        value={values.carnumber}
+                                        name="carnumber"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="Car number"
                                         inputProps={{}}
                                     />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
-                                            {errors.company}
+                                    {touched.carnumber && errors.carnumber && (
+                                        <FormHelperText error id="helper-text-carnumber-signup">
+                                            {errors.carnumber}
                                         </FormHelperText>
                                     )}
                                 </Stack>
                             </Grid>
                             <Grid item xs={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="company-signup">자동차 종류</InputLabel>
+                                    <InputLabel htmlFor="cartype-signup">자동차 종류</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.company && errors.company)}
-                                        id="company-signup"
-                                        value={values.company}
-                                        name="company"
+                                        error={Boolean(touched.cartype && errors.cartype)}
+                                        id="cartype"
+                                        value={values.cartype}
+                                        name="cartype"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="Car Type"
                                         inputProps={{}}
                                     />
-                                    {touched.company && errors.company && (
-                                        <FormHelperText error id="helper-text-company-signup">
-                                            {errors.company}
+                                    {touched.cartype && errors.cartype && (
+                                        <FormHelperText error id="helper-text-cartype-signup">
+                                            {errors.cartype}
                                         </FormHelperText>
                                     )}
                                 </Stack>

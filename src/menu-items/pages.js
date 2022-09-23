@@ -1,6 +1,16 @@
 // assets
 import { LoginOutlined, ProfileOutlined } from '@ant-design/icons';
-
+import {
+    AppstoreAddOutlined,
+    AntDesignOutlined,
+    BarcodeOutlined,
+    BgColorsOutlined,
+    FontSizeOutlined,
+    LoadingOutlined,
+    ScheduleOutlined
+} from '@ant-design/icons';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import HistoryIcon from '@mui/icons-material/History';
 // icons
 const icons = {
     LoginOutlined,
@@ -30,6 +40,7 @@ const pages = {
             icon: icons.ProfileOutlined,
             // target: true
         }
+
     ]
 };
 

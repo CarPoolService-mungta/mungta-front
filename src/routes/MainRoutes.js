@@ -9,6 +9,10 @@ import SelectCarpoolList from 'pages/party-management/Pages/SelectCarpoolList';
 import MyCarpoolList from 'pages/party-management/Pages/MyCarpoolList';
 import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
+import MyCarpoolDetailForMatching from 'pages/party-management/Pages/MyCarpoolDetailForMatching';
+
+import MoveInfo from 'pages/party-management/Pages/Children/MoveInfo';
+import UpdateParty from 'pages/party-management/Pages/UpdateParty';
 
 
 const PartyMatching = Loadable(lazy(() => import('pages/party-matching/PartyMatching')));
@@ -19,14 +23,28 @@ const Question = Loadable(lazy(() => import('pages/question/Question')));
 const PostQuestion = Loadable(lazy(() => import('pages/question/PostQuestion')));
 
 const Mypage = Loadable(lazy(() => import('pages/authentication/Mypage')));
+const UserUpdate = Loadable(lazy(() => import('pages/authentication/UserUpdate')));
 
 const Notices = Loadable(lazy(() => import('pages/notice/Notices')));
 const Notice = Loadable(lazy(() => import('pages/notice/Notice')));
 const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
+const ReviewRegister = Loadable(lazy(() => import('pages/review-management/RegisterReview')));
+const ReviewSelect = Loadable(lazy(() => import('pages/review-management/ReviewSelect')));
+const MyReview = Loadable(lazy(() => import('pages/review-management/MyRegisteredReview')));
+const CarPoolerReview = Loadable(lazy(() => import('pages/review-management/CarPoolerReview')));
+const Reviews = Loadable(lazy(() => import('pages/review-management/MyReviews')));
+
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
 const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
+
+const Accusations = Loadable(lazy(() => import('pages/accusation/Accusations')));
+const AccusationDetail = Loadable(lazy(() => import('pages/accusation/AccusationDetail')));
+const PartyMembers = Loadable(lazy(() => import('pages/accusation/PartyMembers')));
+const RegisterAccusation = Loadable(lazy(() => import('pages/accusation/RegisterAccusation')));
+const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
+const AdminAccusationDetail = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusationDetail')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -40,7 +58,7 @@ const MainRoutes = {
               <SelectRole />
         },
         {
-            path: 'party-matching',
+            path: 'party-matching/:id',
             element: <PartyMatching />
         },
         {
@@ -59,6 +77,9 @@ const MainRoutes = {
             path: 'question/post',
             element: <PostQuestion/>
         },
+        /*
+            Party Management Page Start
+        */
         {
             path: 'notices',
             element: <Notices />
@@ -100,8 +121,17 @@ const MainRoutes = {
             element: <MyCarpoolDetail />
         },
         {
+            path: 'my-carpool-detail-for-matching',
+            element: <MyCarpoolDetailForMatching />
+        },
+        {
             path: 'mypage',
             element: <Mypage />
+        },
+        {
+            // path: 'update-user-info/:userId',
+            path: 'update-user-info',
+            element: <UserUpdate />
         },
         {
             path: 'admin/question-management',
@@ -111,6 +141,54 @@ const MainRoutes = {
             path: 'admin/question-management/response/:id',
             element: <PostResponseToQuestion />
         },
+        {
+            path: 'accusations',
+            element: <Accusations/>
+        },
+        {
+            path: 'accusations/:accusationId',
+            element: <AccusationDetail/>
+        },
+        {
+            path: 'register-accusation/parties',
+            element: <PartyMembers/>
+        },
+        {
+            path: 'register-accusation',
+            element: <RegisterAccusation/>
+        },
+        {
+            path: 'admin-accusations',
+            element: <AdminAccusations/>
+        },
+        {
+            path: 'admin-accusations/:accusationId',
+            element: <AdminAccusationDetail/>
+        },
+        {
+            path: 'review-register',
+            element: <ReviewRegister/>
+        }
+        ,
+        {
+            path: 'review-select',
+            element: <ReviewSelect/>
+        }
+        ,
+        {
+            path: 'my-review',
+            element: <MyReview/>
+        }
+        ,
+        {
+            path: 'carpooler-review',
+            element: <CarPoolerReview/>
+        }
+        ,
+        {
+            path: 'reviews',
+            element: <Reviews/>
+        }
     ]
 };
 

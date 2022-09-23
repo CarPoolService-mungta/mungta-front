@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -8,17 +8,18 @@ import {Button,FormHelperText,Grid,Link,IconButton,InputAdornment,InputLabel,Out
 //Checkbox,Divider,FormControlLabel,Typography
 //import FirebaseSocial from './FirebaseSocial';
 
-import {signinById} from 'api/user'
+import {getPhotoByUserId, signinByUserId} from 'api/user'
 import {useNavigate} from 'react-router-dom';
 // import { values } from 'lodash';
 import { useSnackbar } from 'notistack';
 import CustomError from 'utils/CustomError';
 
 import { parseJwt, setAuthHeader, localStorageHandler} from 'utils';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from 'utils/constants';
+import {ACCESS_TOKEN, JWT_EXPIRY_TIME, REFRESH_TOKEN} from 'utils/constants';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUserInfo } from 'store/reducers/userInfo';
+import {onSlientRefresh} from "../../../utils/authProvider";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 const AuthLogin = () => {
@@ -37,31 +38,56 @@ const AuthLogin = () => {
         event.preventDefault();
     };
 
+    useEffect(()=>{
+        dispatch(
+            setUserInfo({ userId     : "",
+                userName   : "",
+                userTeam   : "",
+                email      : "",
+                driverYn   : "",
+                userGender   : "",
+                userType   : "",
+                userPhoto  : '',
+            }));
+    },[])
     const signinConfirm = async ()=>{
-        await signinById({userId: email.value ,userPassword: password.value})
-        .then((response) => {
-            if(response instanceof CustomError){
-                enqueueSnackbar(response.message, {variant: 'error'});
+        const response = await signinByUserId({userId: email.value ,userPassword: password.value})
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+        }else{
+            setAuthHeader(`Bearer ${response.accessToken}`);
+            localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
+            localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
+
+            const userInfo = parseJwt(response.accessToken);
+            // console.log("userInfo:",userInfo );
+
+            const result = await getPhotoByUserId(userInfo.userId);
+            let photo = null;
+            if(result instanceof CustomError){
+                // return;
             }else{
-                setAuthHeader(`Bearer ${response.accessToken}`);
-                localStorageHandler.setItem(ACCESS_TOKEN , response.accessToken);
-                localStorageHandler.setItem(REFRESH_TOKEN, response.refreshToken);
-
-                const userInfo = parseJwt(response.accessToken);
-                console.log("userInfo:",userInfo );
-
-                dispatch(
-                setUserInfo({ userId     : response.key,
-                              userName   : userInfo.name,
-                              userTeam   : userInfo.team,
-                              email      : userInfo.email,
-                              driverYn   : userInfo.driverYn,
-                              userType   : userInfo.userType
-                }));
-                enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
-                navigate('/mypage');
+                const str1='data:image/';
+                const str2=result.fileExtension;;
+                const str3=';base64,';
+                const str4=result.userPhoto;
+                photo =str1+str2+str3+str4;
             }
-        });
+
+            dispatch(
+                setUserInfo({ userId     : response.key,
+                    userName   : userInfo.name,
+                    userTeam   : userInfo.team,
+                    email      : userInfo.email,
+                    driverYn   : userInfo.driverYn,
+                    userGender : userInfo.userGender,
+                    userType   : userInfo.userType,
+                    userPhoto  : photo
+                }));
+            enqueueSnackbar('로그인 완료되었습니다. ', {variant: 'success'});
+            setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
+            navigate('/mypage');
+        }
     }
     return (
         <>
@@ -76,14 +102,13 @@ const AuthLogin = () => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        setStatus({ success: false });
-                        setSubmitting(false);
-                        signinConfirm();
-                    } catch (err) {
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
+                    setStatus({ success: false });
+                    setSubmitting(true);
+                    const result = await signinConfirm();
+                    setSubmitting(false);
+                    if(result instanceof CustomError){
+                        enqueueSnackbar(result.message, {variant: 'error'});
+                        return;
                     }
                 }}
             >

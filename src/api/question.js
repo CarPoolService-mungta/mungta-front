@@ -18,7 +18,7 @@ export const deleteQuestionById = async params =>
     axios.delete('/api/question/question', {params});
 
 /**
- * @param {{userId: number, question:{title: text, body:text}}} data
+ * @param {{question:{title: text, body:text}}} data
  */
 export const postQuestionById = async data =>
   axios.post('/api/question/question', data);

@@ -8,14 +8,21 @@ import { Box, List, Typography } from '@mui/material';
 import NavItem from './NavItem';
 
 import NavCollapse from './NavCollapse';
+import {ADMIN_TYPE} from "utils/constants";
 
 // ==============================|| NAVIGATION - LIST GROUP ||============================== //
 
 const NavGroup = ({ item }) => {
     const menu = useSelector((state) => state.menu);
+    const userInfo   = useSelector(state =>  state.userInfo );
     const { drawerOpen } = menu;
 
     const navCollapse = item.children?.map((menuItem) => {
+        if(menuItem.authority &&  menuItem.authority==ADMIN_TYPE){
+            if (userInfo.userType!=ADMIN_TYPE){
+                return ;
+            }
+        }
         switch (menuItem.type) {
             case 'collapse':
                 return (
