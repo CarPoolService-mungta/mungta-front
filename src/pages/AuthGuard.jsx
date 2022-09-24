@@ -9,7 +9,7 @@ export default function AuthProtect({children}) {
   const {pathname} = useLocation();
   const isAuthPage = pathname.includes('auth');
   const [accessToken,setAccessToken] = useState(null);
-  if(isAuthPage){
+  if(!isAuthPage){
     setAccessToken(localStorageHandler.getItem(ACCESS_TOKEN));
   }
 
