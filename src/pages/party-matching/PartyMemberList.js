@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
-import {SnackbarProvider, useSnackbar} from 'notistack';
+import { useEffect, useState } from 'react';
+import { useSnackbar} from 'notistack';
 import {
-  acceptMatch,
-  denyMatch,
-  getMatchUsers,
   getReviewInfo,
   getUserInfo,
   getWaitingAndAcceptMembers
@@ -13,16 +10,10 @@ import UserTable from 'pages/party-matching/UserTable';
 import _ from 'lodash';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import {
   Avatar, Box, Button, CircularProgress,
   Grid,
   List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemSecondaryAction,
-  ListItemText,
-  Stack,
   Typography,
 } from '@mui/material';
 
@@ -31,12 +22,6 @@ import MainCard from 'components/MainCard';
 import ComponentSkeleton from 'pages/components-overview/ComponentSkeleton';
 
 // assets
-import {
-  GiftOutlined,
-  MessageOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import { TableRow } from '../../../node_modules/@mui/material/index';
 import {useLocation, useParams} from "react-router-dom";
 import CustomError from "../../utils/CustomError";
 import {useSelector} from "react-redux";
