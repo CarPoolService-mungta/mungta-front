@@ -34,6 +34,7 @@ import { TableRow } from '../../../node_modules/@mui/material/index';
 import {useLocation, useParams} from "react-router-dom";
 import CustomError from "../../utils/CustomError";
 import {useSelector} from "react-redux";
+import {PARTY_STATUS} from "../../utils/constants";
 
 // avatar style
 const avatarSX = {
@@ -154,7 +155,7 @@ const PartyMemberList = () => {
         </Grid>
       </Grid>
 
-      {userInfo.userId==partyInfo.driver.userId && <Grid container spacing={3} sx={{ mt: 2 }}>
+      {userInfo.userId==partyInfo.driver.userId && (partyInfo.status == PARTY_STATUS.OPEN || partyInfo.status == PARTY_STATUS.FULL) && <Grid container spacing={3} sx={{ mt: 2 }}>
         <Grid item sx={{ mt: 2 }}>
           <Typography variant="h5">파티 요청 멤버</Typography>
         </Grid>
