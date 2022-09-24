@@ -40,13 +40,21 @@ export const getPartyInfoPastMyNow = async params =>
  * springboot에서 requestbody 못 받는 이슈가 있었는데, import 잘못해서 였음.
  * js : moveInfoRegister.js -> 대문자로 변경할 것
  */
-export const postMoveInfo = async function (Data) {
-    let url      = process.env.REACT_APP_API_SERVER + '/api/party-management/partyInfos/post-moveinfo';
-    let headers  = {  "Content-Type": 'application/json', }
-    const response = await axios.post(url,stringify(Data),{headers});
-    console.log(response);
-    return response;
-}
+
+
+/**
+ * @param {{question:{title: text, body:text}}} data
+ */
+export const postMoveInfo = async data =>
+    axios.post('/api/party-management/partyInfos/post-moveinfo', data);
+
+// export const postMoveInfo = async function (Data) {
+//     let url      = process.env.REACT_APP_API_SERVER + '/api/party-management/partyInfos/post-moveinfo';
+//     let headers  = {  "Content-Type": 'application/json', }
+//     const response = await axios.post(url,stringify(Data),{headers});
+//     console.log(response);
+//     return response;
+// }
 
 export const deleteMoveInfo = async params =>
        axiosInstance.delete('/api/party-management/partyInfos/delete-moveinfo',{params});
