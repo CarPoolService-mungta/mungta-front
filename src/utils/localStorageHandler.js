@@ -1,6 +1,7 @@
 const localStorageHandler = {
   getItem(key) {
-    return JSON.parse(localStorage.getItem(key));
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(localStorage.getItem(key)) : null;
   },
   setItem(key, val) {
     return localStorage.setItem(key, JSON.stringify(val));
