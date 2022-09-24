@@ -74,7 +74,7 @@ const UserTable = ({userName, userTeam, userPhoto, scoreAvg, comment, isWaitingM
             <ListItemSecondaryAction>
                 <Stack alignItems="flex-end">
                     <Typography variant="subtitle1" noWrap>
-                        {`평점 : ${Math.round(scoreAvg*10)/10}`}
+                        {`평점 : ${scoreAvg ? Math.round(scoreAvg*10)/10 : 0}`}
                     </Typography>
                     <Typography variant="h6" color="secondary" noWrap>
                         {`최근 코멘트: ${comment ? comment : '-'}`}

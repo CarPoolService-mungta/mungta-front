@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import {SnackbarProvider, useSnackbar} from 'notistack';
-import {acceptMatch, denyMatch, getMatchUsers} from 'api/partyMatching';
+import {
+  acceptMatch,
+  denyMatch,
+  getMatchUsers,
+  getReviewInfo,
+  getUserInfo,
+  getWaitingAndAcceptMembers
+} from 'api/partyMatching';
 import UserTable from 'pages/party-matching/UserTable';
-import WaitTable from 'pages/party-matching/WaitTable';
-import DataTable from 'components/@extended/DataTable';
+import _ from 'lodash';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -70,34 +76,115 @@ const PartyMemberList = () => {
 
   const partyInfo = location.state.partyInfo;
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [acceptMembers, setAcceptMembers] = useState([]);
-  const [waitingMembers, setWaitingMembers]= useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [acceptMembers, setAcceptMembers] = useState(null);
+  const [waitingMembers, setWaitingMembers]= useState(null);
 
-  useEffect(async () => {
-    setIsLoading(true);
-    const response = await getMatchUsers({partyInfoId: partyInfo.id});
-    if(response instanceof CustomError){
-      enqueueSnackbar(response.message, {variant: 'error'});
-      return;
-    }
-    if(response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
-      setAcceptMembers([...response.matchStatusMembers.FORMED, ...response.matchStatusMembers.ACCEPT])
-    }else if(response.matchStatusMembers.FORMED && !response.matchStatusMembers.ACCEPT){
-      setAcceptMembers([...response.matchStatusMembers.FORMED])
-    }else if(!response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
-      setAcceptMembers([...response.matchStatusMembers.ACCEPT])
+  // useEffect(async () => {
+  //   setIsLoading(true);
+  //   const response = await getMatchUsers({partyInfoId: partyInfo.id});
+  //   if(response instanceof CustomError){
+  //     enqueueSnackbar(response.message, {variant: 'error'});
+  //     return;
+  //   }
+  //   if(response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
+  //     setAcceptMembers([...response.matchStatusMembers.FORMED, ...response.matchStatusMembers.ACCEPT])
+  //   }else if(response.matchStatusMembers.FORMED && !response.matchStatusMembers.ACCEPT){
+  //     setAcceptMembers([...response.matchStatusMembers.FORMED])
+  //   }else if(!response.matchStatusMembers.FORMED && response.matchStatusMembers.ACCEPT){
+  //     setAcceptMembers([...response.matchStatusMembers.ACCEPT])
+  //   }else{
+  //     setAcceptMembers([])
+  //   }
+  //
+  //   if(response.matchStatusMembers.WAITING){
+  //     setWaitingMembers([...response.matchStatusMembers.WAITING]);
+  //   }else{
+  //     setWaitingMembers([]);
+  //   }
+  //   setIsLoading(false);
+  // }, []);
+
+  const [matchInfos, setMatchInfos] = useState(null);
+  const [userInfos, setUserInfos]= useState([]);
+  const [reviewInfos, setReviewInfos]= useState([]);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
+  const [isLoadingReview, setIsLoadingReview] = useState(false);
+
+  useEffect(()=>{
+    searchMembers();
+  },[])
+  useEffect(()=>{
+    if(!matchInfos) return;
+
+    const userIds = matchInfos.map(o=>o.userId);
+    searchUserInfo(userIds);
+    searchReviewInfo(userIds);
+  },[matchInfos])
+
+  useEffect(()=>{
+    if(matchInfos==null) return;
+    if(isLoadingUser || isLoadingReview) return;
+
+    const result = _.chain(matchInfos)
+                    .map(o=>{
+                      return {
+                        ...o,
+                        ...userInfos.find(u=>o.userId==u.userId),
+                        ...reviewInfos.find(r=>o.userId==r.userId)
+                      }
+                    })
+        .groupBy("matchStatus")
+        .value();
+
+    console.log("result:", result)
+
+    if(result.FORMED && result.ACCEPT){
+      setAcceptMembers([...result.FORMED, ...result.ACCEPT])
+    }else if(result.FORMED && !result.ACCEPT){
+      setAcceptMembers([...result.FORMED])
+    }else if(!result.FORMED && result.ACCEPT){
+      setAcceptMembers([...result.ACCEPT])
     }else{
       setAcceptMembers([])
     }
 
-    if(response.matchStatusMembers.WAITING){
-      setWaitingMembers([...response.matchStatusMembers.WAITING]);
+    if(result.WAITING){
+      setWaitingMembers([...result.WAITING]);
     }else{
       setWaitingMembers([]);
     }
-    setIsLoading(false);
-  }, []);
+
+  },[userInfos, reviewInfos])
+
+  const searchMembers= async ()=>{
+    const response = await getWaitingAndAcceptMembers({partyInfoId: partyInfo.id});
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+      return;
+    }
+    setMatchInfos(response);
+  }
+  const searchUserInfo = async (userIds)=>{
+    setIsLoadingUser(true);
+    const response = await getUserInfo({userIds : userIds.join(",")});
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+      return;
+    }
+    setIsLoadingUser(false);
+    setUserInfos(response);
+  }
+  const searchReviewInfo = async (userIds)=>{
+    setIsLoadingReview(true);
+    const response = await getReviewInfo({userIds : userIds.join(",")});
+    if(response instanceof CustomError){
+      enqueueSnackbar(response.message, {variant: 'error'});
+      return;
+    }
+    setIsLoadingReview(false);
+    setReviewInfos(response);
+  }
 
 
   const makePhoto = (userPhoto, fileExtension)=>{
@@ -119,10 +206,11 @@ const PartyMemberList = () => {
           <Typography variant="h5">파티 확정 멤버</Typography>
         </Grid>
         <Grid item xs={12}>
-          {isLoading ?
+          {acceptMembers==null ?<>
               <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
                 <CircularProgress/>
-              </Box> :
+              </Box>
+              </>:
               <MainCard content={false}>
                 <List
                     component="nav"
@@ -160,7 +248,7 @@ const PartyMemberList = () => {
           <Typography variant="h5">파티 요청 멤버</Typography>
         </Grid>
         <Grid item xs={12}>
-          {isLoading ?
+          {waitingMembers==null ?
               <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
                 <CircularProgress/>
               </Box> :
