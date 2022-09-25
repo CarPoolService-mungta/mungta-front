@@ -29,3 +29,7 @@ export const ROLE={
     DRIVER:"DRIVER",
     CARPOOLER:"CARPOOLER",
 }
+export const USER_TYPE={
+    ADMIN:"ADMIN",
+    CUSTOMER:"CUSTOMER",
+}

@@ -6,6 +6,8 @@ import CustomError from 'utils/CustomError';
 import MainCard from 'components/MainCard';
 import { Button, Grid } from '@mui/material';
 import DataTable from 'components/@extended/DataTable';
+import {useSelector} from "react-redux";
+import {USER_TYPE} from "../../utils/constants";
 
 const Notices = ()=>{
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ const Notices = ()=>{
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const userInfo   = useSelector(state =>  state.userInfo );
 
   useEffect(async ()=>{
     await searchNotice()
@@ -20,8 +23,7 @@ const Notices = ()=>{
 
   const searchNotice = async ()=>{
     await setIsLoading(true);
-    // Todo 수정 필요
-    const userId=0;
+
     const response = await getNoticeList();
     if(response instanceof CustomError){
       enqueueSnackbar(response.message, {variant: 'error'});
@@ -44,16 +46,18 @@ const Notices = ()=>{
 
   return (
     <MainCard title="공지사항">
+      {userInfo.userType==USER_TYPE.ADMIN
+          &&
       <Grid
         container
         direction="row"
         justifyContent="flex-end"
         spacing={2}>
         <Grid item>
-          {/*Todo 관리자일때만 보이게 변경*/}
-          <Button variant="contained" onClick={postNotice}>등록하기</Button>
+          <Button style={{margin:10}} variant="contained" onClick={postNotice}>등록하기</Button>
         </Grid>
       </Grid>
+      }
       <DataTable columns={columns} rows={data} rowsPerPageOptions={[10,20,30]} isLoading={isLoading} rowClick={rowClick}/>
     </MainCard>
   )
