@@ -28,8 +28,6 @@ const UserTable = ({userName, userTeam, userPhoto, scoreAvg, comment, isWaitingM
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading]=useState(false);
 
-    console.log("matchProcess:", matchProcess);
-
     const acceptMember = async(userId)=>{
         setIsLoading(true)
         const response = await acceptMatch(matchProcess)

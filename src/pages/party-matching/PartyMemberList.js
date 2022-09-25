@@ -122,6 +122,8 @@ const PartyMemberList = () => {
         .groupBy("matchStatus")
         .value();
 
+    console.log("matchInfo:", matchInfos)
+    console.log("result:", result)
     if(result.FORMED && result.ACCEPT){
       setAcceptMembers([...result.FORMED, ...result.ACCEPT])
     }else if(result.FORMED && !result.ACCEPT){

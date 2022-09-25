@@ -2,6 +2,7 @@
 import { ChromeOutlined, QuestionOutlined, EyeOutlined,NotificationOutlined } from '@ant-design/icons';
 import {ADMIN_TYPE} from "utils/constants";
 import HistoryIcon from "@mui/icons-material/History";
+import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 
 // icons
 const icons = {
@@ -39,6 +40,28 @@ const support = {
             url: '/accusations',
             icon: HistoryIcon,
             breadcrumbs: false
+        },
+        {
+            id:'review-register',
+            title : '리뷰',
+            type : 'collapse',
+            icon: RateReviewOutlinedIcon,
+            children: [
+                {
+                    id:'my-review',
+                    title : '내가 작성한 리뷰',
+                    type : 'item',
+                    url : '/my-review',
+                    breadcrumbs: false
+                },
+                {
+                    id:'reviews',
+                    title : '마이리뷰',
+                    type : 'item',
+                    url : '/reviews',
+                    breadcrumbs: false
+                }
+            ]
         },
         {
             id: 'admin',

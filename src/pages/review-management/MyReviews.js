@@ -1,6 +1,6 @@
 import MainCard from '../../components/MainCard';
 
-import { TextField, Button, Grid } from '@mui/material';
+import {TextField, Button, Grid, Select, MenuItem} from '@mui/material';
 
 import * as React from 'react';
 
@@ -19,6 +19,11 @@ import DataTable from "../../components/@extended/DataTable";
 
 import {useCallback, useEffect, useState} from "react";
 import Rating from "@mui/material/Rating";
+import {useSnackbar} from "notistack";
+import {useSelector} from "react-redux";
+import {getReviewByReviewerId, myReview} from "../../api/review";
+import CustomError from "../../utils/CustomError";
+import {ROLE} from "../../utils/constants";
 
 
 function getLabelText(value) {
@@ -26,8 +31,40 @@ function getLabelText(value) {
 }
 
 export default function HoverRating() {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
+    const userInfo   = useSelector(state =>  state.userInfo );
+
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [review, setReviewData] = useState([]);
+    const [role, setRole] = useState("ALL");
+
+    useEffect(async () => {
+        await searchReview();
+    }, []);
+
+    useEffect(async () => {
+        if(role!="ALL"){
+            const result = review.filter(o=>o.targetRole==role)
+            setData(result);
+        }else{
+            setData(review);
+        }
+    }, [review, role]);
+
+    const searchReview = async () => {
+        await setIsLoading(true);
+
+        setIsLoading(true);
+        const response = await myReview({reviewTargetId:userInfo.userId});
+        if(response instanceof CustomError){
+            enqueueSnackbar(response.message, {variant: 'error'});
+            return;
+        }
+
+        setReviewData(response.reviews);
+        setIsLoading(false);
+    };
 
   return (
 
@@ -35,27 +72,44 @@ export default function HoverRating() {
        <Grid
             container
             direction="row"
-            //justifyContent="flex-end"
+            justifyContent="flex-end"
             spacing={2}>
-   
+                <Select
+                    value={role}
+                    defaultValue={"ALL"}
+                    onChange={(e)=>{
+                        setRole(e.target.value)
+                    }}
+                >
+                    <MenuItem value={"ALL"}>전체</MenuItem>
+                    <MenuItem value={ROLE.DRIVER}>운전자</MenuItem>
+                    <MenuItem value={ROLE.CARPOOLER}>카풀러</MenuItem>
+                </Select>
         </Grid>
-        <DataTable columns={columns} rows={data} rowsPerPageOptions={[10,20,30]}/>
+        <DataTable columns={columns} rows={data} rowsPerPageOptions={[10,20,30]} isLoading={isLoading}/>
     </MainCard>
   );
 }
 
 const columns = [
-    {
-        id: 'id',
-        label: 'No.',
-        width: 50,
-        align: 'center',
-    },
+    // {
+    //     id: 'id',
+    //     label: 'No.',
+    //     width: 50,
+    //     align: 'center',
+    // },
     {
         id: 'targetRole',
         label: '역할',
         width: 60,
         align: 'center',
+        render: (row)=>{
+            return <>
+                {
+                    row.targetRole==ROLE.DRIVER ? "운전자" : "카풀러"
+                }
+            </>
+        }
     },
     {
         id: 'modifiedDateTime',

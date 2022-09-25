@@ -199,7 +199,7 @@ const PartyMatching = () => {
                     <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
                       <CircularProgress/>
                     </Box> :<>
-                    {(partyInfo.status==PARTY_STATUS.STARTED || partyInfo.status==PARTY_STATUS.FULL ) && userInfo.userId==partyInfo.driver.userId && <Typography noWrap color={'red'}>
+                    {(partyInfo.status==PARTY_STATUS.OPEN || partyInfo.status==PARTY_STATUS.FULL ) && userInfo.userId==partyInfo.driver.userId && <Typography noWrap color={'red'}>
                         {`파티 대기 멤버 : ${waitingCount}명`}
                       </Typography>}
                   <br/>

@@ -31,6 +31,7 @@ import {authRefresh} from "api/user";
 //   //parseJwt한 부분은 redux에 저장
 //   console.log("userInfo:", parseJwt(accessToken));
 // }
+
 export const initialize = () => {
   const accessToken = localStorageHandler.getItem(ACCESS_TOKEN);
   if (!accessToken) return logOut();
@@ -54,6 +55,5 @@ export const onSlientRefresh = async ()=>{
   const token = await authRefresh({refreshToken: 'Bearer ' + refreshToken});
 
   localStorageHandler.setItem(ACCESS_TOKEN , token);
-  console.log("TEST")
   setTimeout(onSlientRefresh, JWT_EXPIRY_TIME - 60 * 1000);
 }
