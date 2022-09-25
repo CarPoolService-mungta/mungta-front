@@ -31,18 +31,18 @@ const PostNotice = Loadable(lazy(() => import('pages/notice/PostNotice')));
 
 const ReviewRegister = Loadable(lazy(() => import('pages/review-management/RegisterReview')));
 const ReviewSelect = Loadable(lazy(() => import('pages/review-management/ReviewSelect')));
-const MyReview = Loadable(lazy(() => import('pages/review-management/MyReview')));
+const MyReview = Loadable(lazy(() => import('pages/review-management/MyRegisteredReview')));
 const CarPoolerReview = Loadable(lazy(() => import('pages/review-management/CarPoolerReview')));
-const Reviews = Loadable(lazy(() => import('pages/review-management/Reviews')));
+const Reviews = Loadable(lazy(() => import('pages/review-management/MyReviews')));
 
 //admin
 const QuestionsManagement = Loadable(lazy(() => import('pages/admin/question-management/QuestionsManagement')));
 const PostResponseToQuestion = Loadable(lazy(() => import('pages/admin/question-management/PostResponseToQuestion')));
 
-const Accusations = Loadable(lazy(() => import('pages/user-profile/accusation/Accusations')));
-const AccusationDetail = Loadable(lazy(() => import('pages/user-profile/accusation/AccusationDetail')));
-const PartyMembers = Loadable(lazy(() => import('pages/user-profile/accusation/PartyMembers')));
-const RegisterAccusation = Loadable(lazy(() => import('pages/user-profile/accusation/RegisterAccusation')));
+const Accusations = Loadable(lazy(() => import('pages/accusation/Accusations')));
+const AccusationDetail = Loadable(lazy(() => import('pages/accusation/AccusationDetail')));
+const PartyMembers = Loadable(lazy(() => import('pages/accusation/PartyMembers')));
+const RegisterAccusation = Loadable(lazy(() => import('pages/accusation/RegisterAccusation')));
 const AdminAccusations = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusations')));
 const AdminAccusationDetail = Loadable(lazy(() => import('pages/admin-profile/accusation/AdminAccusationDetail')));
 
@@ -58,7 +58,7 @@ const MainRoutes = {
               <SelectRole />
         },
         {
-            path: 'party-matching',
+            path: 'party-matching/:id',
             element: <PartyMatching />
         },
         {
@@ -150,7 +150,7 @@ const MainRoutes = {
             element: <AccusationDetail/>
         },
         {
-            path: 'register-accusation/parties/:partyId',
+            path: 'register-accusation/parties',
             element: <PartyMembers/>
         },
         {

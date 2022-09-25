@@ -59,72 +59,72 @@ const carpool = {
                 }
             ]
         },
-        {
-            id:'review-register',
-            title : '리뷰 하기',
-            type : 'collapse',
-            icon: RateReviewOutlinedIcon,
-            children: [
-                {
-                    id:'review-select',
-                    title : '리뷰대상 선택하기',
-                    type : 'item',
-                    url : '/review-select',
-                    breadcrumbs: false
-                },
-                {
-                    id:'review-register',
-                    title : '리뷰 작성하기',
-                    type : 'item',
-                    url : '/review-register',
-                    breadcrumbs: false
-                },
-                {
-                    id:'my-review',
-                    title : '내가 작성한 리뷰',
-                    type : 'item',
-                    url : '/my-review',
-                    breadcrumbs: false
-                },
-                {
-                    id:'carpooler-review',
-                    title : '카풀러 리뷰',
-                    type : 'item',
-                    url : '/carpooler-review',
-                    breadcrumbs: false
-                },
-                {
-                    id:'reviews',
-                    title : '마이리뷰',
-                    type : 'item',
-                    url : '/reviews',
-                    breadcrumbs: false
-                }
-
-            ]
-        },
-        {
-            id: 'my-accusation',
-            title: '신고',
-            type: 'collapse',
-            icon: HistoryIcon,
-            children: [
-                {
-                    id: 'accusations',
-                    title: '신고 내역',
-                    type: 'item',
-                    url: '/accusations',
-                    breadcrumbs: false
-                },
-                {
-                    id: 'register-accusation',
-                    title: '신고하기',
-                    type: 'item',
-                    url: '/register-accusation/parties/1',  // 지난 카풀 내역 페이지의 신고 버튼이랑 이어 붙여야 함.
-                    breadcrumbs: false
-                }
-            ]
-        },
+        // {
+        //     id:'review-register',
+        //     title : '리뷰 하기',
+        //     type : 'collapse',
+        //     icon: RateReviewOutlinedIcon,
+        //     children: [
+        //         {
+        //             id:'review-select',
+        //             title : '리뷰대상 선택하기',
+        //             type : 'item',
+        //             url : '/review-select',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id:'review-register',
+        //             title : '리뷰 작성하기',
+        //             type : 'item',
+        //             url : '/review-register',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id:'my-review',
+        //             title : '내가 작성한 리뷰',
+        //             type : 'item',
+        //             url : '/my-review',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id:'carpooler-review',
+        //             title : '카풀러 리뷰',
+        //             type : 'item',
+        //             url : '/carpooler-review',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id:'reviews',
+        //             title : '마이리뷰',
+        //             type : 'item',
+        //             url : '/reviews',
+        //             breadcrumbs: false
+        //         }
+        //
+        //     ]
+        // },
+        // {
+        //     id: 'my-accusation',
+        //     title: '신고',
+        //     type: 'collapse',
+        //     icon: HistoryIcon,
+        //     children: [
+        //         {
+        //             id: 'accusations',
+        //             title: '신고 내역',
+        //             type: 'item',
+        //             url: '/accusations',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id: 'register-accusation',
+        //             title: '신고하기',
+        //             type: 'item',
+        //             url: '/register-accusation/parties/1',  // 지난 카풀 내역 페이지의 신고 버튼이랑 이어 붙여야 함.
+        //             breadcrumbs: false
+        //         }
+        //     ]
+        // },
 
     ]
 };

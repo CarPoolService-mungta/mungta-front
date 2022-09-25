@@ -55,3 +55,20 @@ export const getDriverInfo = async params =>
     axiosInstance.get('/api/user/driver-info',{params});
 
 
+/**
+ * @param {{partyId: number, carpoolerId: text }} data
+ */
+export const requestPayment = async data =>
+    axios.post('/api/party-management/partyInfos/request-pay-check', data);
+/**
+ * @param {{partyId: number, carpoolerId: text }} data
+ */
+export const checkPayment = async data =>
+    axios.post('/api/party-management/partyInfos/check-payment', data);
+/**
+ * @param {{partyId: number, carpoolerId: text }} data
+ */
+export const retryPayment = async data =>
+    axios.post('/api/party-management/partyInfos/retry-payment', data);
+
+

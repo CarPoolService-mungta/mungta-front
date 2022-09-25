@@ -22,6 +22,8 @@ import { useSnackbar } from 'notistack';
 import {Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
 import CustomError from 'utils/CustomError';
 import {useSelector} from "react-redux";
+import {PARTY_STATUS} from "../../../../utils/constants";
+import {LoadingButton} from "@mui/lab";
 
 const InputTitle = {
     backgroundColor: '#1A2027',
@@ -54,6 +56,8 @@ const MoveInfoRegister = () => {
     const navigate = useNavigate();
     const userInfo   = useSelector(state =>  state.userInfo );
 
+    const [isLoading, setIsLoading]=useState(false);
+
     const formik = useFormik({
       initialValues: {
         placeOfDeparture: '',
@@ -75,6 +79,7 @@ const MoveInfoRegister = () => {
     onSubmit: async (values, { setSubmitting})=>{
 
         setSubmitting(true);
+        setIsLoading(true);
         const driverInfo = await getDriverInfo();
         const moveInfoRegisterRequest = {
 
@@ -104,10 +109,12 @@ const MoveInfoRegister = () => {
                 price: values.distance*200
             },
             maxNumberOfParty:values.maxNumberOfParty,
-            status: "OPEN"
+            status: PARTY_STATUS.OPEN
         };
         const response =  await postMoveInfo(moveInfoRegisterRequest);
 
+        setSubmitting(false);
+        setIsLoading(false);
         //enqueueSnackbar('운전정보가 등록되었습니다.', {variant: 'success'});
         //navigate(`/my-carpool-list`);
         if(response instanceof CustomError){
@@ -219,14 +226,15 @@ const MoveInfoRegister = () => {
                     </Stack>
                 </Grid>
                 <Grid item xs={12} align="center">
-                    <Button
+                    <LoadingButton
                         size="large"
                         type="submit"
+                        loading={isLoading}
                         variant="contained"
                         color="primary"
                         sx={{m:2}}
                     >등록
-                    </Button>
+                    </LoadingButton>
                     <Button
                         disableElevation
                         size="large"

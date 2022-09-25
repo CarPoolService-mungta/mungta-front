@@ -56,7 +56,7 @@ const DataTable = ({columns,
                                     <TableRow hover
                                               tabIndex={-1}
                                               key={row.id}
-                                              onClick={e=>rowClick(e,row)}
+                                              onClick={rowClick ? e=>rowClick(e,row) : ()=>{}}
                                               style= {{cursor: 'pointer'}}>
                                         {columns.map((column) => {
                                             const value = row[column.id];

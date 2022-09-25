@@ -21,6 +21,7 @@ import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentT
 import CustomError from 'utils/CustomError';
 import DeleteCheckModal from 'components/@extended/DeleteCheckModal';
 import { useSnackbar } from 'notistack';
+import {useSelector} from "react-redux";
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -70,6 +71,7 @@ const MyCarpoolDetail = (props) => {
   const [query, setQuery] = React.useState({id:0});
   const [post, setPost] = React.useState(location.state.data);
   //const { type, isDriver } = queryString.parse(location.search);
+  const userInfo   = useSelector(state =>  state.userInfo );
 
   console.log('location',location);
   console.log('location data :',location.state.data);
@@ -98,7 +100,7 @@ const MyCarpoolDetail = (props) => {
   }
 
     const type = location.state.type //지금 테스트 1은 운전자, 2는 카풀러
-    const isDriver = (location.state.data.driver.userId === 'test-d-001@gmail.com'); //여기에 나중에 user id랑 비교
+    const isDriver = (location.state.data.driver.userId === userInfo.userId); //여기에 나중에 user id랑 비교
     const canDelete = (location.state.data.curNumberOfParty === 1) && (location.state.data.status ==='OPEN'); //여기에 나중에 user id랑 비교
     console.log("isDriver:",isDriver);
       return (

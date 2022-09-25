@@ -17,7 +17,7 @@ import {
     Avatar,
     Box, CircularProgress
 } from '@mui/material';
-import { Link,useLocation  } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import { getPartyInfoPastMyNow } from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
@@ -38,11 +38,12 @@ const InputTitle = {
 }
 const MyCarpoolPastList = () => {
 
-    const userInfo   = useSelector(state =>  state.userInfo );
+  const userInfo   = useSelector(state =>  state.userInfo );
   const [query, setQuery] = React.useState({});
   const [post, setPost] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   function handleCloseModal(data) {
     console.log('부모에서 받은',data);
     setQuery({
@@ -72,12 +73,20 @@ const MyCarpoolPastList = () => {
   }
   const isEmpty = isEmptyObj(post)||(post.length === 0);
 
+  const goReview=(party)=>{
+      navigate(`/review-select`, {state: {party: party}})
+  }
+  const goAccusation=(party)=>{
+      navigate(`/register-accusation/parties`, {state: {partyId: party.id}})
+  }
+
+
   if(!isLoading && isEmpty){
     return (
     <>
       <Grid item xs={12} md={6}>
         <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
-        진행 중인 카풀
+            지난 카풀 내역
         <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon>
         </Typography>
         <EmptyList/>
@@ -111,14 +120,14 @@ const MyCarpoolPastList = () => {
               <Avatar sx ={{ width: 80, height: 80}}>
                 <BeachAccessIcon />
               </Avatar>
-              <ListItemText primary="Manager" />
+              <ListItemText primary={`${p.driver.name}Manager`} />
             </ListItemAvatar>
-            <Link to="/my-carpool-detail"
-                  style={{ textDecoration: 'none' }}
-                  state={{
-                    type:'past',
-                    data:p
-                  }}>
+                <Link to={`/party-matching/${p.id}`}
+                      style={{ textDecoration: 'none' }}
+                      state={{
+                          type:'past',
+                          data:p
+                      }}>
             <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
             <Grid item xs={12} sm={12} md={12} >
                 <Paper
@@ -162,8 +171,8 @@ const MyCarpoolPastList = () => {
             </Link>
             <Grid item xs={12} sm={12} md ={12} sx={{border:0, boxShadow:0}}>
               <Item spacing={2} sx={{border:0, boxShadow:0, bgcolor:ListBgColor[p.status]}}>
-                <Button variant="contained" color="primary" sx={{m:1}} onClick={()=>alert('리뷰페이지로 이동')}>리뷰하기</Button>
-                <Button variant="contained" color="error" sx={{m:1}} onClick={()=>alert('신고페이지로 이동')}>신고하기</Button>
+                <Button variant="contained" color="primary" sx={{m:1}} onClick={()=>goReview(p)}>리뷰하기</Button>
+                <Button variant="contained" color="error" sx={{m:1}} onClick={()=>goAccusation(p)}>신고하기</Button>
               </Item>
             </Grid>
           </ListItem>

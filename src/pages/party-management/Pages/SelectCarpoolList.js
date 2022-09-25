@@ -119,12 +119,12 @@ const SelectCarpoolList = () => {
                 </ListItemAvatar>
 
                   {/* 여기서 클릭 시 파티 매칭하는 화면으로 가야함 */}
-                  <Link to={"/my-carpool-detail-for-matching"}
-                      style={{ textDecoration: 'none' ,width:'100%'}}
-                      state={{
-                        type:'now',
-                        data:p
-                      }}>
+                  <Link to={`/party-matching/${p.id}`}
+                        style={{ textDecoration: 'none' }}
+                        state={{
+                            type:'now',
+                            data:p
+                        }}>
                 <Grid container spacing={{ xs: 2, md: 1 }} columns={{ xs: 12, sm:12,md:12}}>
                 <Grid item xs={12} sm={12} md={12} >
                 <Paper
@@ -147,7 +147,7 @@ const SelectCarpoolList = () => {
                         {ListStatusDesc[p.status]}
                       </Item>
                       <Item sx={{fontSize:'1em', color:'#1cd', fontWeight:'bold', boxShadow:0}}>
-                        신청 시 역할 [ {p.driver.userId=== 'test-d-001@gmail.com'?'운전자':'카풀러'} ]
+                        신청 시 역할 [ {'카풀러'} ]
                       </Item>
                     </Stack>
                   </Paper>

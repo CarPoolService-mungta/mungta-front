@@ -10,6 +10,13 @@ import MainCard from '../../../../components/MainCard';
 import PropTypes from 'prop-types';
 import AnimateButton from '../../../../components/@extended/AnimateButton';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../../Utils/ComponentTheme';
+import {PAY_CHECK} from "../../../../utils/constants";
+import PaymentCheckButtonForCarpooler from "./PaymentCheckButtonForCarpooler";
+import {useSelector} from "react-redux";
+import {useState} from "react";
+import {requestPayment} from "../../../../api/partymanagement";
+import CustomError from "../../../../utils/CustomError";
+import {useSnackbar} from "notistack";
 const InputTitle = {
     backgroundColor: '#1A2027',
     padding: '2px',
@@ -23,22 +30,38 @@ const InputTitle = {
     boxShadow: 10,
     fontSize:"120%"
   }
-  function isDriverChecked(carpooler) {
-    return carpooler.driverCheck === 'PAID'
-    && carpooler.userId==='test-d-001@gmail.com'
-  }
-  const MyCarpoolDetailForCarpooler = (props) => {
-      console.log('MY Sub post',props.posts)
-      const post = props.posts;
-      const payChecked = !(post.carPooler.find(carpoolers=>isDriverChecked(carpoolers))===undefined);
-      console.log(payChecked);
+  const MyCarpoolDetailForCarpooler = ({partyInfo}) => {
+
+      console.log('MY Sub partyInfo',partyInfo)
+      const userInfo   = useSelector(state =>  state.userInfo );
+      const carpooler = partyInfo.carPooler.find(o=>o.userId==userInfo.userId)
+      console.log(carpooler)
+      const [isLoading, setIsLoading] = useState(false);
+      const { enqueueSnackbar } = useSnackbar();
+
+      const requestPayCheckClick=async ()=>{
+          setIsLoading(true);
+          const response = await requestPayment({
+              partyId: partyInfo.id,
+              carpoolerId: carpooler.userId
+          })
+
+          if(response instanceof CustomError){
+              enqueueSnackbar(response.message, {variant: 'error'});
+          }else{
+              enqueueSnackbar('정산 요청 확인 신청되었습니다.', {variant: 'success'});
+              window.location.reload()
+          }
+          setIsLoading(false);
+      }
+
       return (
       <>
        <Grid item xs={12}>
-            <MainCard title="운전자 Pay URL" codeHighlight>
+            <MainCard title="운전자 Pay URL" >
                 <Grid container spacing={3} wrap="nowrap">
                     <Grid item xs={6} sm={4} md={3} lg={2} >
-                        <Button variant="contained" color="warning" size="small" onClick={()=>alert(post.driver.settlementUrl)}>
+                        <Button variant="contained" color="warning" size="small" onClick={()=>window.open(partyInfo.driver.settlementUrl)}>
                             Kakao Pay Url
                         </Button>
                     </Grid>
@@ -46,22 +69,22 @@ const InputTitle = {
             </MainCard>
         </Grid>
         <Grid item xs={12}>
-            <MainCard title="정산내역" codeHighlight>
+            <MainCard title="정산내역" >
                 {
                     // post.carPooler.filter(userId='');
                 <Grid>
                     <Grid container justifyContent="start">
                         <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Subtitle sx={InputTitle}>지불요금</Subtitle></Item></Grid>
-                        <Grid item xs={1} sm={1} md={1} ><Item sx={{ boxShadow:0}}><div style={{textAlign:'center',fontSize:'15px', fontWeight:'bold'}}>{post.moveInfo.price / post.curNumberOfParty} 원</div></Item></Grid>
-                        <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="success">지불완료처리</Button></Item></Grid>
-                    </Grid>
-                    <Grid container justifyContent="start">
-                        <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Subtitle sx={InputTitle}>운전자확인 상태</Subtitle></Item></Grid>
-                        <Grid item xs={1} sm={1} md={1} ><Item sx={{ boxShadow:0}}></Item></Grid>
-                        {
-                            (!payChecked)? <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="error">정산미확인</Button></Item></Grid>
-                                        : <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}><Button variant="contained" color="primary">정산확인완료</Button></Item></Grid>
-                        }
+
+                        <Typography style={{textAlign:'center',fontSize:'15px', fontWeight:'bold', marginTop:13}}>{partyInfo.moveInfo.price}원 ({partyInfo.curNumberOfParty}명) =&gt; {partyInfo.moveInfo.price/partyInfo.curNumberOfParty}원</Typography>
+
+                        <Grid item xs={2} sm={2} md={2} ><Item sx={{ boxShadow:0}}>
+                            <PaymentCheckButtonForCarpooler
+                                carpoolerCheck={carpooler.carpoolerCheck}
+                                driverCheck={carpooler.driverCheck}
+                                isLoading={isLoading}
+                                requestPayCheckClick={requestPayCheckClick}/>
+                        </Item></Grid>
                     </Grid>
                 </Grid>
                 }

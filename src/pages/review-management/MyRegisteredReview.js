@@ -4,14 +4,6 @@ import { TextField, Button, Grid } from '@mui/material';
 
 import * as React from 'react';
 
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-
-import avatar1 from 'assets/images/users/avatar-1.png';
-
-import Typography from '@mui/material/Typography';
-
 import DataTable from '../../components/@extended/DataTable';
 
 import { useCallback, useEffect, useState } from 'react';
@@ -22,9 +14,13 @@ import { getReviewByReviewerId } from 'api/review';
 import CustomError from 'utils/CustomError';
 
 import Rating from '@mui/material/Rating';
+import {useSnackbar} from "notistack";
+import {useSelector} from "react-redux";
 
-const MyReview = () => {
+const MyRegisteredReview = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const userInfo   = useSelector(state =>  state.userInfo );
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +33,7 @@ const MyReview = () => {
     await setIsLoading(true);
 
     setIsLoading(true);
-    const response = await getReviewByReviewerId({reviewerId:"cho"});
+    const response = await getReviewByReviewerId({reviewerId:userInfo.userId});
     if(response instanceof CustomError){
         enqueueSnackbar(response.message, {variant: 'error'});
         return;
@@ -47,10 +43,11 @@ const MyReview = () => {
     setIsLoading(false);
   };
 
-  const rowClick = useCallback((e, row) => {
-    const reviewerId = row.id;
-    navigate(`/my-review/${reviewerId}`);
-  }, []);
+  // rowClick 필요없어보임..
+  // const rowClick = useCallback((e, row) => {
+  //   const reviewId = row.id;
+  //   navigate(`/my-review/${reviewId}`);
+  // }, []);
 
   return (
     <MainCard darkTitle={true} title={'내가 작성한 리뷰'}>
@@ -59,13 +56,13 @@ const MyReview = () => {
         rows={data}
         rowsPerPageOptions={[10, 20, 30]}
         isLoading={isLoading}
-        rowClick={rowClick}
+        // rowClick={rowClick}
       />
     </MainCard>
   );
   };
 
-export default MyReview;
+export default MyRegisteredReview;
 
 const columns = [
   {
