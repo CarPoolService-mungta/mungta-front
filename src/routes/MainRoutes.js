@@ -10,6 +10,7 @@ import MyCarpoolList from 'pages/party-management/Pages/MyCarpoolList';
 import MyCarpoolPastList from 'pages/party-management/Pages/MyCarpoolPastList';
 import MyCarpoolDetail from 'pages/party-management/Pages/MyCarpoolDetail';
 import MyCarpoolDetailForMatching from 'pages/party-management/Pages/MyCarpoolDetailForMatching';
+import MyCarpoolWaitingList from 'pages/party-management/Pages/MyCarpoolWaitingList';
 
 import MoveInfo from 'pages/party-management/Pages/Children/MoveInfo';
 import UpdateParty from 'pages/party-management/Pages/UpdateParty';
@@ -104,6 +105,11 @@ const MainRoutes = {
         {
             path: 'select-carpool-list',
             element: <SelectCarpoolList />
+        }
+        ,
+        {
+            path: 'my-carpool-waiting-list',
+            element: <MyCarpoolWaitingList />
         }
         ,
         {

@@ -44,6 +44,13 @@ const carpool = {
             icon: HistoryIcon,
             children: [
                 {
+                    id: 'waiting-carpool ',
+                    title: '대기중인 카풀',
+                    type: 'item',
+                    url: '/my-carpool-waiting-list',
+                    breadcrumbs: false
+                },
+                {
                     id: 'now-carpool ',
                     title: '진행중인 카풀',
                     type: 'item',

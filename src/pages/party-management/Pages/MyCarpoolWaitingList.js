@@ -19,13 +19,16 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Link,useSearchParams,useLocation } from 'react-router-dom';
-import { getPartyInfoMyNow } from 'api/partymanagement';
+import {getPartyInfoMyNow, getWaitingPartyIdList, getWaitingPartyList} from 'api/partymanagement';
 import isEmptyObj from '../Utils/BasicUtils';
 import {Demo,Item,Subtitle,ListBgColor,ListStatusDesc} from '../Utils/ComponentTheme';
 import SearchModal from './Children/SearchPopup';
 import dayjs from "dayjs";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
+import {getUserInfo} from "../../../api/partyMatching";
+import CustomError from "../../../utils/CustomError";
+import {useSnackbar} from "notistack";
 const InputTitle = {
   backgroundColor: '#1A2027',
   padding: '2px',
@@ -39,45 +42,74 @@ const InputTitle = {
   boxShadow: 10
 }
 
-const MyCarpoolList = () => {
+const MyCarpoolWaitingList = () => {
   const userInfo   = useSelector(state =>  state.userInfo );
-  const [query, setQuery] = useState({});
-  const [post, setPost] = useState({});
+  // const [query, setQuery] = useState({});
+  const [post, setPost] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingParty, setIsLoadingParty] = useState(false);
+  const [partyIdList, setPartyIdList] = useState([]);
   const location = useLocation();
+
+  const { enqueueSnackbar } = useSnackbar();
 //search 조건을 바꿔야함.
-  function handleCloseModal(data) {
-    console.log('부모에서 받은',data);
-
-    setQuery({
-      departure : data._departure,
-      destination : data._destination,
-      start_date : dayjs(data._dates).format("YYYY-MM-DD"),
-      condition : data._condition
-    });
-  }
-    useEffect(async ()=>{
-        await getPartyInfos();
-    },[query]);
-
-    const getPartyInfos = async ()=>{
-        await setIsLoading(true);
-        const response = await getPartyInfoMyNow({
-          user_id: userInfo.userId,
-          ...query
-        });
-        console.log(response);
-        let array = [];
-        //for(let index in response.data){
-        for(let index in response){
-          array.push(response[index])
-        }
-        await setPost(!response.message ? array : []);
-        await setIsLoading(false);
-    }
+//   function handleCloseModal(data) {
+//
+//     setQuery({
+//       departure : data._departure,
+//       destination : data._destination,
+//       start_date : dayjs(data._dates).format("YYYY-MM-DD"),
+//       condition : data._condition
+//     });
+//   }
+    // useEffect(async ()=>{
+    //     await getPartyInfos();
+    // },[query]);
+    //
+    // const getPartyInfos = async ()=>{
+    //     await setIsLoading(true);
+    //     const response = await getPartyInfoMyNow({
+    //       user_id: userInfo.userId,
+    //       ...query
+    //     });
+    //     let array = [];
+    //     //for(let index in response.data){
+    //     for(let index in response){
+    //       array.push(response[index])
+    //     }
+    //     await setPost(!response.message ? array : []);
+    //     await setIsLoading(false);
+    // }
     const isEmpty = isEmptyObj(post)||(post.length === 0);
 
-    if(!isLoading && isEmpty){
+    useEffect(async ()=>{
+      await setIsLoading(true);
+      const response = await getWaitingPartyIdList();
+      if(response instanceof CustomError){
+        enqueueSnackbar(response.message, {variant: 'error'});
+        return;
+      }
+      setPartyIdList(response);
+
+      await setIsLoading(false);
+
+    },[])
+    useEffect(async ()=>{
+      setIsLoadingParty(true);
+      if(partyIdList.length<=0) {
+        return;
+      }
+      const partyList = await getWaitingPartyList({partyIds: partyIdList.join(",")})
+      if(partyList instanceof CustomError){
+        enqueueSnackbar(partyList.message, {variant: 'error'});
+        return;
+      }
+      setPost(partyList);
+      setIsLoadingParty(false);
+
+    },[partyIdList])
+
+    if(!isLoading && !isLoadingParty && isEmpty){
       return (
       <>
         <Grid item xs={12} md={6}>
@@ -97,15 +129,15 @@ const MyCarpoolList = () => {
       <>
         <Grid item xs={12} md={6}>
             <Typography sx={{ mt: 4, mb: 2 }} variant="h3" component="div">
-            진행 중인 카풀
+            대기 중인 카풀
             {/* <ManageSearchIcon fontSize="large" sx={{ float: 'right', m:2 }}></ManageSearchIcon> */}
-            <SearchModal
-                onCloseModal={handleCloseModal}
-              />
+            {/*<SearchModal*/}
+            {/*    onCloseModal={handleCloseModal}*/}
+            {/*  />*/}
           </Typography>
           <List>
           <Demo>
-          {isLoading?
+          {isLoading && isLoadingParty?
               <Box sx={{py: 3, minHeight: 560, alignContent: 'center'}}>
                 <CircularProgress />
               </Box>
@@ -113,7 +145,6 @@ const MyCarpoolList = () => {
             // post.partyInfoes.filter(p => (p.status === 'OPEN' || p.status ==='FULL' || p.status === 'STARTED') ).map((p, index)=>
             post.map((p, index)=>
             <ListItem sx={{m:3,bgcolor:ListBgColor[p.status], width:'95%'}} key={index} >
-              {console.log("p:",p)}
               <ListItemAvatar sx={{m:2, width:'10%', textAlign:'center',justifyContent: "center"}}>
                 <Avatar sx ={{ width: 80, height: 80}}>
                   <BeachAccessIcon />
@@ -177,4 +208,4 @@ const MyCarpoolList = () => {
       );
     }
 };
-export default MyCarpoolList;
+export default MyCarpoolWaitingList;

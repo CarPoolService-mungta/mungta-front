@@ -79,4 +79,10 @@ export const checkPayment = async data =>
 export const retryPayment = async data =>
     axios.post('/api/party-management/partyInfos/retry-payment', data);
 
+export const getWaitingPartyIdList = async (params) =>
+    axios.get('/api/match/partymembers/waiting-party-list', { params });
+
+export const getWaitingPartyList = async params =>
+    axios.get('/api/party-management/partyInfos/carpool-list-with-id', {params});
+
 
