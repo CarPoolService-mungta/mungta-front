@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 // material-ui
 import {
     Box,Button,Divider,FormControl,FormHelperText,Grid,Link,IconButton,InputAdornment,
@@ -41,7 +41,7 @@ const AuthRegister = () => {
     let fileBf = '';
     const navigate = useNavigate();
     const {enqueueSnackbar } = useSnackbar();
-
+    const {checkedEmail} = useParams();
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
     const [image   , setImage]    = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
@@ -65,6 +65,7 @@ const AuthRegister = () => {
     };
 
     useEffect(() => {changePassword('');}, []);
+
 
     const handleImage = async(e)=>{
 
@@ -108,8 +109,7 @@ const AuthRegister = () => {
         formData.append("profileImg"     , imageUrl);
         formData.append("userId"         , userid.value);
         formData.append("userPassword"   , password.value);
-        // formData.append("userPassword"   , '12341234');
-        formData.append("userMailAddress", email.value );
+        formData.append("userMailAddress", checkedEmail); //email.value
         formData.append("userName"       , username.value);
         formData.append("userTeamName"   , company.value);
         formData.append("userGender"     , gender.value);
@@ -159,7 +159,7 @@ return (
                 }}
                 validationSchema={Yup.object().shape({
                     userid: Yup.string().max(255).required('ID is required'),
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    // email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -190,21 +190,18 @@ return (
                                     <InputLabel htmlFor="email-signup">이메일*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
-                                        error={Boolean(touched.email && errors.email)}
                                         id="email"
                                         type="email"
-                                        value={values.email}
+                                        value={checkedEmail}
                                         name="email"
+                                        readOnly="true"
+                                        disabled="true"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         placeholder="Email Address"
                                         inputProps={{}}
                                     />
-                                    {touched.email && errors.email && (
-                                        <FormHelperText error id="helper-text-email-signup">
-                                            {errors.email}
-                                        </FormHelperText>
-                                    )}
+
                                 </Stack>
                             </Grid>
                             <Grid item xs={7}>

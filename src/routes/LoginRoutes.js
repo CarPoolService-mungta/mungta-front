@@ -24,7 +24,7 @@ const LoginRoutes = {
             element: <AuthRegister />
         },
         {
-            path: 'auth/registerform',
+            path: 'auth/registerform/:checkedEmail',
             element: <AuthUserRegister />
         }
     ]

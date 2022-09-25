@@ -53,7 +53,8 @@ const AuthRegister = () => {
                 console.log("userInfo:",response.possibleYn );
                 if(response.possibleYn === 'Y'){
                     enqueueSnackbar('인증번호가 확인되었습니다. ', {variant: 'success'});
-                    navigate('/auth/registerform');
+
+                    navigate(`/auth/registerform/${email.value}`);
                 }else{
                     enqueueSnackbar('인증이 실패하였습니다.', {variant: 'error'});
                 }
