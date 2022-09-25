@@ -1,10 +1,10 @@
 import { axios } from 'utils';
 
-/**
- * @param {{partyInfoId: number, userId: list}} params
- */
-export const getMatchUsers = async (params) =>
-  axios.get('/api/match/partymembers', { params });
+// /**
+//  * @param {{partyInfoId: number, userId: list}} params
+//  */
+// export const getMatchUsers = async (params) =>
+//   axios.get('/api/match/partymembers', { params });
 /**
  * @param {{partyInfoId: number, userId: number}} params
  */
@@ -40,4 +40,21 @@ export const cancelParty = async (matchProcess) => axios.post('/api/match/party-
 export const getPartyMemberSummary = async (params) =>
     axios.get('/api/match/partymembers/summary', { params });
 
+
+
+
+/**
+ * @param {{partyInfoId: number}} params
+ */
+export const getWaitingAndAcceptMembers = async (params) =>
+    axios.get('/api/match/partymembers/waiting-and-accpet', { params });
+
+/**
+ * @param {{userIds: number[]}} params
+ */
+export const getUserInfo = async params =>
+    axios.get('/api/user', {params});
+
+export const getReviewInfo = async params =>
+    axios.get('/api/review/summary', {params});
 

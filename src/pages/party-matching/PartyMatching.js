@@ -83,6 +83,7 @@ const PartyMatching = () => {
 
   const [userMatchStatus, setUserMatchStatus] = useState(null);
   const [matchUsers, setMatchUsers] = useState(null);
+  const [waitingCount, setWaitingCount] = useState(0);
   const [partyInfo, setPartyInfo] = useState(initPartyInfo);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMember,setIsLoadingMember] = useState(false);
@@ -107,6 +108,7 @@ const PartyMatching = () => {
     }else{
       setMatchUsers(partyMemberResponse.userResponses);
       setUserMatchStatus(partyMemberResponse.matchStatus);
+      setWaitingCount(partyMemberResponse.waitingCount);
     }
     setIsLoadingMember(false);
   }
@@ -193,11 +195,14 @@ const PartyMatching = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }} noWrap>
                   파티 신청 멤버
                 </Typography>
-                <br/>
                 {isLoadingMember ?
                     <Box sx={{py: 3, minHeight: 150, alignContent: 'center'}}>
                       <CircularProgress/>
-                    </Box> :
+                    </Box> :<>
+                    {(partyInfo.status==PARTY_STATUS.OPEN || partyInfo.status==PARTY_STATUS.FULL ) && userInfo.userId==partyInfo.driver.userId && <Typography noWrap color={'red'}>
+                        {`파티 대기 멤버 : ${waitingCount}명`}
+                      </Typography>}
+                  <br/>
                     <AvatarGroup
                         sx={{
                           '& .MuiAvatar-root': {width: 100, height: 100},
@@ -216,6 +221,7 @@ const PartyMatching = () => {
                               </>
                           ))}
                     </AvatarGroup>
+                    </>
                 }
               </Stack>
             </Grid>

@@ -21,8 +21,15 @@ export const MATCH_STATUS={
     REJECT:"REJECT"
 }
 export const PAY_CHECK={
-
     NOTPAID:"NOTPAID",
     PAID:"PAID",
     RETRY:"RETRY",
+}
+export const ROLE={
+    DRIVER:"DRIVER",
+    CARPOOLER:"CARPOOLER",
+}
+export const USER_TYPE={
+    ADMIN:"ADMIN",
+    CUSTOMER:"CUSTOMER",
 }

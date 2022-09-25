@@ -65,7 +65,7 @@ const Mypage = () => {
   };
   const goReview = () => {
 
-    navigate('/my-review')
+    navigate('/reviews')
   };
   const goAccuse = useCallback((e) => {
 

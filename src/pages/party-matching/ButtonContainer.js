@@ -62,7 +62,7 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
             enqueueSnackbar(response.message, {variant: 'error'});
         }else{
             enqueueSnackbar('파티를 신청하였습니다.',{variant: 'success'});
-            navigate(`/my-carpool-list`);
+            navigate(`/my-carpool-waiting-list`);
         }
         setIsLoading(false);
     }

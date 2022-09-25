@@ -60,23 +60,27 @@ const SelectRole = () => {
                     alignItems="center" spacing={6} align="center" justify="center"
                     sx={{ minHeight: { xs: 'calc(100vh - 100px)', md: 'calc(100vh - 100px)' } }}>
                 <Grid xs={2}></Grid>
-                <Grid xs={4}>
+                <Grid xs={4} sm={4} md={4} lg={4}>
                     <Card sx={{
                         boxShadow: 1,
                         borderRadius: 2,
                         p: 11,
                         m: 2,
+                        // margin:10,
+                        // padding:0,
                         minHeight: { xs: 'calc(100vh-100px)', md: 'calc(100vh-100px)'  },
                         bgcolor: userInfo.driverYn=='Y' ? 'background.primary' : 'grey'
                         }} variant="outlined" >{driverCard(userInfo.driverYn=='Y')}</Card>
                 </Grid>
-                <Grid xs={4}>
+                <Grid xs={4} sm={4} md={4} lg={4}>
                     <Card  sx={{
                         boxShadow: 1,
                         borderRadius: 2,
                         p: 11,
                         m: 2,
                         minHeight: { xs: 'calc(100vh-100px)', md: 'calc(100vh-100px)' },
+                        // padding:0,
+                        margin:5,
                         bgcolor:'background.secondary'
                         }} variant="outlined">{carpoolerCard}</Card>
                 </Grid>

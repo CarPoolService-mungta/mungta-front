@@ -21,3 +21,6 @@ export const getPartyMember = async (params) =>
 
 export const isReviewed = async params =>
     axios.get('/api/review/is-reviewed', {params});
+
+export const myReview = async params =>
+    axios.get('/api/review/received-review', {params});

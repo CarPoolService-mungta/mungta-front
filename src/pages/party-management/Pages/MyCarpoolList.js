@@ -118,7 +118,7 @@ const MyCarpoolList = () => {
                 <Avatar sx ={{ width: 80, height: 80}}>
                   <BeachAccessIcon />
                 </Avatar>
-                <ListItemText primary="Manager" />
+                <ListItemText primary={`${p.driver.name}Manager`} />
               </ListItemAvatar>
               <Link to={`/party-matching/${p.id}`}
                     style={{ textDecoration: 'none' }}
