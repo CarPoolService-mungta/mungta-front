@@ -15,6 +15,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import {strengthColor, strengthIndicator } from 'utils/password-strength';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import {LoadingButton} from '@material-ui/lab';
+import { logOut } from 'utils/authProvider';
 
 const avartarStyle = {
     height: "10vh",
@@ -170,8 +171,9 @@ const UserUpdate = () => {
                 if(response instanceof CustomError){
                     enqueueSnackbar(response.message, {variant: 'error'});
                 }else{
-                    enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
-                    navigate('/mypage');
+                    enqueueSnackbar('수정이 완료되었습니다. 다시 로그인해주시기 바랍니다.', {variant: 'success'});
+                    logOut();
+                    // navigate('/mypage');
                 }
             });
         }else{
@@ -197,8 +199,9 @@ const UserUpdate = () => {
                 if(response instanceof CustomError){
                     enqueueSnackbar(response.message, {variant: 'error'});
                 }else{
-                    enqueueSnackbar('수정이 완료되었습니다.', {variant: 'success'});
-                    navigate('/mypage');
+                    enqueueSnackbar('수정이 완료되었습니다. 다시 로그인해주시기 바랍니다.', {variant: 'success'});
+                    //navigate('/mypage');
+                    logOut();
                 }
             });
         }
