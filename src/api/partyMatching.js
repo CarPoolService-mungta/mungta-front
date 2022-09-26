@@ -24,11 +24,11 @@ export const denyMatch = async (data) => axios.post('/api/match/deny', data);
 /**
  * @param {{partyId: number}} params
  */
-export const startParty = async (matchProcess) => axios.post('/api/match/partyStart', matchProcess);
+export const startParty = async (matchProcess) => axios.post('/api/match/party-start', matchProcess);
 /**
  * @param {{partyId: number}} params
  */
-export const closeParty = async (matchProcess) => axios.post('/api/match/partyClose', matchProcess);
+export const closeParty = async (matchProcess) => axios.post('/api/match/party-close', matchProcess);
 
 /**
  * @param {{partyId: number}} params
