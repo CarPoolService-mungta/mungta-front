@@ -16,7 +16,7 @@ export const deleteByUserId = async (id) => axios.delete('/api/user/' + id);
 
 export const getUserByUserId = async (id) => axios.get('/api/user/' + id);
 
-export const getPhotoByUserId = async (id) => axios.get('/api/user/auth/downloadFile/' + id);
+export const getPhotoByUserId = async (id) => axios.get('/api/user/auth/download-file/' + id);
 
 
 
