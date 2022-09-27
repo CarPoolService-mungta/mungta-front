@@ -123,7 +123,7 @@ const ButtonContainer =({partyInfo, userId, matchStatus})=>{
                         <LoadingButton sx={{ mt: 2 }} variant="contained" onClick={applyPartyClick} loading={isLoading} disabled={matchStatus==MATCH_STATUS.ACCEPT || matchStatus==MATCH_STATUS.WAITING} style={{margin:5}}>
                             파티신청
                         </LoadingButton>
-                        <LoadingButton sx={{ mt: 2 }} variant="contained" onClick={cancelApplyClick} loading={isLoading} color={"error"} disabled={matchStatus!=MATCH_STATUS.ACCEPT} style={{margin:5}}>
+                        <LoadingButton sx={{ mt: 2 }} variant="contained" onClick={cancelApplyClick} loading={isLoading} color={"error"} disabled={matchStatus!=MATCH_STATUS.ACCEPT && matchStatus!=MATCH_STATUS.WAITING} style={{margin:5}}>
                             신청취소
                         </LoadingButton>
                     </>
