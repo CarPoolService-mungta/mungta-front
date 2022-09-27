@@ -88,16 +88,16 @@ const MoveInfoRegister = () => {
                 userId:userInfo.userId,
                 carKind: driverInfo.carType,
                 carNumber: driverInfo.carNumber,
-                department: values.placeOfDeparture,
+                department: userInfo.userTeam,
                 gender: userInfo.userGender,
                 name: userInfo.userName,
                 //Todo 넣는다면 구조 다 바꿔야합니다.
                 // profileImage: "profile_img_src",
                 //Todo 리뷰랑 연동
-                reviewInfo: {
-                  recentComment: "good boy",
-                  reviewAverageScore: 2.1
-                },
+                // reviewInfo: {
+                //   recentComment: "good boy",
+                //   reviewAverageScore: 2.1
+                // },
                 settlementUrl: driverInfo.settlementUrl,
             },
             moveInfo:{
