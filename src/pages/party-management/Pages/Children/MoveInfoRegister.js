@@ -94,10 +94,10 @@ const MoveInfoRegister = () => {
                 //Todo 넣는다면 구조 다 바꿔야합니다.
                 // profileImage: "profile_img_src",
                 //Todo 리뷰랑 연동
-                // reviewInfo: {
-                //   recentComment: "good boy",
-                //   reviewAverageScore: 2.1
-                // },
+                reviewInfo: {
+                  recentComment: "-",
+                  reviewAverageScore: 0
+                },
                 settlementUrl: driverInfo.settlementUrl,
             },
             moveInfo:{
